@@ -19,7 +19,7 @@ function CanvasState(canvas) {
   
 	
 	this.valid = false;
-	this.revalidationCount = 20;
+	this.revalidationCount = 50;
 	this.dragging = false;
 	this.focusing = false;
 	this.selection = null;
