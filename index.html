@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Tower Defense Project</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	
+	<body>
+		<canvas id="mainCanvas" width="640" height="360">Your browser does not support HTML5 Canvas.</canvas>
+		
+		<u><h2 style="margin-top: 4vh;">Send Some Enemies!</h2></u>
+		<div style="margin-top: 1vh;">
+			<button onclick="state.addEnemy(new Enemy(RED))" style="background-color: red;"></button>
+			<button onclick="state.addEnemy(new Enemy(BLUE))" style="background-color: skyblue;"></button>
+			<button onclick="state.addEnemy(new Enemy(GREEN))" style="background-color: limegreen;"></button>
+			<button onclick="state.addEnemy(new Enemy(YELLOW))" style="background-color: yellow;"></button>
+			<button onclick="state.addEnemy(new Enemy(PINK))" style="background-color: pink;"></button>
+		</div>
+		
+	</body>
+	
+	<script type="text/javascript" src="path.js"></script>
+	<script type="text/javascript" src="enemies.js"></script>
+	<script type="text/javascript" src="towers.js"></script>
+	<script type="text/javascript" src="panel.js"></script>
+	<script type="text/javascript" src="canvas.js"></script>
+</html>

@@ -1,0 +1,58 @@
+@font-face {
+	font-family: Oeztype;
+	src: url(oeztype.ttf);
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	font-family: Oeztype
+}
+
+html, body {
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-image: radial-gradient(white 50%, lightgreen 100%);
+}
+
+canvas#mainCanvas {
+	height: 60%;
+	width: calc(60vh * 16 / 9);
+}
+
+@media (orientation: portrait) {
+	canvas#mainCanvas {
+		width: 90%;
+		height: calc(90vw * 9 / 16);
+	}
+}
+
+
+button {
+	border: 1px black solid;
+	height: 50px;
+	width: 50px;
+	border-radius: 10px;	
+	margin: 0 5px;
+	outline: none;
+	
+	background-image: url("balloon.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 30px 35px;
+}
+
+button:hover {
+	filter: brightness(0.8);
+}
+
+button:active {
+	filter: brightness(0.6);
+}
