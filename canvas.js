@@ -19,7 +19,6 @@ function CanvasState(canvas) {
   
 	
 	this.valid = false;
-	this.revalidationCount = 50;
 	this.dragging = false;
 	this.focusing = false;
 	this.selection = null;
@@ -111,6 +110,7 @@ function CanvasState(canvas) {
 	this.interval = 30;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
+	window.setInterval(function() { thisState.valid = false; }, 1000);
 }
 
 CanvasState.prototype.addEnemy = function(enemy) {
@@ -122,10 +122,6 @@ CanvasState.prototype.update = function() {
 	this.updateEnemyPositions();
 	this.sortEnemies();
 	this.updateTowerStates();
-	if (this.revalidationCount > 0) {
-		this.valid = false;
-		this.revalidationCount--;
-	}
 	if(!this.valid) {
 		this.clear();
 		this.drawBackground();
