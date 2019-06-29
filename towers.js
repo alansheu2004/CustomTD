@@ -106,7 +106,7 @@ Tower.prototype.updateState = function(enemies) {
 				this.state.valid = false;
 				
 				
-				state.money += enemy.type.rbe;
+				this.state.money += enemy.type.rbe;
 				if (enemy.type.child == null) {
 					enemies.splice(i, 1);
 				} else {

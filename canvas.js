@@ -1,8 +1,8 @@
-var cuurentState; //The current state (should be used for testing primarily)
+var currentState; //The current state (should be used for testing primarily)
 
 //This function is called when starting a new game
 function init() {
-	state = new CanvasState(document.getElementById("mainCanvas"));
+	currentState = new CanvasState(document.getElementById("mainCanvas"));
 	
 }
 
@@ -17,6 +17,7 @@ function CanvasState(canvas) {
 	window.addEventListener('resize', this.calibrateMeasures());
 	
 	this.valid = false; //Needs to be redrawn?
+	this.revalidationTimer = 1000; //Milliseconds until auto revalidation
 	
 	this.dragging = false; //Whether in the process of placing a tower
 	this.focusing = false; //Hovering over a tower
@@ -105,7 +106,6 @@ function CanvasState(canvas) {
 	this.interval = 30;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
-	window.setInterval(function() { thisState.valid = false; }, 1000);
 }
 
 //Adds a new enemy
@@ -119,7 +119,13 @@ CanvasState.prototype.update = function() {
 	this.updateEnemyPositions();
 	this.sortEnemies();
 	this.updateTowerStates();
+	if (this.revalidationTimer <= 0) {
+		this.valid = false;
+	} else {
+		this.revalidationTimer -= this.interval;
+	}
 	if(!this.valid) {
+		this.revalidationTimer = 1000;
 		this.validate();
 	}
 }
