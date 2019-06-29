@@ -1,4 +1,4 @@
-var state; //The current state (should be used for testing primarily)
+var cuurentState; //The current state (should be used for testing primarily)
 
 //This function is called when starting a new game
 function init() {
@@ -25,7 +25,7 @@ function CanvasState(canvas) {
 	this.mouse = {x: 0, y: 0};
 	this.dragOutOfOption = false; //Has dragging tower left option box?
 	
-	this.panel = new Panel();
+	this.panel = new Panel(this);
 	
 	this.backgroundImage = "map.png";
 	
@@ -91,7 +91,7 @@ function CanvasState(canvas) {
 		if (thisState.dragging){
 			if(thisState.dragOutOfOption) {
 				if (mouse.x < 480) {
-					thisState.towers.push(new Tower(thisState.selection, mouse.x, mouse.y));
+					thisState.towers.push(new Tower(thisState, thisState.selection, mouse.x, mouse.y));
 					thisState.money -= thisState.selection.cost;
 				}
 				thisState.dragging = false;

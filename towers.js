@@ -81,7 +81,8 @@ TowerType.prototype.drawOutline = function(context, x, y, angle) {
 	context.filter = "none";
 }
 
-function Tower(type, x, y) {
+function Tower(state, type, x, y) {
+	this.state = state;
 	this.image = type.image;
 	this.type = type;
 	this.towerImage = type.towerImage;
@@ -102,7 +103,7 @@ Tower.prototype.updateState = function(enemies) {
 			if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= this.range) {
 				this.cooldown = this.type.attackRate;
 				this.angle = Math.atan2(enemy.y-this.y, enemy.x-this.x);
-				state.valid = false;
+				this.state.valid = false;
 				
 				
 				state.money += enemy.type.rbe;
@@ -116,7 +117,7 @@ Tower.prototype.updateState = function(enemies) {
 			}
 		}
 	} else {
-		this.cooldown -= state.interval/1000;
+		this.cooldown -= this.state.interval/1000;
 	}
 }
 

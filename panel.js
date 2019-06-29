@@ -1,5 +1,5 @@
-function Panel() {
-	
+function Panel(state) {
+	this.state = state;
 }
 
 //Draws the panel
@@ -38,8 +38,8 @@ Panel.prototype.drawTopBox = function(context) {
 	context.font = "small-caps 16px Oeztype";
 	context.textAlign = "start";
 	context.fillStyle = "#ffd630";
-	context.fillText(state.health, 538, 31);
-	context.fillText(state.money, 538, 56);
+	context.fillText(this.state.health, 538, 31);
+	context.fillText(this.state.money, 538, 56);
 }
 
 //Draws the container and its contexts for the tower options
@@ -52,15 +52,15 @@ Panel.prototype.drawTowerBox = function(context) {
 	context.fillStyle = "#d3a06e";
 	context.fillRect(490, 100, 140, 200);
 	
-	for (var i=0; i<state.towerTypes.length; i++) {
+	for (var i=0; i<this.state.towerTypes.length; i++) {
 		context.filter = "none";
 		context.fillStyle = "#f4cea8";
 		var towerCoors = this.getTowerOptionCoors(i);
 		context.fillRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
-		if (state.money < state.towerTypes[i].cost) {
+		if (this.state.money < this.state.towerTypes[i].cost) {
 			context.filter = "brightness(50%)";
 		}
-		state.towerTypes[i].drawFit(state.context, towerCoors.x+this.towerOptionSize/2, towerCoors.y+this.towerOptionSize/2, 40)
+		this.state.towerTypes[i].drawFit(context, towerCoors.x+this.towerOptionSize/2, towerCoors.y+this.towerOptionSize/2, 40)
 	}
 	context.filter = "none";
 	this.drawScrollBar(context);
