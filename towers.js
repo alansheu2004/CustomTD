@@ -14,6 +14,7 @@ function TowerType(cost, attackRate, towerSize, range, image, towerImage, imgwid
 	this.attackRate = attackRate;
 }
 
+//Draws with a set max dimention while maintaining an aspect ratio
 TowerType.prototype.drawFit = function(context, x, y, max) {
 	var image = new Image();
 	image.src = this.image;
@@ -26,12 +27,14 @@ TowerType.prototype.drawFit = function(context, x, y, max) {
 	}
 }
 
+//Draws a tower type
 TowerType.prototype.drawTower = function(context, x, y) {
 	var image = new Image();
 	image.src = this.towerImage;
 	context.drawImage(image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
 }
 
+//Draws a tower type with an angle
 TowerType.prototype.drawTower = function(context, x, y, angle) {
 	var image = new Image();
 	image.src = this.towerImage;
@@ -44,16 +47,7 @@ TowerType.prototype.drawTower = function(context, x, y, angle) {
 	
 }
 
-TowerType.prototype.drawTowerFit = function(context, x, y, max) {
-	var image = new Image();
-	image.src = this.image;
-	if(imgwidth >= imgheight) {
-		context.drawImage(image, x - max/2, y - (max*this.imgheight/this.imgwidth)/2, max, max*this.imgheight/this.imgwidth);
-	} else {
-		context.drawImage(image, x - (max*this.imgwidth/this.imgheight)/2, y - max/2, max*this.imgwidth/this.imgheight, max);
-	}
-}
-
+//Draws the range of a tower
 TowerType.prototype.drawRange = function(context, x, y) {
 	context.lineWidth = 2;
 	context.strokeStyle = "rgb(0, 0, 0, 0.3)";
@@ -70,6 +64,7 @@ TowerType.prototype.drawRange = function(context, x, y) {
 	context.fill();
 }
 
+//Draw the outline of a tower
 TowerType.prototype.drawOutline = function(context, x, y, angle) {
 	var image = new Image();
 	image.src = this.towerImage;

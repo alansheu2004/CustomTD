@@ -27,10 +27,12 @@ Enemy.prototype.draw = function(context) {
 	context.fill();
 }
 
+//Advances the distance of enemy traveled based on speed
 Enemy.prototype.updateDist = function() {
 	this.dist += state.interval * this.type.speed/1000.0;
 }
 
+//Set x and y coordinates based on distance
 Enemy.prototype.updatePosition = function() {
 	var point = state.path.pointOnPath(this.dist);
 	this.x = point.x;

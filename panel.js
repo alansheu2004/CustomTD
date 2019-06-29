@@ -2,6 +2,7 @@ function Panel() {
 	
 }
 
+//Draws the panel
 Panel.prototype.draw = function(context) {
 	context.fillStyle = "#996633";
 	context.fillRect(480,0,160,360);
@@ -12,6 +13,7 @@ Panel.prototype.draw = function(context) {
 	this.drawTowerBox(context);
 }
 
+//Draws the top container for health and money
 Panel.prototype.drawTopBox = function(context) {
 	context.fillStyle = "#d3a06e";
 	context.fillRect(500, 10, 120, 55);
@@ -40,6 +42,7 @@ Panel.prototype.drawTopBox = function(context) {
 	context.fillText(state.money, 538, 56);
 }
 
+//Draws the container and its contexts for the tower options
 Panel.prototype.drawTowerBox = function(context) {
 	context.font = "small-caps 25px Oeztype";
 	context.textAlign = "center";
@@ -63,15 +66,18 @@ Panel.prototype.drawTowerBox = function(context) {
 	this.drawScrollBar(context);
 }
 
+//Draws the scrollbar in the tower box
 Panel.prototype.drawScrollBar = function(context) {
 	context.fillStyle = "#664321";
 	context.fillRect(600, 110, 20, 180);
 }
 
+//Gets the coordinates of the top left corner of the tower option in the panel
 Panel.prototype.getTowerOptionCoors = function(num) {
 	return {x:500+50*(num%2), y:110+(this.towerOptionSize+10)*Math.floor(num/2)};
 }
 
+//Returns whether a coordinate pair is inside a tower option
 Panel.prototype.optionContains = function(num, x, y) {
 	var towerCoors = this.getTowerOptionCoors(num);
 	if(x>=towerCoors.x && y>=towerCoors.y && x<=towerCoors.x+this.towerOptionSize && y<=towerCoors.y+this.towerOptionSize) {
