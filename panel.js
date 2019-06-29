@@ -24,12 +24,19 @@ Panel.prototype.drawTopBox = function(context) {
 	healthImage.src = "heart.png";
 	context.drawImage(healthImage, 510, 15, 22, 20);
 	
+	context.font = "small-caps 22px Oeztype";
+	context.textAlign = "center";
+	context.fillStyle = "#ffba30";
+	context.strokeStyle = "#c48a16";
+	context.lineWidth = 3;
+	context.strokeText("$", 521, 58);
+	context.fillText("$", 521, 58);
+	context.lineWidth = 1;
+	
+	context.font = "small-caps 16px Oeztype";
+	context.textAlign = "start";
+	context.fillStyle = "#ffd630";
 	context.fillText(state.health, 538, 31);
-	
-	var healthImage = new Image();
-	healthImage.src = "money.png";
-	context.drawImage(healthImage, 513, 40, 16, 20);
-	
 	context.fillText(state.money, 538, 56);
 }
 
