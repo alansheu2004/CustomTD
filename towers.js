@@ -1,5 +1,5 @@
 var defaultTowerTypes = [
-	new TowerType(100, 0.75, 15, 100, "peashooter-tower.svg", "peashooter-tower.svg", 35, 35)
+	new TowerType(100, 0.75, 14, 100, "peashooter-tower.svg", "peashooter-tower.svg", 33, 33)
 ]
 
 function TowerType(cost, attackRate, towerSize, range, image, towerImage, imgwidth, imgheight) {
