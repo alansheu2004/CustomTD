@@ -12,9 +12,12 @@ function CanvasState(canvas) {
 	this.width = canvas.width;
 	this.height = canvas.height;
 	this.context = canvas.getContext("2d");
+	var thisState = this; //To be referenced by anonymous inner classes
 	
-	this.calibrateMeasures();
-	window.addEventListener('resize', this.calibrateMeasures());
+	this.calibrateMeasures(this.canvas);
+	if (document.defaultView && document.defaultView.getComputedStyle) {
+		window.addEventListener('resize', function() {thisState.calibrateMeasures(thisState.canvas)});
+	}
 	
 	this.valid = false; //Needs to be redrawn?
 	this.revalidationTimer = 1000; //Milliseconds until auto revalidation
@@ -37,8 +40,6 @@ function CanvasState(canvas) {
 	this.towers = [];
 	this.path = defaultPath;
 	this.enemies = [];
-	
-	var thisState = this; //To be referenced by anonymous inner classes
 	
 	//Disables double clicking on the canvas to select text
 	canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
@@ -265,16 +266,13 @@ CanvasState.prototype.mouseUp = function(e) {
 }
 
 //Calculates accurate dimensions for the canvas
-CanvasState.prototype.calibrateMeasures = function() {
-	var canvas = this.canvas;
-	if (document.defaultView && document.defaultView.getComputedStyle) {
-		this.stylePaddingLeft = parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingLeft'], 10)      || 0;
-		this.stylePaddingTop  = parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingTop'], 10)       || 0;
-		this.styleBorderLeft  = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderLeftWidth'], 10)  || 0;
-		this.styleBorderTop   = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderTopWidth'], 10)   || 0;
-		this.styleWidth       = parseInt(document.defaultView.getComputedStyle(canvas, null)['width'], 10);
-		this.styleHeight      = parseInt(document.defaultView.getComputedStyle(canvas, null)['height'], 10);
-	}
+CanvasState.prototype.calibrateMeasures = function(canvas) {
+	this.stylePaddingLeft = parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingLeft'], 10)      || 0;
+	this.stylePaddingTop  = parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingTop'], 10)       || 0;
+	this.styleBorderLeft  = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderLeftWidth'], 10)  || 0;
+	this.styleBorderTop   = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderTopWidth'], 10)   || 0;
+	this.styleWidth       = parseInt(document.defaultView.getComputedStyle(canvas, null)['width'], 10);
+	this.styleHeight      = parseInt(document.defaultView.getComputedStyle(canvas, null)['height'], 10);
 	
 	var html = document.body.parentNode;
 	this.htmlTop = html.offsetTop;
