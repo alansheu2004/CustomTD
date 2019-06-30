@@ -11,6 +11,7 @@ function Path(data) {
 	this.setStepProperties();
 }
 
+//Returns the coordinates given a distance traveled on the path
 Path.prototype.pointOnPath = function(dist) {
 	var counter = 0;
 	var totalDistance = 0;
@@ -23,6 +24,7 @@ Path.prototype.pointOnPath = function(dist) {
 	
 }
 
+//Returns the coordinates given a distance traveled on a step
 Path.prototype.pointOnStep = function(num, step, dist) {
 	switch(step.type) {
 		case "line":
@@ -40,6 +42,7 @@ Path.prototype.pointOnStep = function(num, step, dist) {
 	}
 }
 
+//Calculates thelengths and starting points for all steps
 Path.prototype.setStepProperties = function() {
 	var x = this.start_x;
 	var y = this.start_y;
@@ -74,6 +77,7 @@ Path.prototype.setStepProperties = function() {
 	}
 }
 
+//Draws the path (currently not used)
 Path.prototype.draw = function(context) {
 	context.lineWidth = "2";
 	context.strokeStyle = "green";
@@ -100,6 +104,7 @@ Path.prototype.draw = function(context) {
 	context.stroke();
 }
 
+//Draws the Starting points for each step (currently not used)
 function drawCriticalPoints(context) {
 	context.strokeStyle = "blue";
 	context.fillStyle = "blue";
