@@ -19,7 +19,7 @@ body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-color: rgb(200, 255, 200);
+	background-color: #ffe9d4;
 }
 
 canvas#mainCanvas {
