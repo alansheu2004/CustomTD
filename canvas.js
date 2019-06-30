@@ -2,8 +2,8 @@ var currentState; //The current state (should be used for testing primarily)
 
 //This function is called when starting a new game
 function init() {
+	document.getElementById("restart").style.display = "none";
 	currentState = new CanvasState(document.getElementById("mainCanvas"));
-	
 }
 
 //Defines the Canvas, game,  and all its properties
@@ -28,6 +28,9 @@ function CanvasState(canvas) {
 	this.selectionNumber = 0; //The Number of the TowerType selected
 	this.mouse = {x: 0, y: 0};
 	this.dragOutOfOption = false; //Has dragging tower left option box?
+	
+	this.gameOver = false;
+	this.gameOverFade = 0; //opacity of the game over screen fading in
 	
 	this.panel = new Panel(this);
 	
@@ -69,13 +72,20 @@ CanvasState.prototype.addEnemy = function(enemy) {
 //Called every frame; updates all element states and calls validate() if necessary
 CanvasState.prototype.update = function() {
 	this.updateEnemyPositions();
-	this.sortEnemies();
-	this.updateTowerStates();
-	if (this.revalidationTimer <= 0) {
+	
+	if (this.gameOver) {
 		this.valid = false;
+		this.gameOverFade += 0.03;
 	} else {
-		this.revalidationTimer -= this.interval;
+		this.sortEnemies();
+		this.updateTowerStates();
+		if (this.revalidationTimer <= 0) {
+			this.valid = false;
+		} else {
+			this.revalidationTimer -= this.interval;
+		}
 	}
+	
 	if(!this.valid) {
 		this.revalidationTimer = 1000;
 		this.validate();
@@ -90,9 +100,14 @@ CanvasState.prototype.validate = function() {
 	this.drawEnemies();
 	this.drawTowers();
 	this.panel.draw(this.context);
-	if(this.dragging && this.dragOutOfOption) {
-		this.selection.drawRange(this.context, this.mouse.x, this.mouse.y);
-		this.selection.drawTower(this.context, this.mouse.x, this.mouse.y);
+	
+	if(this.gameOver) {
+		this.drawGameOver();
+	} else {
+		if(this.dragging && this.dragOutOfOption) {
+			this.selection.drawRange(this.context, this.mouse.x, this.mouse.y);
+			this.selection.drawTower(this.context, this.mouse.x, this.mouse.y);
+		}
 	}
 	
 	this.valid = true;
@@ -119,8 +134,7 @@ CanvasState.prototype.updateEnemyPositions = function() {
 			if (this.enemies[i].dist > this.path.totalLength) {
 				this.health = Math.max(this.health - this.enemies[i].type.damage, 0);
 				if (this.health<=0) {
-					window.clearInterval(this.loop);
-					setTimeout(this.gameOver, 500);
+					this.gameOver = true;
 				}
 				
 				this.enemies.splice(i, 1);
@@ -134,17 +148,22 @@ CanvasState.prototype.updateEnemyPositions = function() {
 }
 
 //Disactivates the update loop and displays a game over screen
-CanvasState.prototype.gameOver = function() {
-	state.context.fillStyle = "rgb(211, 160, 110)";
-	state.context.fillRect(0, 0, 640, 480);
+CanvasState.prototype.drawGameOver = function() {
+	this.context.fillStyle = "rgb(211, 160, 110, " + this.gameOverFade + ")";
+	this.context.fillRect(0, 0, 640, 480);
 	
-	state.context.font = "small-caps 72px Oeztype";
-	state.context.textAlign = "center";
-	state.context.fillStyle = "#ffd630";
-	state.context.strokeStyle = "#664321";
-	state.context.lineWidth = 3;
-	state.context.fillText("Game Over", 320, 210);
-	state.context.strokeText("Game Over", 320, 210);
+	this.context.font = "small-caps 72px Oeztype";
+	this.context.textAlign = "center";
+	this.context.fillStyle = "rgb(255, 214, 48, " + this.gameOverFade + ")";
+	this.context.strokeStyle = "rgb(102, 67, 33, " + this.gameOverFade + ")";
+	this.context.lineWidth = 3;
+	this.context.fillText("Game Over", 320, 150);
+	this.context.strokeText("Game Over", 320, 150);
+	
+	if (this.gameOverFade >= 1) {
+		window.clearInterval(this.loop);
+		setTimeout(function() {document.getElementById("restart").style.display = "initial";}, 500);
+	}
 }
 
 //Updates the towers based on enemies

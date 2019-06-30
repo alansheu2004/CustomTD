@@ -34,8 +34,26 @@ canvas#mainCanvas {
 	}
 }
 
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
 
-button {
+button#restart {
+	display: none;
+	animation-duration: 2s;
+	color: #664321;
+	border: 5px #664321 solid;
+	border-radius: 2vh;
+	background-color: #a6703c;
+	font-size: 6vh;
+	padding: 2vh;
+	position: absolute;
+	margin: auto;
+	outline: none;
+}
+
+button.enemy {
 	border: 1px black solid;
 	height: 50px;
 	width: 50px;
