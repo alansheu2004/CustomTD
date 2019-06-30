@@ -43,64 +43,15 @@ function CanvasState(canvas) {
 	//Disables double clicking on the canvas to select text
 	canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
 	
+	
 	canvas.addEventListener('mousedown', function(e) {
-		var mouse = thisState.setMouse(e);
-		if (!thisState.dragging) {
-			for (var i = 0; i < thisState.towerTypes.length; i++) {
-				if (thisState.panel.optionContains(i, mouse.x, mouse.y) && thisState.money >= thisState.towerTypes[i].cost) {
-					thisState.dragging = true;
-					thisState.selectionNumber = i;
-					thisState.selection = thisState.towerTypes[i];
-					thisState.dragOutOfOption = false;
-					thisState.valid = false;
-					return;
-				}
-			}
-		}
+		thisState.mouseDown(e);
 	}, true);
-	
 	canvas.addEventListener('mousemove', function(e) {
-		var mouse = thisState.setMouse(e);
-		if (thisState.dragging){
-			if(!thisState.dragOutOfOption) {
-				if(!thisState.panel.optionContains(thisState.selectionNumber, mouse.x, mouse.y)) {
-					thisState.dragOutOfOption = true;
-				}
-			}
-			thisState.valid = false;
-		} else if (mouse.x < 480) {
-			for (var i = 0; i < thisState.towers.length; i++) {
-				if (thisState.towers[i].inBounds(mouse.x, mouse.y)) {
-					thisState.selection = thisState.towers[i];
-					thisState.focusing = true;
-					thisState.valid = false;
-					return;
-				}
-			}
-			
-		}
-		
-		//Stops focusing if nothing returned
-		if (thisState.focusing) {
-			thisState.focusing = false;
-			thisState.valid = false;
-		}
+		thisState.mouseMove(e);
 	}, true);
-	
 	canvas.addEventListener('mouseup', function(e) {
-		var mouse = thisState.setMouse(e);
-		if (thisState.dragging){
-			if(thisState.dragOutOfOption) {
-				if (mouse.x < 480) {
-					thisState.towers.push(new Tower(thisState, thisState.selection, mouse.x, mouse.y));
-					thisState.money -= thisState.selection.cost;
-				}
-				thisState.dragging = false;
-			} else {
-				thisState.dragOutOfOption = true;
-			}
-			thisState.valid = false;
-		}
+		thisState.mouseUp(e);
 	}, true);
 
 	this.interval = 30;
@@ -241,6 +192,7 @@ CanvasState.prototype.setMouse = function(e) {
 	offsetX += this.stylePaddingLeft + this.styleBorderLeft + this.htmlLeft;
 	offsetY += this.stylePaddingTop + this.styleBorderTop + this.htmlTop;
 
+
 	mx = e.pageX - offsetX;
 	my = e.pageY - offsetY;
 	
@@ -249,6 +201,67 @@ CanvasState.prototype.setMouse = function(e) {
 
 	this.mouse = {x: mx, y: my};
 	return this.mouse;
+}
+
+CanvasState.prototype.mouseDown = function(e) {
+	var mouse = this.setMouse(e);
+	if (!this.dragging) {
+		for (var i = 0; i < this.towerTypes.length; i++) {
+			
+			if (this.panel.optionContains(i, mouse.x, mouse.y) && this.money >= this.towerTypes[i].cost) {
+				this.dragging = true;
+				this.selectionNumber = i;
+				this.selection = this.towerTypes[i];
+				this.dragOutOfOption = false;
+				this.valid = false;
+				return;
+			}
+		}
+	}
+}
+
+CanvasState.prototype.mouseMove = function(e) {
+	var mouse = this.setMouse(e);
+	if (this.dragging){
+		if(!this.dragOutOfOption) {
+			if(!this.panel.optionContains(this.selectionNumber, mouse.x, mouse.y)) {
+				this.dragOutOfOption = true;
+			}
+		}
+		this.valid = false;
+	} else if (mouse.x < 480) {
+		for (var i = 0; i < this.towers.length; i++) {
+			if (this.towers[i].inBounds(mouse.x, mouse.y)) {
+				this.selection = this.towers[i];
+				this.focusing = true;
+				this.valid = false;
+				return;
+			}
+		}
+		
+	}
+	
+	//Stops focusing if nothing returned
+	if (this.focusing) {
+		this.focusing = false;
+		this.valid = false;
+	}
+}
+
+CanvasState.prototype.mouseUp = function(e) {
+	var mouse = this.setMouse(e);
+	if (this.dragging){
+		if(this.dragOutOfOption) {
+			if (mouse.x < 480) {
+				this.towers.push(new Tower(this, this.selection, mouse.x, mouse.y));
+				this.money -= this.selection.cost;
+			}
+			this.dragging = false;
+		} else {
+			this.dragOutOfOption = true;
+		}
+		this.valid = false;
+	}
 }
 
 //Calculates accurate dimensions for the canvas
