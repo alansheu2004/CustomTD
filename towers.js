@@ -103,15 +103,9 @@ Tower.prototype.updateState = function(enemies) {
 			if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= this.range) {
 				this.cooldown = this.type.attackRate;
 				this.angle = Math.atan2(enemy.y-this.y, enemy.x-this.x);
-				this.state.valid = false;
 				
-				
-				this.state.money += enemy.type.rbe;
-				if (enemy.type.child == null) {
-					enemies.splice(i, 1);
-				} else {
-					enemy.type = enemy.type.child;
-				}
+				this.state.projectiles.push(new Projectile(this.state, new ProjectileType(this.state, 1), this.x, this.y, this.angle));
+				enemy.pop(i);
 				
 				return;
 			}

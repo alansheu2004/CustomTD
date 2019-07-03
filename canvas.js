@@ -41,6 +41,7 @@ function CanvasState(canvas) {
 	
 	this.towerTypes = defaultTowerTypes;
 	this.towers = [];
+	this.projectiles = [];
 	this.path = defaultPath;
 	this.enemies = [];
 	

@@ -28,6 +28,15 @@ Enemy.prototype.draw = function(context) {
 	context.fill();
 }
 
+Enemy.prototype.pop = function(num) {
+	this.state.money += this.type.rbe;
+	if (this.type.child == null) {
+		this.state.enemies.splice(num, 1);
+	} else {
+		this.type = this.type.child;
+	}
+}
+
 //Advances the distance of enemy traveled based on speed
 Enemy.prototype.updateDist = function() {
 	this.dist += this.state.interval * this.type.speed/1000.0;
