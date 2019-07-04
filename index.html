@@ -15,17 +15,18 @@
 		
 		<u><h2 style="margin-top: 1vh;">Send Some Enemies!</h2></u>
 		<div style="margin-top: 1vh;">
-			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, RED))" style="background-color: red;"></button>
-			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, BLUE))" style="background-color: skyblue;"></button>
-			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, GREEN))" style="background-color: limegreen;"></button>
-			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, YELLOW))" style="background-color: yellow;"></button>
-			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, PINK))" style="background-color: pink;"></button>
+			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, currentState.enemyId, RED))" style="background-color: red;"></button>
+			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, currentState.enemyId, BLUE))" style="background-color: skyblue;"></button>
+			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, currentState.enemyId, GREEN))" style="background-color: limegreen;"></button>
+			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, currentState.enemyId, YELLOW))" style="background-color: yellow;"></button>
+			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, currentState.enemyId, PINK))" style="background-color: pink;"></button>
 		</div>
 		
 	</body>
 	
 	<script type="text/javascript" src="path.js"></script>
 	<script type="text/javascript" src="enemies.js"></script>
+	<script type="text/javascript" src="projectile.js"></script>
 	<script type="text/javascript" src="towers.js"></script>
 	<script type="text/javascript" src="panel.js"></script>
 	<script type="text/javascript" src="canvas.js"></script>
