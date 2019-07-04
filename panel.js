@@ -16,7 +16,7 @@ Panel.prototype.draw = function(context) {
 //Draws the top container for health and money
 Panel.prototype.drawTopBox = function(context) {
 	context.fillStyle = "#d3a06e";
-	context.fillRect(500, 10, 120, 55);
+	context.fillRect(505, 10, 110, 55);
 	
 	context.font = "small-caps 16px Oeztype";
 	context.textAlign = "start";
@@ -47,7 +47,7 @@ Panel.prototype.drawTowerBox = function(context) {
 	context.fillStyle = "#d3a06e";
 	context.fillRect(495, 75, 130, 40);
 	
-	context.font = "small-caps 25px Oeztype";
+	context.font = "small-caps 27px Oeztype";
 	context.textAlign = "center";
 	context.fillStyle = "#ffd630";
 	context.fillText("-Towers-", 560, 105);

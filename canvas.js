@@ -41,9 +41,9 @@ function CanvasState(canvas) {
 	
 	this.towerTypes = defaultTowerTypes;
 	this.towers = [];
-	this.projectiles = [];
 	this.path = defaultPath;
 	this.enemies = [];
+	this.enemyId = 0;
 	
 	//Disables double clicking on the canvas to select text
 	canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
@@ -67,6 +67,7 @@ function CanvasState(canvas) {
 //Adds a new enemy
 CanvasState.prototype.addEnemy = function(enemy) {
 	this.enemies.push(enemy);
+	this.enemyId++;
 	this.valid = false;
 }
 
@@ -80,6 +81,7 @@ CanvasState.prototype.update = function() {
 	} else {
 		this.sortEnemies();
 		this.updateTowerStates();
+		this.updateProjectiles();
 		if (this.revalidationTimer <= 0) {
 			this.valid = false;
 		} else {
@@ -174,6 +176,13 @@ CanvasState.prototype.updateTowerStates = function(){
 	}
 }
 
+//Updates the projectile positions and damages enemies
+CanvasState.prototype.updateProjectiles = function(){
+	for (var i = 0; i<this.towers.length; i++) {
+		this.towers[i].updateProjectiles();
+	}
+}
+
 //Sorts the enemies array from first in the path to last
 CanvasState.prototype.sortEnemies = function() {
 	this.enemies.sort(function(a, b) {return b.dist - a.dist});
@@ -187,6 +196,7 @@ CanvasState.prototype.drawEnemies = function() {
 }
 
 //Draws each tower and their range/outline if necessary
+//Also Draws their projectiles
 CanvasState.prototype.drawTowers = function() {
 	for (let tower of this.towers) {
 		if (this.focusing) {
@@ -196,6 +206,7 @@ CanvasState.prototype.drawTowers = function() {
 			}
 		}
 		tower.draw(this.context);
+		tower.drawProjectiles(this.context);
 	}
 }
 
