@@ -15,7 +15,7 @@ function Projectile(state, type, x, y, angle) {
 	this.damagedEnemies = [];
 }
 
-//Will return whether this projectileshould be deleted
+//Will return whether this projectiles should be deleted
 Projectile.prototype.update = function() {
 	this.x += this.state.interval*(this.speed/1000) * Math.cos(this.angle);
 	this.y += this.state.interval*(this.speed/1000) * Math.sin(this.angle);
@@ -43,7 +43,7 @@ Projectile.prototype.update = function() {
 }
 
 Projectile.prototype.draw = function(context) {
-	context.fillStyle = "rgb(100, 255, 50)";
+	context.fillStyle = "rgb(0, 0, 0)";
 	context.strokeStyle = "black";
 	context.beginPath();
 	context.arc(this.x, this.y, 6, 0, 2*Math.PI);

@@ -1,5 +1,5 @@
 var defaultTowerTypes = [
-	new TowerType(100, 0.75, 14, 100, "peashooter-tower.svg", "peashooter-tower.svg", 33, 33)
+	new TowerType(100, 0.6, 14, 100, "peashooter-tower.svg", "peashooter-tower.svg", 33, 33)
 ]
 
 function TowerType(cost, attackRate, towerSize, range, image, towerImage, imgwidth, imgheight) {
@@ -105,7 +105,7 @@ Tower.prototype.updateState = function(enemies) {
 				this.cooldown = this.type.attackRate;
 				this.angle = Math.atan2(enemy.y-this.y, enemy.x-this.x);
 				
-				this.projectiles.push(new Projectile(this.state, new ProjectileType(this.state, 1, 800), this.x, this.y, this.angle));
+				this.projectiles.push(new Projectile(this.state, new ProjectileType(this.state, 1, 700), this.x, this.y, this.angle));
 				
 				return;
 			}
