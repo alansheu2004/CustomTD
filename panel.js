@@ -84,7 +84,7 @@ Panel.prototype.drawTowerBox = function(context) {
 //Draws the scrollbar in the tower box
 Panel.prototype.drawScrollBar = function(context) {
 	context.fillStyle = "#664321";
-	context.fillRect(600, 130, 15, 160);
+	context.fillRect(600, 135, 15, 160);
 }
 
 //Gets the coordinates of the top left corner of the tower option in the panel

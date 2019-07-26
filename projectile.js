@@ -1,11 +1,36 @@
-PEA = new ProjectileType(1, 1400, "resources/images/pea.png", 15, 15);
+PEA = new ProjectileType(2, 1400, null, 
+						false,
+						"resources/images/pea.png", 15, 15);
 
-function ProjectileType(pierce, speed, image, imgwidth, imgheight) {
+function ProjectileType(pierce, speed, maxRange,
+						rotating,
+						image, imgwidth, imgheight) {
 	this.pierce = pierce;
 	this.speed = speed; //px per seconds
+	this.maxRange = maxRange;
+
+	this.rotating = rotating;
+
 	this.image = image;
 	this.imgwidth = imgwidth;
 	this.imgheight = imgheight;
+}
+
+ProjectileType.prototype.draw = function(context, x, y, angle) {
+	var image = new Image();
+	image.src = this.image;
+
+	if(this.rotating) {
+		context.translate(x, y);
+		context.rotate(angle-Math.PI/2);
+		
+		context.drawImage(image, -this.imgwidth/2, -this.imgheight/2, this.imgwidth, this.imgheight);
+
+		context.rotate(-(angle-Math.PI/2));
+		context.translate(-x, -y);
+	} else {
+		context.drawImage(image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
+	}
 }
 
 function Projectile(state, type, x, y, angle) {
@@ -15,24 +40,34 @@ function Projectile(state, type, x, y, angle) {
 	this.x = x;
 	this.y = y;
 	this.pierceLeft = this.type.pierce;
+	this.rangeLeft = this.type.maxRange;
 	this.damagedEnemies = [];
 }
 
 //Will return whether this projectiles should be deleted
 Projectile.prototype.update = function() {
-	this.x += this.state.interval*(this.type.speed/1000) * Math.cos(this.angle);
-	this.y += this.state.interval*(this.type.speed/1000) * Math.sin(this.angle);
+	var dx = this.state.interval*(this.type.speed/1000) * Math.cos(this.angle);
+	var dy = this.state.interval*(this.type.speed/1000) * Math.sin(this.angle);
+	this.x += dx;
+	this.y += dy;
 	
 	if(this.x < 0 || this.x > 480 || this.y < 0 || this.y > 360) {
 		return true;
 	}
+
+	if(this.rangeLeft != null) {
+		this.rangeLeft -= Math.hypot(dx, dy);
+		if(this.rangeLeft<0) {
+			return true;
+		}
+	}
 	
 	for (var i = 0; i < this.state.enemies.length; i++) {
 		var enemy = this.state.enemies[i];
-		if (!this.damagedEnemies.includes(enemy.id)) {
+		if (!this.damagedEnemies.includes(enemy)) {
 			if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= enemy.type.size) {
 				enemy.damage(i);
-				this.damagedEnemies.push(enemy.id);
+				this.damagedEnemies.push(enemy);
 				this.pierceLeft--;
 				if (this.pierceLeft <= 0) {
 					return true;
@@ -46,7 +81,5 @@ Projectile.prototype.update = function() {
 }
 
 Projectile.prototype.draw = function(context) {
-	var image = new Image();
-	image.src = this.type.image;
-	context.drawImage(image, this.x - this.type.imgwidth/2, this.y - this.type.imgheight/2, this.type.imgwidth, this.type.imgheight);
+	this.type.draw(context, this.x, this.y, this.angle);
 }

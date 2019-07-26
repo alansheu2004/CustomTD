@@ -20,7 +20,7 @@ function CanvasState(canvas) {
 	}
 	
 	this.valid = false; //Needs to be redrawn?
-	this.revalidationTimer = 2000; //Milliseconds until stop auto revalidation
+	this.revalidationTimer = 1000; //Milliseconds until stop auto revalidation
 	
 	this.dragging = false; //Whether in the process of placing a tower
 	this.focusing = false; //Hovering over a tower
@@ -59,7 +59,7 @@ function CanvasState(canvas) {
 		thisState.mouseUp(e);
 	}, true);
 
-	this.interval = 15;
+	this.interval = 20;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
 }
@@ -82,7 +82,6 @@ CanvasState.prototype.update = function() {
 		this.updateTowerStates();
 		if (this.revalidationTimer >= 0) {
 			this.valid = false;
-		} else {
 			this.revalidationTimer -= this.interval;
 		}
 	}
