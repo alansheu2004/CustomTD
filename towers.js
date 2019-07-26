@@ -123,7 +123,7 @@ Tower.prototype.updateState = function(enemies) {
 				this.angle = Math.atan2(enemy.y-this.y, enemy.x-this.x);
 				this.state.valid = false;
 				
-				this.projectiles.push(new Projectile(this.state, new ProjectileType(this.state, 1, 1400), this.x, this.y, this.angle));
+				this.projectiles.push(new Projectile(this.state, PEA, this.x, this.y, this.angle));
 				
 				return;
 			}

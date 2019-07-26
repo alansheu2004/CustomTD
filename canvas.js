@@ -20,7 +20,7 @@ function CanvasState(canvas) {
 	}
 	
 	this.valid = false; //Needs to be redrawn?
-	this.revalidationTimer = 1000; //Milliseconds until auto revalidation
+	this.revalidationTimer = 2000; //Milliseconds until stop auto revalidation
 	
 	this.dragging = false; //Whether in the process of placing a tower
 	this.focusing = false; //Hovering over a tower
@@ -80,15 +80,14 @@ CanvasState.prototype.update = function() {
 	} else {
 		this.sortEnemies();
 		this.updateTowerStates();
-		if (this.revalidationTimer <= 0) {
-			//this.valid = false;
+		if (this.revalidationTimer >= 0) {
+			this.valid = false;
 		} else {
-			//this.revalidationTimer -= this.interval;
+			this.revalidationTimer -= this.interval;
 		}
 	}
 	
 	if(!this.valid) {
-		this.revalidationTimer = 1000;
 		this.validate();
 	}
 }
@@ -316,8 +315,10 @@ CanvasState.prototype.calibrateMeasures = function(canvas) {
 	this.htmlLeft = html.offsetLeft;
 }
 
-try {
-	init();
-} catch (e) {
-	alert("There's an error in the code:\n\n" + e.message + "\n\nPlease notify me1234q@gmail.com about this and wait approximately a month for a reply because that's how often he checks his email.")
+window.onload = function() {
+	try {
+		init();
+	} catch (e) {
+		alert("There's an error in the code:\n\n" + e.message + "\n\nPlease notify me1234q@gmail.com about this and wait approximately a month for a reply because that's how often he checks his email.")
+	}
 }
