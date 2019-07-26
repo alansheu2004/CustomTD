@@ -100,6 +100,7 @@ CanvasState.prototype.validate = function() {
 	//this.path.draw(this.context);
 	this.drawEnemies();
 	this.drawTowers();
+
 	this.panel.draw(this.context);
 	
 	if(this.gameOver) {
@@ -171,6 +172,7 @@ CanvasState.prototype.drawGameOver = function() {
 CanvasState.prototype.updateTowerStates = function(){
 	for (var i = 0; i<this.towers.length; i++) {
 		this.towers[i].updateState(this.enemies);
+		this.towers[i].updateProjectiles();
 	}
 }
 
@@ -196,6 +198,7 @@ CanvasState.prototype.drawTowers = function() {
 			}
 		}
 		tower.draw(this.context);
+		tower.drawProjectiles(this.context);
 	}
 }
 

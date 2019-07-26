@@ -4,12 +4,13 @@ var GREEN = new EnemyType(167, "limegreen", BLUE, 2, 3, 18);
 var YELLOW = new EnemyType(333, "yellow", GREEN, 2, 4, 18);
 var PINK = new EnemyType(367, "pink", YELLOW, 3, 5, 18);
 
-function EnemyType(speed, color, child, rbe, damage) {
+function EnemyType(speed, color, child, rbe, damage, size) {
 	this.speed = speed; // px per sec
 	this.color = color;
 	this.child = child;
 	this.rbe = rbe;
 	this.damage = damage;
+	this.size = size;
 }
 
 function Enemy(state, type) {
@@ -38,4 +39,13 @@ Enemy.prototype.updatePosition = function() {
 	var point = this.state.path.pointOnPath(this.dist);
 	this.x = point.x;
 	this.y = point.y;
+}
+
+Enemy.prototype.damage = function(id) {
+	this.state.money += this.type.rbe;
+	if(this.type.child == null) {
+		this.state.enemies.splice(id, 1);
+	} else {
+		this.type = this.type.child;
+	}
 }

@@ -111,6 +111,7 @@ function Tower(state, type, x, y) {
 
 	this.angle = Math.PI/2;
 	this.cooldown = 0;
+	this.projectiles = [];
 }
 
 Tower.prototype.updateState = function(enemies) {
