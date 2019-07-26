@@ -24,6 +24,7 @@ function CanvasState(canvas) {
 	
 	this.dragging = false; //Whether in the process of placing a tower
 	this.focusing = false; //Hovering over a tower
+	this.optionFocusing = false; //Hovering over a tower option
 	this.selection = null; //The Tower or TowerType that is being dragged or hovered
 	this.selectionNumber = 0; //The Number of the TowerType selected
 	this.mouse = {x: 0, y: 0};
@@ -34,7 +35,7 @@ function CanvasState(canvas) {
 	
 	this.panel = new Panel(this);
 	
-	this.backgroundImage = "map.png";
+	this.backgroundImage = "resources/images/map.png";
 	
 	this.health = 100;
 	this.money = 250;
@@ -43,7 +44,6 @@ function CanvasState(canvas) {
 	this.towers = [];
 	this.path = defaultPath;
 	this.enemies = [];
-	this.enemyId = 0;
 	
 	//Disables double clicking on the canvas to select text
 	canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
@@ -59,7 +59,7 @@ function CanvasState(canvas) {
 		thisState.mouseUp(e);
 	}, true);
 
-	this.interval = 30;
+	this.interval = 20;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
 }
@@ -67,7 +67,6 @@ function CanvasState(canvas) {
 //Adds a new enemy
 CanvasState.prototype.addEnemy = function(enemy) {
 	this.enemies.push(enemy);
-	this.enemyId++;
 	this.valid = false;
 }
 
@@ -81,11 +80,10 @@ CanvasState.prototype.update = function() {
 	} else {
 		this.sortEnemies();
 		this.updateTowerStates();
-		this.updateProjectiles();
 		if (this.revalidationTimer <= 0) {
-			this.valid = false;
+			//this.valid = false;
 		} else {
-			this.revalidationTimer -= this.interval;
+			//this.revalidationTimer -= this.interval;
 		}
 	}
 	
@@ -108,8 +106,8 @@ CanvasState.prototype.validate = function() {
 		this.drawGameOver();
 	} else {
 		if(this.dragging && this.dragOutOfOption) {
-			this.selection.drawRange(this.context, this.mouse.x, this.mouse.y);
-			this.selection.drawTower(this.context, this.mouse.x, this.mouse.y);
+			this.selection.upgrades[0].drawRange(this.context, this.mouse.x, this.mouse.y);
+			this.selection.upgrades[0].draw(this.context, this.mouse.x, this.mouse.y);
 		}
 	}
 	
@@ -176,13 +174,6 @@ CanvasState.prototype.updateTowerStates = function(){
 	}
 }
 
-//Updates the projectile positions and damages enemies
-CanvasState.prototype.updateProjectiles = function(){
-	for (var i = 0; i<this.towers.length; i++) {
-		this.towers[i].updateProjectiles();
-	}
-}
-
 //Sorts the enemies array from first in the path to last
 CanvasState.prototype.sortEnemies = function() {
 	this.enemies.sort(function(a, b) {return b.dist - a.dist});
@@ -196,7 +187,6 @@ CanvasState.prototype.drawEnemies = function() {
 }
 
 //Draws each tower and their range/outline if necessary
-//Also Draws their projectiles
 CanvasState.prototype.drawTowers = function() {
 	for (let tower of this.towers) {
 		if (this.focusing) {
@@ -206,7 +196,6 @@ CanvasState.prototype.drawTowers = function() {
 			}
 		}
 		tower.draw(this.context);
-		tower.drawProjectiles(this.context);
 	}
 }
 
@@ -270,12 +259,26 @@ CanvasState.prototype.mouseMove = function(e) {
 				return;
 			}
 		}
-		
+	} else {
+		for (var i = 0; i < this.towerTypes.length; i++) {
+			if(this.panel.optionContains(i, mouse.x, mouse.y)) {
+				this.optionFocusing = true;
+				this.selectionNumber = i;
+				this.selection = this.towerTypes[i];
+				this.valid = false;
+				return;
+			}
+		}
 	}
 	
 	//Stops focusing if nothing returned
 	if (this.focusing) {
 		this.focusing = false;
+		this.valid = false;
+	}
+
+	if (this.optionFocusing) {
+		this.optionFocusing = false;
 		this.valid = false;
 	}
 }
