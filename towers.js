@@ -94,6 +94,7 @@ function Tower(state, type, x, y) {
 	this.angle = Math.PI/2;
 	this.towerSize = type.towerSize;
 	this.cooldown = 0;
+	this.projectiles = [];
 }
 
 Tower.prototype.updateState = function(enemies) {
@@ -103,15 +104,8 @@ Tower.prototype.updateState = function(enemies) {
 			if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= this.range) {
 				this.cooldown = this.type.attackRate;
 				this.angle = Math.atan2(enemy.y-this.y, enemy.x-this.x);
-				this.state.valid = false;
 				
-				
-				this.state.money += enemy.type.rbe;
-				if (enemy.type.child == null) {
-					enemies.splice(i, 1);
-				} else {
-					enemy.type = enemy.type.child;
-				}
+				this.projectiles.push(new Projectile(this.state, new ProjectileType(this.state, 1, 800), this.x, this.y, this.angle));
 				
 				return;
 			}
@@ -139,4 +133,20 @@ Tower.prototype.drawRange = function(context) {
 
 Tower.prototype.drawOutline = function(context) {
 	this.type.drawOutline(context, this.x, this.y, this.angle);
+}
+
+Tower.prototype.drawProjectiles = function(context) {
+	for (let projectile of this.projectiles) {
+		projectile.draw(context);
+	}
+}
+
+Tower.prototype.updateProjectiles = function() {
+	for (var i = 0; i < this.projectiles.length; i++) {
+		if (this.projectiles[i].update()) {
+			this.projectiles.splice(i, 1);
+			i--;
+		}
+		this.state.valid = false;
+	}
 }
