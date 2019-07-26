@@ -59,7 +59,7 @@ function CanvasState(canvas) {
 		thisState.mouseUp(e);
 	}, true);
 
-	this.interval = 20;
+	this.interval = 15;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
 }
