@@ -23,7 +23,7 @@ Panel.prototype.drawTopBox = function(context) {
 	context.fillStyle = "#ffd630";
 	
 	var healthImage = new Image();
-	healthImage.src = "heart.png";
+	healthImage.src = "resources/images/heart.png";
 	context.drawImage(healthImage, 510, 15, 22, 20);
 	
 	context.font = "small-caps 22px Oeztype";
@@ -47,10 +47,17 @@ Panel.prototype.drawTowerBox = function(context) {
 	context.fillStyle = "#d3a06e";
 	context.fillRect(495, 75, 130, 40);
 	
-	context.font = "small-caps 27px Oeztype";
 	context.textAlign = "center";
 	context.fillStyle = "#ffd630";
-	context.fillText("-Towers-", 560, 105);
+	if(this.state.optionFocusing || this.state.dragging) {
+		context.font = "small-caps 18px Oeztype";
+		context.fillText("$" + this.state.selection.cost, 560, 95);
+		context.font = "small-caps 15px Oeztype";
+		context.fillText(this.state.selection.name, 560, 110);
+	} else {
+		context.font = "small-caps 27px Oeztype";
+		context.fillText("-Towers-", 560, 105);
+	}
 	
 	context.fillStyle = "#d3a06e";
 	context.fillRect(495, 125, 130, 180);
@@ -66,16 +73,18 @@ Panel.prototype.drawTowerBox = function(context) {
 		if (this.state.money < this.state.towerTypes[i].cost) {
 			context.filter = "brightness(50%)";
 		}
-		this.state.towerTypes[i].drawFit(context, towerCoors.x+this.towerOptionSize/2, towerCoors.y+this.towerOptionSize/2, 40)
+		
+		this.state.towerTypes[i].upgrades[0].drawFit(context, towerCoors.x+this.towerOptionSize/2, towerCoors.y+this.towerOptionSize/2, 40)
+		context.filter = "none";
 	}
-	context.filter = "none";
+	
 	this.drawScrollBar(context);
 }
 
 //Draws the scrollbar in the tower box
 Panel.prototype.drawScrollBar = function(context) {
 	context.fillStyle = "#664321";
-	context.fillRect(600, 135, 15, 160);
+	context.fillRect(600, 130, 15, 160);
 }
 
 //Gets the coordinates of the top left corner of the tower option in the panel

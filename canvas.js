@@ -20,10 +20,11 @@ function CanvasState(canvas) {
 	}
 	
 	this.valid = false; //Needs to be redrawn?
-	this.revalidationTimer = 1000; //Milliseconds until auto revalidation
+	this.revalidationTimer = 2000; //Milliseconds until stop auto revalidation
 	
 	this.dragging = false; //Whether in the process of placing a tower
 	this.focusing = false; //Hovering over a tower
+	this.optionFocusing = false; //Hovering over a tower option
 	this.selection = null; //The Tower or TowerType that is being dragged or hovered
 	this.selectionNumber = 0; //The Number of the TowerType selected
 	this.mouse = {x: 0, y: 0};
@@ -34,7 +35,7 @@ function CanvasState(canvas) {
 	
 	this.panel = new Panel(this);
 	
-	this.backgroundImage = "map.png";
+	this.backgroundImage = "resources/images/map.png";
 	
 	this.health = 100;
 	this.money = 250;
@@ -43,7 +44,6 @@ function CanvasState(canvas) {
 	this.towers = [];
 	this.path = defaultPath;
 	this.enemies = [];
-	this.enemyId = 0;
 	
 	//Disables double clicking on the canvas to select text
 	canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
@@ -59,7 +59,7 @@ function CanvasState(canvas) {
 		thisState.mouseUp(e);
 	}, true);
 
-	this.interval = 30;
+	this.interval = 15;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
 }
@@ -67,7 +67,6 @@ function CanvasState(canvas) {
 //Adds a new enemy
 CanvasState.prototype.addEnemy = function(enemy) {
 	this.enemies.push(enemy);
-	this.enemyId++;
 	this.valid = false;
 }
 
@@ -81,8 +80,7 @@ CanvasState.prototype.update = function() {
 	} else {
 		this.sortEnemies();
 		this.updateTowerStates();
-		this.updateProjectiles();
-		if (this.revalidationTimer <= 0) {
+		if (this.revalidationTimer >= 0) {
 			this.valid = false;
 		} else {
 			this.revalidationTimer -= this.interval;
@@ -90,7 +88,6 @@ CanvasState.prototype.update = function() {
 	}
 	
 	if(!this.valid) {
-		this.revalidationTimer = 1000;
 		this.validate();
 	}
 }
@@ -102,14 +99,15 @@ CanvasState.prototype.validate = function() {
 	//this.path.draw(this.context);
 	this.drawEnemies();
 	this.drawTowers();
+
 	this.panel.draw(this.context);
 	
 	if(this.gameOver) {
 		this.drawGameOver();
 	} else {
 		if(this.dragging && this.dragOutOfOption) {
-			this.selection.drawRange(this.context, this.mouse.x, this.mouse.y);
-			this.selection.drawTower(this.context, this.mouse.x, this.mouse.y);
+			this.selection.upgrades[0].drawRange(this.context, this.mouse.x, this.mouse.y);
+			this.selection.upgrades[0].draw(this.context, this.mouse.x, this.mouse.y);
 		}
 	}
 	
@@ -173,12 +171,6 @@ CanvasState.prototype.drawGameOver = function() {
 CanvasState.prototype.updateTowerStates = function(){
 	for (var i = 0; i<this.towers.length; i++) {
 		this.towers[i].updateState(this.enemies);
-	}
-}
-
-//Updates the projectile positions and damages enemies
-CanvasState.prototype.updateProjectiles = function(){
-	for (var i = 0; i<this.towers.length; i++) {
 		this.towers[i].updateProjectiles();
 	}
 }
@@ -196,7 +188,6 @@ CanvasState.prototype.drawEnemies = function() {
 }
 
 //Draws each tower and their range/outline if necessary
-//Also Draws their projectiles
 CanvasState.prototype.drawTowers = function() {
 	for (let tower of this.towers) {
 		if (this.focusing) {
@@ -270,12 +261,26 @@ CanvasState.prototype.mouseMove = function(e) {
 				return;
 			}
 		}
-		
+	} else {
+		for (var i = 0; i < this.towerTypes.length; i++) {
+			if(this.panel.optionContains(i, mouse.x, mouse.y)) {
+				this.optionFocusing = true;
+				this.selectionNumber = i;
+				this.selection = this.towerTypes[i];
+				this.valid = false;
+				return;
+			}
+		}
 	}
 	
 	//Stops focusing if nothing returned
 	if (this.focusing) {
 		this.focusing = false;
+		this.valid = false;
+	}
+
+	if (this.optionFocusing) {
+		this.optionFocusing = false;
 		this.valid = false;
 	}
 }
@@ -310,8 +315,10 @@ CanvasState.prototype.calibrateMeasures = function(canvas) {
 	this.htmlLeft = html.offsetLeft;
 }
 
-try {
-	init();
-} catch (e) {
-	alert("There's an error in the code:\n\n" + e.message + "\n\nPlease notify me1234q@gmail.com about this and wait approximately a month for a reply because that's how often he checks his email.")
+window.onload = function() {
+	try {
+		init();
+	} catch (e) {
+		alert("There's an error in the code:\n\n" + e.message + "\n\nPlease notify me1234q@gmail.com about this and wait approximately a month for a reply because that's how often he checks his email.")
+	}
 }

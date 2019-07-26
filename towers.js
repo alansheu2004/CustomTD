@@ -1,21 +1,35 @@
 var defaultTowerTypes = [
-	new TowerType(100, 0.75, 14, 100, "peashooter-tower.svg", "peashooter-tower.svg", 33, 33)
-]
+	new TowerType("Peashooter", 100, 15,
+					[
+						new TowerUpgrade("Peashooter", 100,
+							"resources/images/peashooter-tower.svg", 33, 33,
+							120, 0.5),
+					]
+	)
+];
 
-function TowerType(cost, attackRate, towerSize, range, image, towerImage, imgwidth, imgheight) {
+function TowerType(name, cost, towerSize,
+					upgrades) {
+	this.name = name;
+	this.cost = cost;
+	this.towerSize = towerSize;
+	this.upgrades = upgrades;
+}
+
+function TowerUpgrade(name, cost,
+						image, imgwidth, imgheight,
+						range, attackRate) {
+	this.name = name;
 	this.cost = cost;
 	this.image = image;
-	this.towerSize = towerSize;
-	this.towerImage = towerImage;
 	this.imgwidth = imgwidth;
 	this.imgheight = imgheight;
 	this.range = range;
-	this.towerSize = towerSize;
 	this.attackRate = attackRate;
 }
 
-//Draws with a set max dimention while maintaining an aspect ratio
-TowerType.prototype.drawFit = function(context, x, y, max) {
+//Draws with a set max dimension while maintaining an aspect ratio
+TowerUpgrade.prototype.drawFit = function(context, x, y, max) {
 	var image = new Image();
 	image.src = this.image;
 	var imgwidth = image.width;
@@ -28,27 +42,31 @@ TowerType.prototype.drawFit = function(context, x, y, max) {
 }
 
 //Draws a tower type
-TowerType.prototype.drawTower = function(context, x, y) {
-	var image = new Image();
-	image.src = this.towerImage;
+TowerUpgrade.prototype.draw = function(context, x, y) {
+	
 	context.drawImage(image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
 }
 
 //Draws a tower type with an angle
-TowerType.prototype.drawTower = function(context, x, y, angle) {
+TowerUpgrade.prototype.draw = function(context, x, y, angle) {
 	var image = new Image();
-	image.src = this.towerImage;
-	
-	context.translate(x, y);
-	context.rotate(angle-Math.PI/2);
-	context.drawImage(image, -this.imgwidth / 2, -this.imgheight / 2, this.imgwidth, this.imgheight);
-	context.rotate(-(angle-Math.PI/2));
-	context.translate(-x, -y);
-	
+	image.src = this.image;
+
+	if(angle) {
+		context.translate(x, y);
+		context.rotate(angle-Math.PI/2);
+		
+		context.drawImage(image, -this.imgwidth/2, -this.imgheight/2, this.imgwidth, this.imgheight);
+
+		context.rotate(-(angle-Math.PI/2));
+		context.translate(-x, -y);
+	} else {
+		context.drawImage(image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
+	}
 }
 
 //Draws the range of a tower
-TowerType.prototype.drawRange = function(context, x, y) {
+TowerUpgrade.prototype.drawRange = function(context, x, y) {
 	context.lineWidth = 2;
 	context.strokeStyle = "rgb(0, 0, 0, 0.3)";
 	context.fillStyle = "rgb(0, 0, 0, 0.2)";
@@ -65,34 +83,33 @@ TowerType.prototype.drawRange = function(context, x, y) {
 }
 
 //Draw the outline of a tower
-TowerType.prototype.drawOutline = function(context, x, y, angle) {
+TowerUpgrade.prototype.drawOutline = function(context, x, y, angle) {
 	var image = new Image();
-	image.src = this.towerImage;
+	image.src = this.image;
 	context.filter = "brightness(0) invert(1) blur(2px)";
 	
 	context.translate(x, y);
 	context.rotate(angle-Math.PI/2);
-	for(var i=0; i<2; i++) {
-		context.drawImage(image, -this.imgwidth/2-2, -this.imgheight/2 - 2, this.imgwidth + 4, this.imgheight + 4);
-	}
+	context.drawImage(image, -this.imgwidth/2-2, -this.imgheight/2 - 2, this.imgwidth + 4, this.imgheight + 4);
 	context.rotate(-(angle-Math.PI/2));
 	context.translate(-x, -y);
 	
 	context.filter = "none";
 }
 
+
+
+
 function Tower(state, type, x, y) {
 	this.state = state;
-	this.image = type.image;
 	this.type = type;
-	this.towerImage = type.towerImage;
-	this.imgwidth = type.imgwidth;
-	this.imgheight = type.imgheight;
-	this.range = type.range;
 	this.x = x;
 	this.y = y;
+	
+	this.upgradeNum = 0;
+	this.upgrade = this.type.upgrades[this.upgradeNum];
+
 	this.angle = Math.PI/2;
-	this.towerSize = type.towerSize;
 	this.cooldown = 0;
 	this.projectiles = [];
 }
@@ -101,11 +118,12 @@ Tower.prototype.updateState = function(enemies) {
 	if (this.cooldown <= 0) {
 		for (var i = 0; i < enemies.length; i++) {
 			var enemy = enemies[i];
-			if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= this.range) {
-				this.cooldown = this.type.attackRate;
+			if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= this.upgrade.range) {
+				this.cooldown = this.upgrade.attackRate;
 				this.angle = Math.atan2(enemy.y-this.y, enemy.x-this.x);
+				this.state.valid = false;
 				
-				this.projectiles.push(new Projectile(this.state, new ProjectileType(this.state, 1, 800), this.x, this.y, this.angle));
+				this.projectiles.push(new Projectile(this.state, PEA, this.x, this.y, this.angle));
 				
 				return;
 			}
@@ -116,11 +134,11 @@ Tower.prototype.updateState = function(enemies) {
 }
 
 Tower.prototype.draw = function(context) {
-	this.type.drawTower(context, this.x, this.y, this.angle);
+	this.upgrade.draw(context, this.x, this.y, this.angle);
 }
 
 Tower.prototype.inBounds = function(mx, my) {
-	if(Math.hypot(this.x - mx, this.y - my) < this.towerSize) {
+	if(Math.hypot(this.x - mx, this.y - my) < this.type.towerSize) {
 		return true;
 	} else {
 		return false;
@@ -128,11 +146,11 @@ Tower.prototype.inBounds = function(mx, my) {
 }
 
 Tower.prototype.drawRange = function(context) {
-	this.type.drawRange(context, this.x, this.y);
+	this.upgrade.drawRange(context, this.x, this.y);
 }
 
 Tower.prototype.drawOutline = function(context) {
-	this.type.drawOutline(context, this.x, this.y, this.angle);
+	this.upgrade.drawOutline(context, this.x, this.y, this.angle);
 }
 
 Tower.prototype.drawProjectiles = function(context) {
