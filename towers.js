@@ -2,8 +2,22 @@ var defaultTowerTypes = [
 	new TowerType("Peashooter", 100, 15, true,
 					[
 						new TowerUpgrade("Peashooter", 100, 120,
-							"resources/images/peashooter-tower.svg", 33, 33,
-							[new ProjectileShot(PEA, 500, {type:"single"}, null)])
+							"resources/images/peashooter.svg", 35, 35,
+							[new ProjectileShot(PEA, 600, {type:"single"}, null)])
+					]
+	), 
+	new TowerType("Threepeater", 175, 15, true,
+					[
+						new TowerUpgrade("Threepeater", 175, 80,
+							"resources/images/threepeater.svg", 37, 33,
+							[new ProjectileShot(SMALL_PEA, 600, {type:"spray", number:3, angle: Math.PI/9}, null)])
+					]
+	), 
+	new TowerType("Starfruit", 150, 15, false,
+					[
+						new TowerUpgrade("Starfruit", 150, 100,
+							"resources/images/starfruit.svg", 35, 35,
+							[new ProjectileShot(STAR, 400, {type:"radial", number:5}, -Math.PI/2)])
 					]
 	)
 ];
@@ -46,12 +60,10 @@ function ProjectileShot(projectiletype, cooldown, dispersion, target) { //Target
 TowerUpgrade.prototype.drawFit = function(context, x, y, max) {
 	var image = new Image();
 	image.src = this.image;
-	var imgwidth = image.width;
-	var imgheight = image.height;
-	if(imgwidth >= imgheight) {
-		context.drawImage(image, x - max/2, y - (max*imgheight/imgwidth)/2, max, max*imgheight/imgwidth);
+	if(this.imgwidth >= this.imgheight) {
+		context.drawImage(image, x - max/2, y - (max*this.imgheight/this.imgwidth)/2, max, max*this.imgheight/this.imgwidth);
 	} else {
-		context.drawImage(image, x - (max*imgwidth/imgheight)/2, y - max/2, max*imgwidth/imgheight, max);
+		context.drawImage(image, x - (max*this.imgwidth/this.imgheight)/2, y - max/2, max*this.imgwidth/this.imgheight, max);
 	}
 }
 

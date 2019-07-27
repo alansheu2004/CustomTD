@@ -4,9 +4,9 @@ PEA = new ProjectileType(2, 1500, null,
 SMALL_PEA = new ProjectileType(1, 1500, null, 
 						false,
 						"resources/images/pea.png", 10, 10);
-STAR = new ProjectileType(null, 1500, null, 
+STAR = new ProjectileType(null, 1500, 100, 
 						false,
-						"resources/images/pea.png", 10, 10);
+						"resources/images/star.png", 15, 15);
 
 function ProjectileType(pierce, speed, maxRange,
 						rotating,
