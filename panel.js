@@ -11,6 +11,8 @@ Panel.prototype.draw = function(context) {
 	
 	this.towerOptionSize = 40;
 	this.drawTowerBox(context);
+
+	this.drawBottom(context);
 }
 
 //Draws the top container for health and money
@@ -67,7 +69,7 @@ Panel.prototype.drawTowerBox = function(context) {
 		context.fillStyle = "#f4cea8";
 		var towerCoors = this.getTowerOptionCoors(i);
 		context.fillRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
-		
+
 		if((this.state.dragging || this.state.optionFocusing) && this.state.selection==this.state.towerTypes[i]) {
 			context.strokeStyle = "#b07b48";
 			context.lineWidth = 3;
@@ -89,6 +91,10 @@ Panel.prototype.drawTowerBox = function(context) {
 Panel.prototype.drawScrollBar = function(context) {
 	context.fillStyle = "#664321";
 	context.fillRect(600, 135, 15, 160);
+}
+
+Panel.prototype.drawBottom = function(context) {
+	
 }
 
 //Gets the coordinates of the top left corner of the tower option in the panel

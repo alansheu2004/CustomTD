@@ -39,6 +39,7 @@ function CanvasState(canvas) {
 	
 	this.health = 100;
 	this.money = 275;
+	this.round = 0;
 	
 	this.towerTypes = defaultTowerTypes;
 	this.towers = [];
@@ -163,6 +164,8 @@ CanvasState.prototype.validate = function() {
 	this.drawTowers();
 
 	this.panel.draw(this.context);
+
+	this.drawRoundNumber();
 	
 	if(this.gameOver) {
 		this.drawGameOver();
@@ -261,6 +264,21 @@ CanvasState.prototype.drawTowers = function() {
 		tower.draw(this.context);
 		tower.drawProjectiles(this.context);
 	}
+}
+
+CanvasState.prototype.drawRoundNumber = function() {
+	this.context.textAlign = "start";
+	this.context.fillStyle = "#ffd630";
+	this.context.strokeStyle = "#c48a16";
+	this.context.lineWidth = 1;
+
+	this.context.font = "small-caps 20px Oeztype";
+	this.context.fillText("Round", 10, 30);
+	this.context.strokeText("Round", 10, 30);
+
+	this.context.font = "small-caps 25px Oeztype";
+	this.context.fillText(this.round, 72, 30);
+	this.context.strokeText(this.round, 72, 30);
 }
 
 //Returns the mouse coordinates relative to the canvas
