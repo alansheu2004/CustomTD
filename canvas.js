@@ -59,6 +59,33 @@ function CanvasState(canvas) {
 		thisState.mouseUp(e);
 	}, true);
 
+
+
+	canvas.addEventListener('touchstart', function(e) {
+  		var touch = e.touches[0];
+  		var mouseEvent = new MouseEvent("mousedown", {
+    		clientX: touch.clientX,
+    		clientY: touch.clientY
+  		});
+  		thisState.canvas.dispatchEvent(mouseEvent);
+	}, true);
+	canvas.addEventListener('touchmove', function(e) {
+		var touch = e.touches[0];
+  		var mouseEvent = new MouseEvent("mousemove", {
+    		clientX: touch.clientX,
+    		clientY: touch.clientY
+  		});
+  		thisState.canvas.dispatchEvent(mouseEvent);
+	}, true);
+	canvas.addEventListener('touchend', function(e) {
+		var touch = e.touches[0];
+  		var mouseEvent = new MouseEvent("mouseup", {
+    		clientX: -1,
+    		clientY: -1
+  		});
+  		thisState.canvas.dispatchEvent(mouseEvent);
+	}, true);
+
 	this.interval = 20;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
@@ -285,7 +312,13 @@ CanvasState.prototype.mouseMove = function(e) {
 }
 
 CanvasState.prototype.mouseUp = function(e) {
-	var mouse = this.setMouse(e);
+	var mouse;
+	if(e.clientX >= 0) {
+		mouse = this.setMouse(e);
+	} else {
+		mouse = this.mouse;
+		touching = true;
+	}
 	if (this.dragging){
 		if(this.dragOutOfOption) {
 			if (mouse.x < 480) {
@@ -295,6 +328,7 @@ CanvasState.prototype.mouseUp = function(e) {
 			this.dragging = false;
 		} else {
 			this.dragOutOfOption = true;
+			this.dragging = true;
 		}
 		this.valid = false;
 	}
