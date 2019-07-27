@@ -1,7 +1,7 @@
 var defaultTowerTypes = [
 	new TowerType("Peashooter", 100, 15, true,
 					[
-						new TowerUpgrade("Peashooter", 100, 120,
+						new TowerUpgrade("Peashooter", 100, 100,
 							"resources/images/peashooter.svg", 35, 35,
 							[new ProjectileShot(PEA, 750, {type:"single"}, null)])
 					]
@@ -15,7 +15,7 @@ var defaultTowerTypes = [
 	), 
 	new TowerType("Starfruit", 150, 15, false,
 					[
-						new TowerUpgrade("Starfruit", 150, 100,
+						new TowerUpgrade("Starfruit", 150, 80,
 							"resources/images/starfruit.svg", 35, 35,
 							[new ProjectileShot(STAR, 500, {type:"radial", number:5}, -Math.PI/2)])
 					]
