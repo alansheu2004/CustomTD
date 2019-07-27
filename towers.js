@@ -1,43 +1,69 @@
 var defaultTowerTypes = [
-	new TowerType("Peashooter", 100, 15,
+	new TowerType("Peashooter", 100, 15, true,
 					[
-						new TowerUpgrade("Peashooter", 100,
-							"resources/images/peashooter-tower.svg", 33, 33,
-							120, 0.5),
+						new TowerUpgrade("Peashooter", 100, 120,
+							"resources/images/peashooter.svg", 35, 35,
+							[new ProjectileShot(PEA, 750, {type:"single"}, null)])
+					]
+	), 
+	new TowerType("Threepeater", 175, 15, true,
+					[
+						new TowerUpgrade("Threepeater", 175, 80,
+							"resources/images/threepeater.svg", 37, 34,
+							[new ProjectileShot(SMALL_PEA, 1000, {type:"spray", number:3, angle: Math.PI/10}, null)])
+					]
+	), 
+	new TowerType("Starfruit", 150, 15, false,
+					[
+						new TowerUpgrade("Starfruit", 150, 100,
+							"resources/images/starfruit.svg", 35, 35,
+							[new ProjectileShot(STAR, 500, {type:"radial", number:5}, -Math.PI/2)])
 					]
 	)
 ];
 
-function TowerType(name, cost, towerSize,
+function TowerType(name, cost, towerSize, turning,
 					upgrades) {
 	this.name = name;
 	this.cost = cost;
 	this.towerSize = towerSize;
 	this.upgrades = upgrades;
+	this.turning = turning;
 }
 
-function TowerUpgrade(name, cost,
+function TowerUpgrade(name, cost, range,
 						image, imgwidth, imgheight,
-						range, attackRate) {
+						projectileshots) {
 	this.name = name;
 	this.cost = cost;
 	this.image = image;
 	this.imgwidth = imgwidth;
 	this.imgheight = imgheight;
 	this.range = range;
-	this.attackRate = attackRate;
+	this.projectileshots = projectileshots;
+}
+
+/*
+	Dispersion can be:
+	{type:"single"} A single projectile
+	{type:"spray", number, angle} Sprays multiple projectiles with angle between them
+	{type:"radial", number} Evenly shoots multiple projectiles in all directions
+*/
+function ProjectileShot(projectiletype, cooldown, dispersion, target) { //Targets a specific angle, default if null
+	this.projectiletype = projectiletype;
+	this.cooldown = cooldown;
+	this.dispersion = dispersion;
+	this.target = target;
 }
 
 //Draws with a set max dimension while maintaining an aspect ratio
 TowerUpgrade.prototype.drawFit = function(context, x, y, max) {
 	var image = new Image();
 	image.src = this.image;
-	var imgwidth = image.width;
-	var imgheight = image.height;
-	if(imgwidth >= imgheight) {
-		context.drawImage(image, x - max/2, y - (max*imgheight/imgwidth)/2, max, max*imgheight/imgwidth);
+	if(this.imgwidth >= this.imgheight) {
+		context.drawImage(image, x - max/2, y - (max*this.imgheight/this.imgwidth)/2, max, max*this.imgheight/this.imgwidth);
 	} else {
-		context.drawImage(image, x - (max*imgwidth/imgheight)/2, y - max/2, max*imgwidth/imgheight, max);
+		context.drawImage(image, x - (max*this.imgwidth/this.imgheight)/2, y - max/2, max*this.imgwidth/this.imgheight, max);
 	}
 }
 
@@ -110,27 +136,58 @@ function Tower(state, type, x, y) {
 	this.upgrade = this.type.upgrades[this.upgradeNum];
 
 	this.angle = Math.PI/2;
-	this.cooldown = 0;
+	this.cooldowns = this.upgrade.projectileshots.map(function(ps) {return ps.cooldown});
 	this.projectiles = [];
 }
 
 Tower.prototype.updateState = function(enemies) {
-	if (this.cooldown <= 0) {
-		for (var i = 0; i < enemies.length; i++) {
-			var enemy = enemies[i];
-			if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= this.upgrade.range) {
-				this.cooldown = this.upgrade.attackRate;
-				this.angle = Math.atan2(enemy.y-this.y, enemy.x-this.x);
-				this.state.valid = false;
-				
-				this.projectiles.push(new Projectile(this.state, PEA, this.x, this.y, this.angle));
-				
-				return;
+	this.cooldown();
+
+	for (var i = 0; i < enemies.length; i++) {
+		var enemy = enemies[i];
+		if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= this.upgrade.range) {
+			var angle = Math.atan2(enemy.y-this.y, enemy.x-this.x);
+
+			for(var j = 0; j<this.cooldowns.length; j++) {
+				if (this.cooldowns[j] <= 0) {
+					this.cooldowns[j] = this.upgrade.projectileshots[j].cooldown;
+
+					var projectileAngle;
+					if(this.upgrade.projectileshots[j].target == null) {
+						projectileAngle = angle;
+						if(this.type.turning) {
+							this.angle = angle;
+						}
+					} else {
+						projectileAngle = this.upgrade.projectileshots[j].target;
+					}
+					
+					switch(this.upgrade.projectileshots[j].dispersion.type) {
+						case "single":
+							this.addProjectile(this.upgrade.projectileshots[j].projectiletype, this.x, this.y, projectileAngle);
+							break;
+						case "spray":
+							for(var k=0; k<this.upgrade.projectileshots[j].dispersion.number; k++) {
+								this.addProjectile(this.upgrade.projectileshots[j].projectiletype, this.x, this.y, 
+									projectileAngle - (this.upgrade.projectileshots[j].dispersion.number/2 - 0.5 - k)*this.upgrade.projectileshots[j].dispersion.angle);
+							}
+							break;
+						case "radial":
+							for(var k=0; k<this.upgrade.projectileshots[j].dispersion.number; k++) {
+								this.addProjectile(this.upgrade.projectileshots[j].projectiletype, this.x, this.y, projectileAngle + k*(2*Math.PI/this.upgrade.projectileshots[j].dispersion.number));
+							}
+							break;
+						
+					}
+
+				}
 			}
+
+			this.state.valid = false;
+			return;
 		}
-	} else {
-		this.cooldown -= this.state.interval/1000;
 	}
+	
 }
 
 Tower.prototype.draw = function(context) {
@@ -153,6 +210,10 @@ Tower.prototype.drawOutline = function(context) {
 	this.upgrade.drawOutline(context, this.x, this.y, this.angle);
 }
 
+Tower.prototype.addProjectile = function(type, x, y, angle) {
+	this.projectiles.push(new Projectile(this.state, type, x, y, angle));
+}
+
 Tower.prototype.drawProjectiles = function(context) {
 	for (let projectile of this.projectiles) {
 		projectile.draw(context);
@@ -166,5 +227,13 @@ Tower.prototype.updateProjectiles = function() {
 			i--;
 		}
 		this.state.valid = false;
+	}
+}
+
+Tower.prototype.cooldown = function() {
+	for(var j = 0; j<this.cooldowns.length; j++) {
+		if (this.cooldowns[j] > 0) {
+			this.cooldowns[j] -= this.state.interval;
+		}
 	}
 }

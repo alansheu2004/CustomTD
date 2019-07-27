@@ -23,8 +23,8 @@ body {
 }
 
 canvas#mainCanvas {
-	height: 60%;
-	width: calc(60vh * 16 / 9);
+	height: 70%;
+	width: calc(70vh * 16 / 9);
 }
 
 @media (orientation: portrait) {
