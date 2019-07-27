@@ -1,6 +1,12 @@
-PEA = new ProjectileType(2, 1400, null, 
+PEA = new ProjectileType(2, 1500, null, 
 						false,
 						"resources/images/pea.png", 15, 15);
+SMALL_PEA = new ProjectileType(1, 1500, null, 
+						false,
+						"resources/images/pea.png", 10, 10);
+STAR = new ProjectileType(null, 1500, null, 
+						false,
+						"resources/images/pea.png", 10, 10);
 
 function ProjectileType(pierce, speed, maxRange,
 						rotating,
@@ -68,9 +74,12 @@ Projectile.prototype.update = function() {
 			if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= enemy.type.size) {
 				enemy.damage(i);
 				this.damagedEnemies.push(enemy);
-				this.pierceLeft--;
-				if (this.pierceLeft <= 0) {
-					return true;
+				
+				if(this.pierceLeft != null) {
+					this.pierceLeft--;
+					if (this.pierceLeft <= 0) {
+						return true;
+					}
 				}
 			}
 			

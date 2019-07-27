@@ -74,7 +74,7 @@ Panel.prototype.drawTowerBox = function(context) {
 			context.filter = "brightness(50%)";
 		}
 		
-		this.state.towerTypes[i].upgrades[0].drawFit(context, towerCoors.x+this.towerOptionSize/2, towerCoors.y+this.towerOptionSize/2, 40)
+		this.state.towerTypes[i].upgrades[0].drawFit(context, towerCoors.x+this.towerOptionSize/2, towerCoors.y+this.towerOptionSize/2, 40);
 		context.filter = "none";
 	}
 	
