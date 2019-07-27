@@ -38,7 +38,7 @@ function CanvasState(canvas) {
 	this.backgroundImage = "resources/images/map.png";
 	
 	this.health = 100;
-	this.money = 250;
+	this.money = 275;
 	
 	this.towerTypes = defaultTowerTypes;
 	this.towers = [];

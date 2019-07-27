@@ -65,11 +65,15 @@ Panel.prototype.drawTowerBox = function(context) {
 	for (var i=0; i<this.state.towerTypes.length; i++) {
 		context.filter = "none";
 		context.fillStyle = "#f4cea8";
-		context.strokeStyle = "#664321"
-		context.lineWidth = 1;
 		var towerCoors = this.getTowerOptionCoors(i);
 		context.fillRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
-		context.strokeRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
+
+		if((this.state.dragging || this.state.optionFocusing) && this.state.selection==this.state.towerTypes[i]) {
+			context.strokeStyle = "#b07b48";
+			context.lineWidth = 3;
+			context.strokeRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
+		}
+
 		if (this.state.money < this.state.towerTypes[i].cost) {
 			context.filter = "brightness(50%)";
 		}
