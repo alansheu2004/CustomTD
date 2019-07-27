@@ -50,41 +50,77 @@ function CanvasState(canvas) {
 	
 	
 	canvas.addEventListener('mousedown', function(e) {
-		thisState.mouseDown(e);
+		var mouse = thisState.setMouse(e);
+		if (!thisState.startDragging(mouse)) {
+			return;
+		}
 	}, true);
+
 	canvas.addEventListener('mousemove', function(e) {
-		thisState.mouseMove(e);
+		var mouse = thisState.setMouse(e);
+		if (thisState.moveDragging(mouse)){
+			//Do nothing
+		} else if (thisState.towerHovering(mouse)) {
+			return;
+		} else if (thisState.optionHovering(mouse)) {
+			return;
+		}
+		//Stops focusing if nothing returned
+		thisState.stopFocusing();
 	}, true);
+
 	canvas.addEventListener('mouseup', function(e) {
-		thisState.mouseUp(e);
+		var mouse = thisState.setMouse(e);
+		if (thisState.dragging){
+			if(thisState.dropTower(mouse)) {
+				
+			} else {
+				thisState.dragOutOfOption = true;
+				thisState.dragging = true;
+			}
+			thisState.valid = false;
+		}
 	}, true);
 
 
 
 	canvas.addEventListener('touchstart', function(e) {
-  		var touch = e.touches[0];
-  		var mouseEvent = new MouseEvent("mousedown", {
-    		clientX: touch.clientX,
-    		clientY: touch.clientY
-  		});
-  		thisState.canvas.dispatchEvent(mouseEvent);
+		e.preventDefault();
+		var mouse = thisState.setMouse(thisState.touchToMouseEvent(e, 'mousedown'));
+		if (thisState.startDragging(mouse)) {
+			
+		} else if (thisState.towerHovering(mouse)) {
+			return;
+		} else if (thisState.optionHovering(mouse)) {
+			return;
+		}
+		//Stops focusing if nothing returned
+		thisState.stopFocusing();
 	}, true);
+
 	canvas.addEventListener('touchmove', function(e) {
-		var touch = e.touches[0];
-  		var mouseEvent = new MouseEvent("mousemove", {
-    		clientX: touch.clientX,
-    		clientY: touch.clientY
-  		});
-  		thisState.canvas.dispatchEvent(mouseEvent);
+		e.preventDefault();
+		var mouse = thisState.setMouse(thisState.touchToMouseEvent(e, 'mousemove'));
+		if (thisState.moveDragging(mouse)){
+			//Do nothing
+		} 
 	}, true);
+
 	canvas.addEventListener('touchend', function(e) {
-		var touch = e.touches[0];
-  		var mouseEvent = new MouseEvent("mouseup", {
-    		clientX: -1,
-    		clientY: -1
-  		});
-  		thisState.canvas.dispatchEvent(mouseEvent);
+		e.preventDefault();
+		var mouse = thisState.mouse;
+		if (thisState.dragging){
+			if(thisState.dropTower(mouse)) {
+				
+			} else {
+				thisState.dragging = false;
+				thisState.optionFocusing = true;
+			}
+			thisState.valid = false;
+		}
 	}, true);
+
+
 
 	this.interval = 20;
 	
@@ -229,6 +265,7 @@ CanvasState.prototype.drawTowers = function() {
 
 //Returns the mouse coordinates relative to the canvas
 CanvasState.prototype.setMouse = function(e) {
+
 	var element = this.canvas, offsetX = 0, offsetY = 0, mx, my;
 
 	if (element.offsetParent !== undefined) {
@@ -252,25 +289,34 @@ CanvasState.prototype.setMouse = function(e) {
 	return this.mouse;
 }
 
-CanvasState.prototype.mouseDown = function(e) {
-	var mouse = this.setMouse(e);
+CanvasState.prototype.touchToMouseEvent = function(me, eventName) {
+	var touch = me.touches[0];
+	return new MouseEvent(eventName, {clientX: touch.clientX, clientY: touch.clientY})
+}
+
+//Returns whether dragging tower actually started
+CanvasState.prototype.startDragging = function(mouse) {
 	if (!this.dragging) {
 		for (var i = 0; i < this.towerTypes.length; i++) {
-			
 			if (this.panel.optionContains(i, mouse.x, mouse.y) && this.money >= this.towerTypes[i].cost) {
 				this.dragging = true;
 				this.selectionNumber = i;
 				this.selection = this.towerTypes[i];
 				this.dragOutOfOption = false;
 				this.valid = false;
-				return;
+				return true;
 			}
 		}
+		//Not selected any option
+		return false;
+	} else {
+		this.valid = false;
+		return true;
 	}
 }
 
-CanvasState.prototype.mouseMove = function(e) {
-	var mouse = this.setMouse(e);
+//Returns whether currently dragging
+CanvasState.prototype.moveDragging = function(mouse) {
 	if (this.dragging){
 		if(!this.dragOutOfOption) {
 			if(!this.panel.optionContains(this.selectionNumber, mouse.x, mouse.y)) {
@@ -278,28 +324,43 @@ CanvasState.prototype.mouseMove = function(e) {
 			}
 		}
 		this.valid = false;
-	} else if (mouse.x < 480) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+CanvasState.prototype.towerHovering = function(mouse) {
+	if (mouse.x <= 480) {
 		for (var i = 0; i < this.towers.length; i++) {
 			if (this.towers[i].inBounds(mouse.x, mouse.y)) {
 				this.selection = this.towers[i];
 				this.focusing = true;
 				this.valid = false;
-				return;
+				return true;
 			}
 		}
-	} else {
+	}
+	return false;
+}
+
+CanvasState.prototype.optionHovering = function(mouse) {
+	if (mouse.x > 480) {
 		for (var i = 0; i < this.towerTypes.length; i++) {
 			if(this.panel.optionContains(i, mouse.x, mouse.y)) {
 				this.optionFocusing = true;
 				this.selectionNumber = i;
 				this.selection = this.towerTypes[i];
 				this.valid = false;
-				return;
+				return true;;
 			}
 		}
 	}
+	return false;
 	
-	//Stops focusing if nothing returned
+}
+
+CanvasState.prototype.stopFocusing = function() {
 	if (this.focusing) {
 		this.focusing = false;
 		this.valid = false;
@@ -311,28 +372,20 @@ CanvasState.prototype.mouseMove = function(e) {
 	}
 }
 
-CanvasState.prototype.mouseUp = function(e) {
-	var mouse;
-	if(e.clientX >= 0) {
-		mouse = this.setMouse(e);
-	} else {
-		mouse = this.mouse;
-		touching = true;
-	}
-	if (this.dragging){
-		if(this.dragOutOfOption) {
-			if (mouse.x < 480) {
-				this.towers.push(new Tower(this, this.selection, mouse.x, mouse.y));
-				this.money -= this.selection.cost;
-			}
-			this.dragging = false;
-		} else {
-			this.dragOutOfOption = true;
-			this.dragging = true;
+CanvasState.prototype.dropTower = function(mouse) {
+	if(this.dragOutOfOption) {
+		if (mouse.x < 480) {
+			this.towers.push(new Tower(this, this.selection, mouse.x, mouse.y));
+			this.money -= this.selection.cost;
 		}
-		this.valid = false;
+		this.dragging = false;
+		return true;
+	} else {
+		return false;
 	}
 }
+
+
 
 //Calculates accurate dimensions for the canvas
 CanvasState.prototype.calibrateMeasures = function(canvas) {
