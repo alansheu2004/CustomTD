@@ -43,11 +43,17 @@ function CanvasState(canvas) {
 	this.health = 100;
 	this.money = 275;
 	this.round = 0;
+	this.inRound = false;
 	
 	this.towerTypes = defaultTowerTypes;
 	this.towers = [];
 	this.path = defaultPath;
+
 	this.enemies = [];
+	this.enemywaves = defaultwaves;
+	this.currentWave = [];
+	this.bunchTimer = [];
+	this.enemyCountdown = [];
 	
 	//Disables double clicking on the canvas to select text
 	canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
@@ -136,6 +142,7 @@ CanvasState.prototype.addEnemy = function(enemy) {
 //Called every frame; updates all element states and calls validate() if necessary
 CanvasState.prototype.update = function() {
 	this.updateEnemyPositions();
+	this.updateEnemyWaves();
 	
 	if (this.gameOver) {
 		this.valid = false;
@@ -212,6 +219,34 @@ CanvasState.prototype.updateEnemyPositions = function() {
 	}
 }
 
+CanvasState.prototype.updateEnemyWaves = function() {
+
+	for(var i=0; i<this.bunchTimer.length; i++) {
+		if(this.enemyCountdown[i] > 0) {
+			this.bunchTimer[i] -= this.interval;
+			while (this.bunchTimer[i] <= 0 && this.enemyCountdown[i]>0) {
+				this.addEnemy(new Enemy(this, this.currentWave.enemybunches[i].enemy));
+				this.bunchTimer[i] = this.currentWave.enemybunches[i].spacing*1000;
+				this.enemyCountdown[i]--;
+			}
+		}
+	}
+
+	for (let c of this.enemyCountdown) {
+		if(c>0) {
+			return;
+		}
+	}
+
+	if (this.enemies.length == 0) {
+		return;
+	}
+
+	//Round should be over
+	this.inRound = false;
+	PLAY.active = true;
+}
+
 //Disactivates the update loop and displays a game over screen
 CanvasState.prototype.drawGameOver = function() {
 	this.context.fillStyle = "rgb(211, 160, 110, " + this.gameOverFade + ")";
@@ -266,18 +301,20 @@ CanvasState.prototype.drawTowers = function() {
 }
 
 CanvasState.prototype.drawRoundNumber = function() {
-	this.context.textAlign = "start";
-	this.context.fillStyle = "#ffd630";
-	this.context.strokeStyle = "#c48a16";
-	this.context.lineWidth = 1;
+	if(this.round != 0) {
+		this.context.textAlign = "start";
+		this.context.fillStyle = "#ffd630";
+		this.context.strokeStyle = "#c48a16";
+		this.context.lineWidth = 1;
 
-	this.context.font = "small-caps 20px Oeztype";
-	this.context.fillText("Round", 10, 30);
-	this.context.strokeText("Round", 10, 30);
+		this.context.font = "small-caps 20px Oeztype";
+		this.context.fillText("Round", 10, 30);
+		this.context.strokeText("Round", 10, 30);
 
-	this.context.font = "small-caps 25px Oeztype";
-	this.context.fillText(this.round, 75, 30);
-	this.context.strokeText(this.round, 75, 30);
+		this.context.font = "small-caps 25px Oeztype";
+		this.context.fillText(this.round, 75, 30);
+		this.context.strokeText(this.round, 75, 30);
+	}
 }
 
 CanvasState.prototype.addButton = function(button) {
@@ -286,6 +323,13 @@ CanvasState.prototype.addButton = function(button) {
 
 CanvasState.prototype.nextRound = function() {
 	this.round++;
+	this.inRound = true;
+	PLAY.active = false;
+
+	this.currentWave = this.enemywaves[this.round-1];
+	this.bunchTimer = this.currentWave.enemybunches.map(function(bunch) {return bunch.time * 1000 + 1000});
+	this.enemyCountdown = this.currentWave.enemybunches.map(function(bunch) {return bunch.number});
+
 	this.valid = false;
 }
 

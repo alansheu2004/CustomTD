@@ -108,22 +108,24 @@ Panel.prototype.drawScrollBar = function(context) {
 }
 
 Panel.prototype.drawBottom = function(context) {
-	if(this.state.buttonPressed && this.state.selection == PLAY) {
-		context.fillStyle = "#664321";
-	} else {
-		context.fillStyle = "#8a5624";
-	}
-	context.beginPath();
-	context.arc(this.playx, this.playy, this.playr, 0, 2*Math.PI);
-	context.fill();
+	if (PLAY.active) {
+		if(this.state.buttonPressed && this.state.selection == PLAY) {
+			context.fillStyle = "#664321";
+		} else {
+			context.fillStyle = "#8a5624";
+		}
+		context.beginPath();
+		context.arc(this.playx, this.playy, this.playr, 0, 2*Math.PI);
+		context.fill();
 
-	context.fillStyle = "#ffd630";
-	context.beginPath();
-	context.moveTo(this.playx - this.playr/4, this.playy - this.playr/2);
-	context.lineTo(this.playx - this.playr/4, this.playy + this.playr/2);
-	context.lineTo(this.playx + this.playr/2, this.playy);
-	context.closePath();
-	context.fill();
+		context.fillStyle = "#ffd630";
+		context.beginPath();
+		context.moveTo(this.playx - this.playr/4, this.playy - this.playr/2);
+		context.lineTo(this.playx - this.playr/4, this.playy + this.playr/2);
+		context.lineTo(this.playx + this.playr/2, this.playy);
+		context.closePath();
+		context.fill();
+	}
 }
 
 //Gets the coordinates of the top left corner of the tower option in the panel
