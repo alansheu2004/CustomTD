@@ -1,8 +1,10 @@
-var currentState; //The current state (should be used for testing primarily)
+var currentState = null; //The current state (should be used for testing primarily)
 
 //This function is called when starting a new game
 function init() {
-	document.getElementById("restart").style.display = "none";
+	if(currentState != null) {
+		currentState.nextRound = null;
+	}
 	currentState = new CanvasState(document.getElementById("mainCanvas"));
 }
 
@@ -57,6 +59,17 @@ function CanvasState(canvas) {
 	this.enemyCountdown = [];
 
 	this.roundNotifyTimer = 0;
+
+	this.restartx = 320;
+	this.restarty = 210;
+	this.restartw = 180;
+	this.restarth = 50;
+	this.restartButton = new Button(this, 
+		function(x, y) {return x>=thisState.restartx-thisState.restartw/2 && x<=thisState.restartx+thisState.restartw/2 &&
+			y>=thisState.restarty-thisState.restarty/2 && y<=thisState.restarty+thisState.restarth/2;},
+		function(state) {state.restartButton.active = false; window.clearInterval(state.loop); init();},
+		false);
+	this.addButton(this.restartButton);
 	
 	//Disables double clicking on the canvas to select text
 	canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
@@ -118,14 +131,8 @@ function CanvasState(canvas) {
 	canvas.addEventListener('touchend', function(e) {
 		e.preventDefault();
 		var mouse = thisState.mouse;
-		if (thisState.dragging){
-			if(thisState.dropTower(mouse)) {
-				
-			} else {
-				thisState.dragging = false;
-				thisState.optionFocusing = true;
-			}
-			thisState.valid = false;
+		if (thisState.dropTowerTouch(mouse)){
+			return;
 		} else if (thisState.releaseButton(mouse)) {
 			return;
 		}
@@ -146,22 +153,24 @@ CanvasState.prototype.addEnemy = function(enemy) {
 
 //Called every frame; updates all element states and calls validate() if necessary
 CanvasState.prototype.update = function() {
-	this.updateEnemyPositions();
-	this.updateEnemyWaves();
-	
-	if (this.gameOver) {
-		this.valid = false;
-		this.gameOverFade += 0.03;
-	} else {
-		this.sortEnemies();
-		this.updateTowerStates();
-		if (this.revalidationTimer > 0) {
+	if (!(this.gameOverFade >= 1))	 {
+		this.updateEnemyPositions();
+		this.updateEnemyWaves();
+
+		if (this.gameOver) {
 			this.valid = false;
-			this.revalidationTimer -= this.interval;
-		}
-		if (this.roundNotifyTimer > 0) {
-			this.valid = false;
-			this.roundNotifyTimer -= this.interval;
+			this.gameOverFade += 0.03;
+		} else {
+			this.sortEnemies();
+			this.updateTowerStates();
+			if (this.revalidationTimer > 0) {
+				this.valid = false;
+				this.revalidationTimer -= this.interval;
+			}
+			if (this.roundNotifyTimer > 0) {
+				this.valid = false;
+				this.roundNotifyTimer -= this.interval;
+			}
 		}
 	}
 	
@@ -232,36 +241,39 @@ CanvasState.prototype.updateEnemyPositions = function() {
 }
 
 CanvasState.prototype.updateEnemyWaves = function() {
-
-	for(var i=0; i<this.bunchTimer.length; i++) {
-		if(this.enemyCountdown[i] > 0) {
-			this.bunchTimer[i] -= this.interval;
-			while (this.bunchTimer[i] <= 0 && this.enemyCountdown[i]>0) {
-				this.addEnemy(new Enemy(this, this.currentWave.enemybunches[i].enemy));
-				this.bunchTimer[i] = this.currentWave.enemybunches[i].spacing*1000;
-				this.enemyCountdown[i]--;
+	if(this.inRound) {
+		for(var i=0; i<this.bunchTimer.length; i++) {
+			if(this.enemyCountdown[i] > 0) {
+				this.bunchTimer[i] -= this.interval;
+				while (this.bunchTimer[i] <= 0 && this.enemyCountdown[i]>0) {
+					this.addEnemy(new Enemy(this, this.currentWave.enemybunches[i].enemy));
+					this.bunchTimer[i] = this.currentWave.enemybunches[i].spacing*1000;
+					this.enemyCountdown[i]--;
+				}
 			}
 		}
-	}
-
-	for (let c of this.enemyCountdown) {
-		if(c>0) {
+	
+		for (let c of this.enemyCountdown) {
+			if(c>0) {
+				return;
+			}
+		}
+	
+		if (this.enemies.length > 0) {
 			return;
 		}
+	
+		//Round should be over
+		if(this.round == this.enemywaves.length) {
+			this.gameOverText = "You Won!";
+			this.gameOver = true;
+		} else {
+			this.panel.playButton.active = true;
+		}
+		this.valid = false;
+		this.inRound = false;
 	}
-
-	if (this.enemies.length > 0) {
-		return;
-	}
-
-	//Round should be over
-	if(this.round == this.enemywaves.length) {
-		this.gameOverText = "You Won!";
-		this.gameOver = true;
-	}
-	this.valid = false;
-	this.inRound = false;
-	PLAY.active = true;
+	
 }
 
 //Disactivates the update loop and displays a game over screen
@@ -278,8 +290,24 @@ CanvasState.prototype.drawGameOver = function() {
 	this.context.strokeText(this.gameOverText, 320, 150);
 	
 	if (this.gameOverFade >= 1) {
-		window.clearInterval(this.loop);
-		setTimeout(function() {document.getElementById("restart").style.display = "initial";}, 500);
+		this.restartButton.active = true;
+
+		this.drawRestartButton();
+	}
+}
+
+CanvasState.prototype.drawRestartButton = function() {
+	if (this.restartButton.active) {
+		this.context.fillStyle = "#a6703c";
+		this.context.strokeStyle = "#664321";
+		this.context.lineWidth = 5;
+		this.context.fillRect(this.restartx-this.restartw/2, this.restarty-this.restarth/2, this.restartw, this.restarth);
+		this.context.strokeRect(this.restartx-this.restartw/2, this.restarty-this.restarth/2, this.restartw, this.restarth);
+
+		this.context.font = "small-caps " + 0.8*this.restarth + "px Oeztype";
+		this.context.textAlign = "center";
+		this.context.fillStyle = "#664321";
+		this.context.fillText("Restart", this.restartx, this.restarty+0.3*this.restarth);
 	}
 }
 
@@ -339,7 +367,7 @@ CanvasState.prototype.drawRoundNotification = function() {
 		this.context.textAlign = "center";
 		this.context.fillStyle = "#ffd630";
 		this.context.strokeStyle = "#c48a16";
-		this.context.lineWidth = 1;
+		this.context.lineWidth = 2;
 
 		this.context.font = "small-caps 30px Oeztype";
 		this.context.fillText("Round", 240, 150);
@@ -359,7 +387,7 @@ CanvasState.prototype.nextRound = function() {
 	this.round++;
 	this.inRound = true;
 	this.roundNotifyTimer = 2000;
-	PLAY.active = false;
+	this.panel.playButton.active = false;
 
 	this.currentWave = this.enemywaves[this.round-1];
 	this.bunchTimer = this.currentWave.enemybunches.map(function(bunch) {return bunch.time * 1000 + 1000});
@@ -500,11 +528,32 @@ CanvasState.prototype.dropTower = function(mouse) {
 				this.towers.push(new Tower(this, this.selection, mouse.x, mouse.y));
 				this.money -= this.selection.cost;
 			}
+			this.valid = false;
 			this.dragging = false;
 			return true;
 		} else {
 			this.dragOutOfOption = true;
 			this.dragging = true;
+		}
+		this.valid = false;
+		return true;
+	}
+	return false;
+}
+
+CanvasState.prototype.dropTowerTouch = function(mouse) {
+	if (this.dragging){
+		if(this.dragOutOfOption) {
+			if (mouse.x < 480) {
+				this.towers.push(new Tower(this, this.selection, mouse.x, mouse.y));
+				this.money -= this.selection.cost;
+			}
+			this.valid = false;
+			this.dragging = false;
+			return true;
+		} else {
+			this.optionFocusing = true;
+			this.dragging = false;
 		}
 		this.valid = false;
 		return true;
