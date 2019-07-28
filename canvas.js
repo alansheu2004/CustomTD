@@ -532,6 +532,7 @@ CanvasState.prototype.dropTower = function(mouse) {
 				this.towers.push(new Tower(this, this.selection, mouse.x, mouse.y));
 				this.money -= this.selection.cost;
 			}
+			this.valid = false;
 			this.dragging = false;
 			return true;
 		} else {

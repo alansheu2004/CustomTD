@@ -6,16 +6,16 @@ var defaultTowerTypes = [
 							[new ProjectileShot(PEA, 750, {type:"single"}, null)])
 					]
 	), 
-	new TowerType("Threepeater", 175, 15, true,
+	new TowerType("Threepeater", 150, 15, true,
 					[
-						new TowerUpgrade("Threepeater", 175, 80,
+						new TowerUpgrade("Threepeater", 150, 80,
 							"resources/images/threepeater.svg", 37, 34,
-							[new ProjectileShot(SMALL_PEA, 850, {type:"spray", number:3, angle: Math.PI/10}, null)])
+							[new ProjectileShot(SMALL_PEA, 750, {type:"spray", number:3, angle: Math.PI/10}, null)])
 					]
 	), 
-	new TowerType("Starfruit", 150, 15, false,
+	new TowerType("Starfruit", 175, 15, false,
 					[
-						new TowerUpgrade("Starfruit", 150, 80,
+						new TowerUpgrade("Starfruit", 175, 80,
 							"resources/images/starfruit.svg", 35, 35,
 							[new ProjectileShot(STAR, 500, {type:"radial", number:5}, -Math.PI/2)])
 					]
