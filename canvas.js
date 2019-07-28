@@ -33,6 +33,7 @@ function CanvasState(canvas) {
 	this.gameOver = false;
 	this.gameOverFade = 0; //opacity of the game over screen fading in
 	
+	this.buttons = [];
 	this.panel = new Panel(this);
 	
 	this.backgroundImage = "resources/images/map.png";
@@ -279,6 +280,10 @@ CanvasState.prototype.drawRoundNumber = function() {
 	this.context.font = "small-caps 25px Oeztype";
 	this.context.fillText(this.round, 72, 30);
 	this.context.strokeText(this.round, 72, 30);
+}
+
+CanvasState.prototype.addButton = function(button) {
+	this.buttons.push(button);
 }
 
 //Returns the mouse coordinates relative to the canvas

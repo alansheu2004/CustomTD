@@ -1,5 +1,19 @@
+
+
 function Panel(state) {
 	this.state = state;
+
+	this.playx = 520;
+	this.playy = 332;
+	this.playr = 20;
+
+	var thisPanel = this;
+
+	var PLAY = new Button(state, 
+		function(x, y) {return Math.hypot(x-thisPanel.playx, y-thisPanel.playy) <= 40;},
+		function() {alert("Play it!");},
+		true);
+	state.addButton(PLAY)
 }
 
 //Draws the panel
@@ -94,7 +108,21 @@ Panel.prototype.drawScrollBar = function(context) {
 }
 
 Panel.prototype.drawBottom = function(context) {
-	
+	context.fillStyle = "#8a5624";
+	context.strokeStyle = "#664321";
+	context.lineWidth = 3;
+	context.beginPath();
+	context.arc(this.playx, this.playy, this.playr, 0, 2*Math.PI);
+	context.fill();
+	context.stroke();
+
+	context.fillStyle = "#ffd630";
+	context.beginPath();
+	context.moveTo(this.playx - this.playr/4, this.playy - this.playr/2);
+	context.lineTo(this.playx - this.playr/4, this.playy + this.playr/2);
+	context.lineTo(this.playx + this.playr/2, this.playy);
+	context.closePath();
+	context.fill();
 }
 
 //Gets the coordinates of the top left corner of the tower option in the panel
