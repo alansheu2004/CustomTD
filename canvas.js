@@ -131,14 +131,8 @@ function CanvasState(canvas) {
 	canvas.addEventListener('touchend', function(e) {
 		e.preventDefault();
 		var mouse = thisState.mouse;
-		if (thisState.dragging){
-			if(thisState.dropTower(mouse)) {
-				
-			} else {
-				thisState.dragging = false;
-				thisState.optionFocusing = true;
-			}
-			thisState.valid = false;
+		if (thisState.dropTowerTouch(mouse)){
+			return;
 		} else if (thisState.releaseButton(mouse)) {
 			return;
 		}
@@ -538,6 +532,26 @@ CanvasState.prototype.dropTower = function(mouse) {
 		} else {
 			this.dragOutOfOption = true;
 			this.dragging = true;
+		}
+		this.valid = false;
+		return true;
+	}
+	return false;
+}
+
+CanvasState.prototype.dropTowerTouch = function(mouse) {
+	if (this.dragging){
+		if(this.dragOutOfOption) {
+			if (mouse.x < 480) {
+				this.towers.push(new Tower(this, this.selection, mouse.x, mouse.y));
+				this.money -= this.selection.cost;
+			}
+			this.valid = false;
+			this.dragging = false;
+			return true;
+		} else {
+			this.optionFocusing = true;
+			this.dragging = false;
 		}
 		this.valid = false;
 		return true;
