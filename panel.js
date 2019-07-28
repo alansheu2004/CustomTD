@@ -11,7 +11,7 @@ function Panel(state) {
 
 	PLAY = new Button(state, 
 		function(x, y) {return Math.hypot(x-thisPanel.playx, y-thisPanel.playy) <= thisPanel.playr;},
-		function(state) {alert("Play it!");},
+		function(state) {state.nextRound();},
 		true);
 	state.addButton(PLAY)
 }

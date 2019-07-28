@@ -10,7 +10,7 @@ var defaultTowerTypes = [
 					[
 						new TowerUpgrade("Threepeater", 175, 80,
 							"resources/images/threepeater.svg", 37, 34,
-							[new ProjectileShot(SMALL_PEA, 1000, {type:"spray", number:3, angle: Math.PI/10}, null)])
+							[new ProjectileShot(SMALL_PEA, 850, {type:"spray", number:3, angle: Math.PI/10}, null)])
 					]
 	), 
 	new TowerType("Starfruit", 150, 15, false,

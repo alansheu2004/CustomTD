@@ -35,7 +35,6 @@ function CanvasState(canvas) {
 	this.gameOverFade = 0; //opacity of the game over screen fading in
 	
 	this.buttons = [];
-	this.button
 
 	this.panel = new Panel(this);
 	
@@ -277,12 +276,17 @@ CanvasState.prototype.drawRoundNumber = function() {
 	this.context.strokeText("Round", 10, 30);
 
 	this.context.font = "small-caps 25px Oeztype";
-	this.context.fillText(this.round, 72, 30);
-	this.context.strokeText(this.round, 72, 30);
+	this.context.fillText(this.round, 75, 30);
+	this.context.strokeText(this.round, 75, 30);
 }
 
 CanvasState.prototype.addButton = function(button) {
 	this.buttons.push(button);
+}
+
+CanvasState.prototype.nextRound = function() {
+	this.round++;
+	this.valid = false;
 }
 
 //Returns the mouse coordinates relative to the canvas
