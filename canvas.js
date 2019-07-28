@@ -259,6 +259,7 @@ CanvasState.prototype.updateEnemyWaves = function() {
 		this.gameOverText = "You Won!";
 		this.gameOver = true;
 	}
+	this.valid = false;
 	this.inRound = false;
 	PLAY.active = true;
 }
