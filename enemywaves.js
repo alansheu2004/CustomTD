@@ -19,7 +19,7 @@ var ROUND3 = new EnemyWave([
     new EnemyBunch(16, BLUE, 10, 0.3),
 ]);
 
-var defaultwaves = [ROUND1, ROUND2, ROUND3];
+var defaultwaves = [ROUND1];
 
 function EnemyWave(enemybunches) {
     this.enemybunches = enemybunches;

@@ -1,5 +1,3 @@
-var PLAY;
-
 function Panel(state) {
 	this.state = state;
 
@@ -9,11 +7,11 @@ function Panel(state) {
 
 	var thisPanel = this;
 
-	PLAY = new Button(state, 
+	this.playButton = new Button(state, 
 		function(x, y) {return Math.hypot(x-thisPanel.playx, y-thisPanel.playy) <= thisPanel.playr;},
 		function(state) {state.nextRound();},
 		true);
-	state.addButton(PLAY);
+	state.addButton(this.playButton);
 }
 
 //Draws the panel
@@ -108,10 +106,10 @@ Panel.prototype.drawScrollBar = function(context) {
 }
 
 Panel.prototype.drawBottom = function(context) {
-	if (!PLAY.active) {
+	if (!this.playButton.active) {
 		context.filter = "opacity(30%)";
 	}
-	if(this.state.buttonPressed && this.state.selection == PLAY) {
+	if(this.state.buttonPressed && this.state.selection == this.playButton) {
 		context.fillStyle = "#664321";
 	} else {
 		context.fillStyle = "#804c1b";
