@@ -33,6 +33,7 @@ function CanvasState(canvas) {
 
 	this.gameOver = false;
 	this.gameOverFade = 0; //opacity of the game over screen fading in
+	this.gameOverText = "Game Over";
 	
 	this.buttons = [];
 
@@ -254,6 +255,10 @@ CanvasState.prototype.updateEnemyWaves = function() {
 	}
 
 	//Round should be over
+	if(this.round == this.enemywaves.length) {
+		this.gameOverText = "You Won!";
+		this.gameOver = true;
+	}
 	this.inRound = false;
 	PLAY.active = true;
 }
@@ -268,8 +273,8 @@ CanvasState.prototype.drawGameOver = function() {
 	this.context.fillStyle = "rgb(255, 214, 48, " + this.gameOverFade + ")";
 	this.context.strokeStyle = "rgb(102, 67, 33, " + this.gameOverFade + ")";
 	this.context.lineWidth = 3;
-	this.context.fillText("Game Over", 320, 150);
-	this.context.strokeText("Game Over", 320, 150);
+	this.context.fillText(this.gameOverText, 320, 150);
+	this.context.strokeText(this.gameOverText, 320, 150);
 	
 	if (this.gameOverFade >= 1) {
 		window.clearInterval(this.loop);
