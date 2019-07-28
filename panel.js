@@ -1,17 +1,17 @@
-
+var PLAY;
 
 function Panel(state) {
 	this.state = state;
 
-	this.playx = 520;
+	this.playx = 560;
 	this.playy = 332;
 	this.playr = 20;
 
 	var thisPanel = this;
 
-	var PLAY = new Button(state, 
-		function(x, y) {return Math.hypot(x-thisPanel.playx, y-thisPanel.playy) <= 40;},
-		function() {alert("Play it!");},
+	PLAY = new Button(state, 
+		function(x, y) {return Math.hypot(x-thisPanel.playx, y-thisPanel.playy) <= thisPanel.playr;},
+		function(state) {alert("Play it!");},
 		true);
 	state.addButton(PLAY)
 }
@@ -108,13 +108,14 @@ Panel.prototype.drawScrollBar = function(context) {
 }
 
 Panel.prototype.drawBottom = function(context) {
-	context.fillStyle = "#8a5624";
-	context.strokeStyle = "#664321";
-	context.lineWidth = 3;
+	if(this.state.buttonPressed && this.state.selection == PLAY) {
+		context.fillStyle = "#664321";
+	} else {
+		context.fillStyle = "#8a5624";
+	}
 	context.beginPath();
 	context.arc(this.playx, this.playy, this.playr, 0, 2*Math.PI);
 	context.fill();
-	context.stroke();
 
 	context.fillStyle = "#ffd630";
 	context.beginPath();
