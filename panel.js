@@ -13,7 +13,7 @@ function Panel(state) {
 		function(x, y) {return Math.hypot(x-thisPanel.playx, y-thisPanel.playy) <= thisPanel.playr;},
 		function(state) {state.nextRound();},
 		true);
-	state.addButton(PLAY)
+	state.addButton(PLAY);
 }
 
 //Draws the panel
