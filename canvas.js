@@ -297,16 +297,18 @@ CanvasState.prototype.drawGameOver = function() {
 }
 
 CanvasState.prototype.drawRestartButton = function() {
-	this.context.fillStyle = "#a6703c";
-	this.context.strokeStyle = "#664321";
-	this.context.lineWidth = 5;
-	this.context.fillRect(this.restartx-this.restartw/2, this.restarty-this.restarth/2, this.restartw, this.restarth);
-	this.context.strokeRect(this.restartx-this.restartw/2, this.restarty-this.restarth/2, this.restartw, this.restarth);
+	if (this.restartButton.active) {
+		this.context.fillStyle = "#a6703c";
+		this.context.strokeStyle = "#664321";
+		this.context.lineWidth = 5;
+		this.context.fillRect(this.restartx-this.restartw/2, this.restarty-this.restarth/2, this.restartw, this.restarth);
+		this.context.strokeRect(this.restartx-this.restartw/2, this.restarty-this.restarth/2, this.restartw, this.restarth);
 
-	this.context.font = "small-caps " + 0.8*this.restarth + "px Oeztype";
-	this.context.textAlign = "center";
-	this.context.fillStyle = "#664321";
-	this.context.fillText("Restart", this.restartx, this.restarty+0.3*this.restarth);
+		this.context.font = "small-caps " + 0.8*this.restarth + "px Oeztype";
+		this.context.textAlign = "center";
+		this.context.fillStyle = "#664321";
+		this.context.fillText("Restart", this.restartx, this.restarty+0.3*this.restarth);
+	}
 }
 
 //Updates the towers based on enemies

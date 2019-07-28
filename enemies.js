@@ -1,4 +1,4 @@
-var RED = new EnemyType(100, "red", null, 2, 1, 18);
+var RED = new EnemyType(100, "red", null, 3, 1, 18);
 var BLUE = new EnemyType(133, "skyblue", RED, 3, 2, 18);
 var GREEN = new EnemyType(167, "limegreen", BLUE, 4, 3, 18);
 var YELLOW = new EnemyType(333, "yellow", GREEN, 4, 4, 18);
