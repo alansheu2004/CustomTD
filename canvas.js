@@ -54,6 +54,8 @@ function CanvasState(canvas) {
 	this.currentWave = [];
 	this.bunchTimer = [];
 	this.enemyCountdown = [];
+
+	this.roundNotifyTimer = 0;
 	
 	//Disables double clicking on the canvas to select text
 	canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
@@ -123,6 +125,8 @@ function CanvasState(canvas) {
 				thisState.optionFocusing = true;
 			}
 			thisState.valid = false;
+		} else if (thisState.releaseButton(mouse)) {
+			return;
 		}
 	}, true);
 
@@ -150,9 +154,13 @@ CanvasState.prototype.update = function() {
 	} else {
 		this.sortEnemies();
 		this.updateTowerStates();
-		if (this.revalidationTimer >= 0) {
+		if (this.revalidationTimer > 0) {
 			this.valid = false;
 			this.revalidationTimer -= this.interval;
+		}
+		if (this.roundNotifyTimer > 0) {
+			this.valid = false;
+			this.roundNotifyTimer -= this.interval;
 		}
 	}
 	
@@ -172,6 +180,9 @@ CanvasState.prototype.validate = function() {
 	this.panel.draw(this.context);
 
 	this.drawRoundNumber();
+	if(this.roundNotifyTimer > 0) {
+		this.drawRoundNotification();
+	}
 	
 	if(this.gameOver) {
 		this.drawGameOver();
@@ -238,7 +249,7 @@ CanvasState.prototype.updateEnemyWaves = function() {
 		}
 	}
 
-	if (this.enemies.length == 0) {
+	if (this.enemies.length > 0) {
 		return;
 	}
 
@@ -317,6 +328,23 @@ CanvasState.prototype.drawRoundNumber = function() {
 	}
 }
 
+CanvasState.prototype.drawRoundNotification = function() {
+	if(this.round != 0) {
+		this.context.textAlign = "center";
+		this.context.fillStyle = "#ffd630";
+		this.context.strokeStyle = "#c48a16";
+		this.context.lineWidth = 1;
+
+		this.context.font = "small-caps 30px Oeztype";
+		this.context.fillText("Round", 240, 150);
+		this.context.strokeText("Round", 240, 150);
+
+		this.context.font = "small-caps 50px Oeztype";
+		this.context.fillText(this.round, 240, 200);
+		this.context.strokeText(this.round, 240, 200);
+	}
+}
+
 CanvasState.prototype.addButton = function(button) {
 	this.buttons.push(button);
 }
@@ -324,6 +352,7 @@ CanvasState.prototype.addButton = function(button) {
 CanvasState.prototype.nextRound = function() {
 	this.round++;
 	this.inRound = true;
+	this.roundNotifyTimer = 2000;
 	PLAY.active = false;
 
 	this.currentWave = this.enemywaves[this.round-1];
