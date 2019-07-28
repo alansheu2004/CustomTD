@@ -247,37 +247,39 @@ CanvasState.prototype.updateEnemyPositions = function() {
 }
 
 CanvasState.prototype.updateEnemyWaves = function() {
-
-	for(var i=0; i<this.bunchTimer.length; i++) {
-		if(this.enemyCountdown[i] > 0) {
-			this.bunchTimer[i] -= this.interval;
-			while (this.bunchTimer[i] <= 0 && this.enemyCountdown[i]>0) {
-				this.addEnemy(new Enemy(this, this.currentWave.enemybunches[i].enemy));
-				this.bunchTimer[i] = this.currentWave.enemybunches[i].spacing*1000;
-				this.enemyCountdown[i]--;
+	if(this.inRound) {
+		for(var i=0; i<this.bunchTimer.length; i++) {
+			if(this.enemyCountdown[i] > 0) {
+				this.bunchTimer[i] -= this.interval;
+				while (this.bunchTimer[i] <= 0 && this.enemyCountdown[i]>0) {
+					this.addEnemy(new Enemy(this, this.currentWave.enemybunches[i].enemy));
+					this.bunchTimer[i] = this.currentWave.enemybunches[i].spacing*1000;
+					this.enemyCountdown[i]--;
+				}
 			}
 		}
-	}
-
-	for (let c of this.enemyCountdown) {
-		if(c>0) {
+	
+		for (let c of this.enemyCountdown) {
+			if(c>0) {
+				return;
+			}
+		}
+	
+		if (this.enemies.length > 0) {
 			return;
 		}
+	
+		//Round should be over
+		if(this.round == this.enemywaves.length) {
+			this.gameOverText = "You Won!";
+			this.gameOver = true;
+		} else {
+			this.panel.playButton.active = true;
+		}
+		this.valid = false;
+		this.inRound = false;
 	}
-
-	if (this.enemies.length > 0) {
-		return;
-	}
-
-	//Round should be over
-	if(this.round == this.enemywaves.length) {
-		this.gameOverText = "You Won!";
-		this.gameOver = true;
-	} else {
-		this.panel.playButton.active = true;
-	}
-	this.valid = false;
-	this.inRound = false;
+	
 }
 
 //Disactivates the update loop and displays a game over screen
