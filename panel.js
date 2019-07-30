@@ -1,5 +1,17 @@
 function Panel(state) {
 	this.state = state;
+
+	this.playx = 560;
+	this.playy = 332;
+	this.playr = 20;
+
+	var thisPanel = this;
+
+	this.playButton = new Button(state, 
+		function(x, y) {return Math.hypot(x-thisPanel.playx, y-thisPanel.playy) <= thisPanel.playr;},
+		function(state) {state.nextRound();},
+		true);
+	state.addButton(this.playButton);
 }
 
 //Draws the panel
@@ -11,6 +23,8 @@ Panel.prototype.draw = function(context) {
 	
 	this.towerOptionSize = 40;
 	this.drawTowerBox(context);
+
+	this.drawBottom(context);
 }
 
 //Draws the top container for health and money
@@ -67,7 +81,7 @@ Panel.prototype.drawTowerBox = function(context) {
 		context.fillStyle = "#f4cea8";
 		var towerCoors = this.getTowerOptionCoors(i);
 		context.fillRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
-		
+
 		if((this.state.dragging || this.state.optionFocusing) && this.state.selection==this.state.towerTypes[i]) {
 			context.strokeStyle = "#b07b48";
 			context.lineWidth = 3;
@@ -89,6 +103,30 @@ Panel.prototype.drawTowerBox = function(context) {
 Panel.prototype.drawScrollBar = function(context) {
 	context.fillStyle = "#664321";
 	context.fillRect(600, 135, 15, 160);
+}
+
+Panel.prototype.drawBottom = function(context) {
+	if (!this.playButton.active) {
+		context.filter = "opacity(30%)";
+	}
+	if(this.state.buttonPressed && this.state.selection == this.playButton) {
+		context.fillStyle = "#664321";
+	} else {
+		context.fillStyle = "#804c1b";
+	}
+	context.beginPath();
+	context.arc(this.playx, this.playy, this.playr, 0, 2*Math.PI);
+	context.fill();
+
+	context.fillStyle = "#ffd630";
+	context.beginPath();
+	context.moveTo(this.playx - this.playr/4, this.playy - this.playr/2);
+	context.lineTo(this.playx - this.playr/4, this.playy + this.playr/2);
+	context.lineTo(this.playx + this.playr/2, this.playy);
+	context.closePath();
+	context.fill();
+
+	context.filter = "none";
 }
 
 //Gets the coordinates of the top left corner of the tower option in the panel
