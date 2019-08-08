@@ -46,29 +46,33 @@ function MouseHandler(state) {
 	state.canvas.addEventListener('touchstart', function(e) {
 		e.preventDefault();
 		var mouse = thisState.setMouse(thisHandler.touchToMouseEvent(e, 'mousedown'));
-		if (thisHandler.startDragging(mouse)) {
+		if (thisHandler.startDraggingTower(mouse)) {
 			
-		} else if (thisHandler.towerHovering(mouse)) {
+		} else if (thisHandler.startPressingButton(mouse)) {
+			
+		} else if (thisHandler.hoverTower(mouse)) {
 			return;
-		} else if (thisHandler.optionHovering(mouse)) {
+		} else if (thisHandler.hoverTOwerOption(mouse)) {
 			return;
 		}
 		//Stops focusing if nothing returned
-		thisHandler.stopFocusing();
+		thisHandler.stopHovering();
 	}, true);
 
 	state.canvas.addEventListener('touchmove', function(e) {
 		e.preventDefault();
 		var mouse = thisState.setMouse(thisHandler.touchToMouseEvent(e, 'mousemove'));
-		if (thisHandler.moveDragging(mouse)){
+		if (thisHandler.dragTower(mouse)){
 			//Do nothing
-		} 
+		} else if (thisHandler.checkButtonPressed(mouse)) {
+			return;
+		}
 	}, true);
 
 	state.canvas.addEventListener('touchend', function(e) {
 		e.preventDefault();
 		var mouse = thisState.mouse;
-		if (thisHandler.dropTowerTouch(mouse)){
+		if (thisHandler.dropTower(mouse)){
 			return;
 		} else if (thisHandler.releaseButton(mouse)) {
 			return;
@@ -192,26 +196,6 @@ MouseHandler.prototype.dropTower = function(mouse) {
 		}
 		this.state.valid = false;
 		this.state.draggingTower = false;
-		return true;
-	}
-	return false;
-}
-
-MouseHandler.prototype.dropTowerTouch = function(mouse) {
-	if (this.state.dragging){
-		if(this.state.draggedOutOfOption) {
-			if (mouse.x < 480) {
-				this.state.towers.push(new Tower(this.state, this.state.selection, mouse.x, mouse.y));
-				this.state.money -= this.state.selection.cost;
-			}
-			this.state.valid = false;
-			this.state.dragging = false;
-			return true;
-		} else {
-			this.state.optionFocusing = true;
-			this.state.dragging = false;
-		}
-		this.state.valid = false;
 		return true;
 	}
 	return false;
