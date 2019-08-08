@@ -10,22 +10,26 @@ function MouseHandler(state) {
 	
 	state.canvas.addEventListener('mousedown', function(e) {
 		var mouse = thisState.setMouse(e);
-		if (!thisHandler.startDragging(mouse)) {
+		if (thisHandler.startDraggingTower(mouse)) {
+			return;
+		} else if (thisHandler.startPressingButton(mouse)) {
 			return;
 		}
 	}, true);
 
 	state.canvas.addEventListener('mousemove', function(e) {
 		var mouse = thisState.setMouse(e);
-		if (thisHandler.moveDragging(mouse)){
-			//Do nothing
-		} else if (thisHandler.towerHovering(mouse)) {
+		if (thisHandler.dragTower(mouse)){
 			return;
-		} else if (thisHandler.optionHovering(mouse)) {
+		} else if (thisHandler.checkButtonPressed(mouse)) {
 			return;
-		}
-		//Stops focusing if nothing returned
-		thisHandler.stopFocusing();
+		} else if (thisHandler.hoverTowerOption(mouse)) {
+			return;
+		} else if (thisHandler.hoverTower(mouse)) {
+			return;
+		} 
+		
+		thisHandler.stopHovering();
 	}, true);
 
 	state.canvas.addEventListener('mouseup', function(e) {
@@ -73,47 +77,55 @@ function MouseHandler(state) {
 }
 
 //Returns whether dragging tower actually started
-MouseHandler.prototype.startDragging = function(mouse) {
-	if (!this.state.dragging) {
-		for (var i = 0; i < this.state.towerTypes.length; i++) {
-			if (this.state.panel.optionContains(i, mouse.x, mouse.y) && this.state.money >= this.state.towerTypes[i].cost) {
-				this.state.dragging = true;
-				this.state.selectionNumber = i;
-				this.state.selection = this.state.towerTypes[i];
-				this.state.draggedOutOfOption = false;
-				this.state.valid = false;
-				return true;
-			}
-		}
+MouseHandler.prototype.startDraggingTower = function(mouse) {
+	for (var i = 0; i < this.state.towerTypes.length; i++) {
+		if (this.state.panel.optionContains(i, mouse.x, mouse.y) && this.state.money >= this.state.towerTypes[i].cost) {
+			this.state.draggingTower = true;
+			this.state.selectionNumber = i;
+			this.state.selection = this.state.towerTypes[i];
+			this.state.towerDraggedOutOfOptionBox = false;
 
-		for (var i = 0; i < this.state.buttons.length; i++) {
-			
-			if (this.state.buttons[i].active && this.state.buttons[i].inBounds(mouse.x, mouse.y)) {
-				this.state.buttonPressed = true;
-				this.state.selection = this.state.buttons[i];
-				this.state.valid = false;
-				return true;
-			}
+			this.state.valid = false;
+			return true;
 		}
-		//Not selected any option
-		return false;
-	} else {
-		this.state.valid = false;
+	}
+	return false;
+}
+
+//Returns whether a button was actually pressed down
+MouseHandler.prototype.startPressingButton = function(mouse) {
+	for (var i = 0; i < this.state.buttons.length; i++) {
+		if (this.state.buttons[i].active && this.state.buttons[i].inBounds(mouse.x, mouse.y)) {
+			this.state.buttonPressed = true;
+			this.state.selection = this.state.buttons[i];
+
+			this.state.valid = false;
+			return true;
+		}
+	}
+	return false;
+}
+
+//Returns whether currently dragging a tower
+MouseHandler.prototype.dragTower = function(mouse) {
+	if (this.state.draggingTower){
+		if(!this.state.towerDraggedOutOfOptionBox) {
+			if(!this.state.panel.optionContains(this.state.selectionNumber, mouse.x, mouse.y)) {
+				this.state.towerDraggedOutOfOptionBox = true;
+				this.state.valid = false;
+			}
+		} else {
+			this.state.valid = false;
+		}
 		return true;
+	} else {
+		return false;
 	}
 }
 
-//Returns whether currently dragging
-MouseHandler.prototype.moveDragging = function(mouse) {
-	if (this.state.dragging){
-		if(!this.state.draggedOutOfOption) {
-			if(!this.state.panel.optionContains(this.state.selectionNumber, mouse.x, mouse.y)) {
-				this.state.draggedOutOfOption = true;
-			}
-		}
-		this.state.valid = false;
-		return true;
-	} else if (this.state.buttonPressed){
+//Returns whether a button is current being pressed
+MouseHandler.prototype.checkButtonPressed = function(mouse) {
+	if (this.state.buttonPressed) {
 		if (!this.state.selection.inBounds(mouse.x, mouse.y)) {
 			this.state.buttonPressed = false;
 			this.state.valid = false;
@@ -124,12 +136,13 @@ MouseHandler.prototype.moveDragging = function(mouse) {
 	}
 }
 
-MouseHandler.prototype.towerHovering = function(mouse) {
-	if (mouse.x <= 480) {
+//Returns whether started hovering over aplaced tower
+MouseHandler.prototype.hoverTower = function(mouse) {
+	if (mouse.x <= MAP_WIDTH) {
 		for (var i = 0; i < this.state.towers.length; i++) {
 			if (this.state.towers[i].inBounds(mouse.x, mouse.y)) {
 				this.state.selection = this.state.towers[i];
-				this.state.focusing = true;
+				this.state.hoveringTower = true;
 				this.state.valid = false;
 				return true;
 			}
@@ -138,15 +151,16 @@ MouseHandler.prototype.towerHovering = function(mouse) {
 	return false;
 }
 
-MouseHandler.prototype.optionHovering = function(mouse) {
-	if (mouse.x > 480) {
+//Returns whether hovering over a tower option
+MouseHandler.prototype.hoverTowerOption = function(mouse) {
+	if (mouse.x > PANEL_X) {
 		for (var i = 0; i < this.state.towerTypes.length; i++) {
 			if(this.state.panel.optionContains(i, mouse.x, mouse.y)) {
-				this.state.optionFocusing = true;
+				this.state.hoveringTowerOption = true;
 				this.state.selectionNumber = i;
 				this.state.selection = this.state.towerTypes[i];
 				this.state.valid = false;
-				return true;;
+				return true;
 			}
 		}
 	}
@@ -154,33 +168,30 @@ MouseHandler.prototype.optionHovering = function(mouse) {
 	
 }
 
-MouseHandler.prototype.stopFocusing = function() {
-	if (this.state.focusing) {
-		this.state.focusing = false;
+//Stops hovering 
+MouseHandler.prototype.stopHovering = function() {
+	if (this.state.hoveringTower) {
+		this.state.hoveringTower = false;
 		this.state.valid = false;
 	}
 
-	if (this.state.optionFocusing) {
-		this.state.optionFocusing = false;
+	if (this.state.hoveringTowerOption) {
+		this.state.hoveringTowerOption = false;
 		this.state.valid = false;
 	}
 }
 
 MouseHandler.prototype.dropTower = function(mouse) {
-	if (this.state.dragging){
-		if(this.state.draggedOutOfOption) {
-			if (mouse.x < 480) {
-				this.state.towers.push(new Tower(this.state, this.state.selection, mouse.x, mouse.y));
+	if (this.state.draggingTower) {
+
+		if(this.state.towerDraggedOutOfOptionBox) {
+			if (mouse.x <= MAP_WIDTH) {
+				this.state.addTower(this.state.selection, mouse.x, mouse.y);
 				this.state.money -= this.state.selection.cost;
 			}
-			this.state.valid = false;
-			this.state.dragging = false;
-			return true;
-		} else {
-			this.state.draggedOutOfOption = true;
-			this.state.dragging = true;
 		}
 		this.state.valid = false;
+		this.state.draggingTower = false;
 		return true;
 	}
 	return false;

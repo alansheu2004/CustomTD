@@ -24,13 +24,13 @@ function CanvasState(canvas) {
 	this.valid = false; //Needs to be redrawn?
 	this.revalidationTimer = 1000; //Milliseconds until stop auto revalidation (Allow resources time to load)
 	
-	this.dragging = false; //Whether in the process of placing a tower
-	this.focusing = false; //Hovering over a tower
-	this.optionFocusing = false; //Hovering over a tower option
+	this.draggingTower = false; //Whether in the process of placing a tower
+	this.hoveringTower = false; //Hovering over a placed tower
+	this.hoveringTowerOption = false; //Hovering over a tower option
 	this.selection = null; //The Object that is being dragged or hovered
 	this.selectionNumber = 0; //The Number of the TowerType selected
 	this.mouse = {x: 0, y: 0};
-	this.draggedOutOfOption = false; //Has dragging tower left option box?
+	this.towerDraggedOutOfOptionBox = false; //Has dragging tower left option box?
 	this.buttonPressed = false;
 	this.mouseHandler = new MouseHandler(this);
 
@@ -79,6 +79,12 @@ function CanvasState(canvas) {
 	this.interval = 20;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
+}
+
+//Adds a new tower
+CanvasState.prototype.addTower = function(towerType, x, y) {
+	this.towers.push(new Tower(this, towerType, x, y));
+	this.valid = false;
 }
 
 //Adds a new enemy
@@ -133,7 +139,7 @@ CanvasState.prototype.validate = function() {
 	if(this.gameOver) {
 		this.drawGameOver();
 	} else {
-		if(this.dragging && this.draggedOutOfOption) {
+		if(this.draggingTower && this.towerDraggedOutOfOptionBox) {
 			this.selection.upgrades[0].drawRange(this.context, this.mouse.x, this.mouse.y);
 			this.selection.upgrades[0].draw(this.context, this.mouse.x, this.mouse.y);
 		}
@@ -270,7 +276,7 @@ CanvasState.prototype.drawEnemies = function() {
 //Draws each tower and their range/outline if necessary
 CanvasState.prototype.drawTowers = function() {
 	for (let tower of this.towers) {
-		if (this.focusing) {
+		if (this.hoveringTower) {
 			if (this.selection == tower) {
 				this.selection.drawRange(this.context);
 				this.selection.drawOutline(this.context);

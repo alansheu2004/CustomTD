@@ -68,7 +68,7 @@ Panel.prototype.drawTowerBox = function(context) {
 	
 	context.textAlign = "center";
 	context.fillStyle = "#ffd630";
-	if(this.state.optionFocusing || this.state.dragging) {
+	if(this.state.draggingTower || this.state.hoveringTowerOption) {
 		context.font = "small-caps 18px Oeztype";
 		context.fillText("$" + this.state.selection.cost, 560, 95);
 		context.font = "small-caps 15px Oeztype";
@@ -87,7 +87,7 @@ Panel.prototype.drawTowerBox = function(context) {
 		var towerCoors = this.getTowerOptionCoors(i);
 		context.fillRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
 
-		if((this.state.dragging || this.state.optionFocusing) && this.state.selection==this.state.towerTypes[i]) {
+		if((this.state.draggingTower || this.state.hoveringTowerOption) && this.state.selection==this.state.towerTypes[i]) {
 			context.strokeStyle = "#b07b48";
 			context.lineWidth = 3;
 			context.strokeRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
