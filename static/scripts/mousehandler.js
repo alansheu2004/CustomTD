@@ -28,7 +28,6 @@ function MouseHandler(state) {
 		} else if (thisHandler.hoverTower(mouse)) {
 			return;
 		} 
-		
 		thisHandler.stopHovering();
 	}, true);
 
@@ -47,15 +46,14 @@ function MouseHandler(state) {
 		e.preventDefault();
 		var mouse = thisState.setMouse(thisHandler.touchToMouseEvent(e, 'mousedown'));
 		if (thisHandler.startDraggingTower(mouse)) {
-			
+			return;
 		} else if (thisHandler.startPressingButton(mouse)) {
-			
+			return;
 		} else if (thisHandler.hoverTower(mouse)) {
 			return;
-		} else if (thisHandler.hoverTOwerOption(mouse)) {
+		} else if (thisHandler.hoverTowerOption(mouse)) {
 			return;
 		}
-		//Stops focusing if nothing returned
 		thisHandler.stopHovering();
 	}, true);
 
@@ -192,7 +190,10 @@ MouseHandler.prototype.dropTower = function(mouse) {
 			if (mouse.x <= MAP_WIDTH) {
 				this.state.addTower(this.state.selection, mouse.x, mouse.y);
 				this.state.money -= this.state.selection.cost;
+				this.state.hoveringTowerOption = false;
 			}
+		} else {
+			this.state.hoveringTowerOption = true;
 		}
 		this.state.valid = false;
 		this.state.draggingTower = false;
