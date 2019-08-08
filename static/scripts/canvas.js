@@ -11,8 +11,8 @@ function init() {
 //Defines the Canvas, game,  and all its properties
 function CanvasState(canvas) {
 	this.canvas = canvas;
-	this.width = canvas.width;
-	this.height = canvas.height;
+	this.width = CANVAS_WIDTH || canvas.width;
+	this.height = CANVAS_HEIGHT || canvas.height;
 	this.context = canvas.getContext("2d");
 	var thisState = this; //To be referenced by anonymous inner classes
 	
@@ -22,7 +22,7 @@ function CanvasState(canvas) {
 	}
 	
 	this.valid = false; //Needs to be redrawn?
-	this.revalidationTimer = 1000; //Milliseconds until stop auto revalidation
+	this.revalidationTimer = 1000; //Milliseconds until stop auto revalidation (Allow resources time to load)
 	
 	this.dragging = false; //Whether in the process of placing a tower
 	this.focusing = false; //Hovering over a tower
@@ -30,7 +30,7 @@ function CanvasState(canvas) {
 	this.selection = null; //The Object that is being dragged or hovered
 	this.selectionNumber = 0; //The Number of the TowerType selected
 	this.mouse = {x: 0, y: 0};
-	this.dragOutOfOption = false; //Has dragging tower left option box?
+	this.draggedOutOfOption = false; //Has dragging tower left option box?
 	this.buttonPressed = false;
 
 	this.gameOver = false;
@@ -71,72 +71,7 @@ function CanvasState(canvas) {
 		false);
 	this.addButton(this.restartButton);
 	
-	//Disables double clicking on the canvas to select text
-	canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
 	
-	
-	canvas.addEventListener('mousedown', function(e) {
-		var mouse = thisState.setMouse(e);
-		if (!thisState.startDragging(mouse)) {
-			return;
-		}
-	}, true);
-
-	canvas.addEventListener('mousemove', function(e) {
-		var mouse = thisState.setMouse(e);
-		if (thisState.moveDragging(mouse)){
-			//Do nothing
-		} else if (thisState.towerHovering(mouse)) {
-			return;
-		} else if (thisState.optionHovering(mouse)) {
-			return;
-		}
-		//Stops focusing if nothing returned
-		thisState.stopFocusing();
-	}, true);
-
-	canvas.addEventListener('mouseup', function(e) {
-		var mouse = thisState.setMouse(e);
-		if (thisState.dropTower(mouse)){
-			return;
-		} else if (thisState.releaseButton(mouse)) {
-			return;
-		}
-	}, true);
-
-
-
-	canvas.addEventListener('touchstart', function(e) {
-		e.preventDefault();
-		var mouse = thisState.setMouse(thisState.touchToMouseEvent(e, 'mousedown'));
-		if (thisState.startDragging(mouse)) {
-			
-		} else if (thisState.towerHovering(mouse)) {
-			return;
-		} else if (thisState.optionHovering(mouse)) {
-			return;
-		}
-		//Stops focusing if nothing returned
-		thisState.stopFocusing();
-	}, true);
-
-	canvas.addEventListener('touchmove', function(e) {
-		e.preventDefault();
-		var mouse = thisState.setMouse(thisState.touchToMouseEvent(e, 'mousemove'));
-		if (thisState.moveDragging(mouse)){
-			//Do nothing
-		} 
-	}, true);
-
-	canvas.addEventListener('touchend', function(e) {
-		e.preventDefault();
-		var mouse = thisState.mouse;
-		if (thisState.dropTowerTouch(mouse)){
-			return;
-		} else if (thisState.releaseButton(mouse)) {
-			return;
-		}
-	}, true);
 
 
 
@@ -197,7 +132,7 @@ CanvasState.prototype.validate = function() {
 	if(this.gameOver) {
 		this.drawGameOver();
 	} else {
-		if(this.dragging && this.dragOutOfOption) {
+		if(this.dragging && this.draggedOutOfOption) {
 			this.selection.upgrades[0].drawRange(this.context, this.mouse.x, this.mouse.y);
 			this.selection.upgrades[0].draw(this.context, this.mouse.x, this.mouse.y);
 		}
@@ -422,156 +357,7 @@ CanvasState.prototype.setMouse = function(e) {
 	return this.mouse;
 }
 
-CanvasState.prototype.touchToMouseEvent = function(me, eventName) {
-	var touch = me.touches[0];
-	return new MouseEvent(eventName, {clientX: touch.clientX, clientY: touch.clientY})
-}
 
-//Returns whether dragging tower actually started
-CanvasState.prototype.startDragging = function(mouse) {
-	if (!this.dragging) {
-		for (var i = 0; i < this.towerTypes.length; i++) {
-			if (this.panel.optionContains(i, mouse.x, mouse.y) && this.money >= this.towerTypes[i].cost) {
-				this.dragging = true;
-				this.selectionNumber = i;
-				this.selection = this.towerTypes[i];
-				this.dragOutOfOption = false;
-				this.valid = false;
-				return true;
-			}
-		}
-
-		for (var i = 0; i < this.buttons.length; i++) {
-			
-			if (this.buttons[i].active && this.buttons[i].inBounds(mouse.x, mouse.y)) {
-				this.buttonPressed = true;
-				this.selection = this.buttons[i];
-				this.valid = false;
-				return true;
-			}
-		}
-		//Not selected any option
-		return false;
-	} else {
-		this.valid = false;
-		return true;
-	}
-}
-
-//Returns whether currently dragging
-CanvasState.prototype.moveDragging = function(mouse) {
-	if (this.dragging){
-		if(!this.dragOutOfOption) {
-			if(!this.panel.optionContains(this.selectionNumber, mouse.x, mouse.y)) {
-				this.dragOutOfOption = true;
-			}
-		}
-		this.valid = false;
-		return true;
-	} else if (this.buttonPressed){
-		if (!this.selection.inBounds(mouse.x, mouse.y)) {
-			this.buttonPressed = false;
-			this.valid = false;
-			return true;
-		}
-	} else {
-		return false;
-	}
-}
-
-CanvasState.prototype.towerHovering = function(mouse) {
-	if (mouse.x <= 480) {
-		for (var i = 0; i < this.towers.length; i++) {
-			if (this.towers[i].inBounds(mouse.x, mouse.y)) {
-				this.selection = this.towers[i];
-				this.focusing = true;
-				this.valid = false;
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-CanvasState.prototype.optionHovering = function(mouse) {
-	if (mouse.x > 480) {
-		for (var i = 0; i < this.towerTypes.length; i++) {
-			if(this.panel.optionContains(i, mouse.x, mouse.y)) {
-				this.optionFocusing = true;
-				this.selectionNumber = i;
-				this.selection = this.towerTypes[i];
-				this.valid = false;
-				return true;;
-			}
-		}
-	}
-	return false;
-	
-}
-
-CanvasState.prototype.stopFocusing = function() {
-	if (this.focusing) {
-		this.focusing = false;
-		this.valid = false;
-	}
-
-	if (this.optionFocusing) {
-		this.optionFocusing = false;
-		this.valid = false;
-	}
-}
-
-CanvasState.prototype.dropTower = function(mouse) {
-	if (this.dragging){
-		if(this.dragOutOfOption) {
-			if (mouse.x < 480) {
-				this.towers.push(new Tower(this, this.selection, mouse.x, mouse.y));
-				this.money -= this.selection.cost;
-			}
-			this.valid = false;
-			this.dragging = false;
-			return true;
-		} else {
-			this.dragOutOfOption = true;
-			this.dragging = true;
-		}
-		this.valid = false;
-		return true;
-	}
-	return false;
-}
-
-CanvasState.prototype.dropTowerTouch = function(mouse) {
-	if (this.dragging){
-		if(this.dragOutOfOption) {
-			if (mouse.x < 480) {
-				this.towers.push(new Tower(this, this.selection, mouse.x, mouse.y));
-				this.money -= this.selection.cost;
-			}
-			this.valid = false;
-			this.dragging = false;
-			return true;
-		} else {
-			this.optionFocusing = true;
-			this.dragging = false;
-		}
-		this.valid = false;
-		return true;
-	}
-	return false;
-}
-
-CanvasState.prototype.releaseButton = function(mouse) {
-	if (this.buttonPressed) {
-		this.buttonPressed = false;
-		if(this.selection.inBounds(mouse.x, mouse.y)) {
-			this.selection.action(this);
-			this.valid = false;
-			return true;
-		}
-	}
-	return false;
-}
 
 //Calculates accurate dimensions for the canvas
 CanvasState.prototype.calibrateMeasures = function(canvas) {

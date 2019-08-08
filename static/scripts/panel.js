@@ -16,8 +16,8 @@ function Panel(state) {
 
 //Draws the panel
 Panel.prototype.draw = function(context) {
-	context.fillStyle = "#996633";
-	context.fillRect(480,0,160,360);
+	
+	this.drawBase(context);
 	
 	this.drawTopBox(context);
 	
@@ -27,10 +27,15 @@ Panel.prototype.draw = function(context) {
 	this.drawBottom(context);
 }
 
+Panel.prototype.drawBase = function(context) {
+	context.fillStyle = "#996633";
+	context.fillRect(PANEL_X, PANEL_Y, PANEL_WIDTH, PANEL_HEIGHT);
+}
+
 //Draws the top container for health and money
 Panel.prototype.drawTopBox = function(context) {
 	context.fillStyle = "#d3a06e";
-	context.fillRect(505, 10, 110, 55);
+	context.fillRect(PANEL_TOP_BOX_X, PANEL_TOP_BOX_Y, PANEL_TOP_BOX_WIDTH, PANEL_TOP_BOX_HEIGHT);
 	
 	context.font = "small-caps 16px Oeztype";
 	context.textAlign = "start";
