@@ -32,6 +32,7 @@ function CanvasState(canvas) {
 	this.mouse = {x: 0, y: 0};
 	this.draggedOutOfOption = false; //Has dragging tower left option box?
 	this.buttonPressed = false;
+	this.mouseHandler = new MouseHandler(this);
 
 	this.gameOver = false;
 	this.gameOverFade = 0; //opacity of the game over screen fading in
