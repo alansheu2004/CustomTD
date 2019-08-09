@@ -89,6 +89,6 @@ Projectile.prototype.update = function() {
 	return false;
 }
 
-Projectile.prototype.draw = function(context) {
-	this.type.draw(context, this.x, this.y, this.angle);
+Projectile.prototype.draw = function() {
+	this.type.draw(this.state.context, this.x, this.y, this.angle);
 }

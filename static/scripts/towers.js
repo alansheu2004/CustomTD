@@ -67,12 +67,6 @@ TowerUpgrade.prototype.drawFit = function(context, x, y, max) {
 	}
 }
 
-//Draws a tower type
-TowerUpgrade.prototype.draw = function(context, x, y) {
-	
-	context.drawImage(image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
-}
-
 //Draws a tower type with an angle
 TowerUpgrade.prototype.draw = function(context, x, y, angle) {
 	var image = new Image();
@@ -190,8 +184,8 @@ Tower.prototype.updateState = function(enemies) {
 	
 }
 
-Tower.prototype.draw = function(context) {
-	this.upgrade.draw(context, this.x, this.y, this.angle);
+Tower.prototype.draw = function() {
+	this.upgrade.draw(this.state.context, this.x, this.y, this.angle);
 }
 
 Tower.prototype.inBounds = function(mx, my) {
@@ -202,21 +196,21 @@ Tower.prototype.inBounds = function(mx, my) {
 	}
 }
 
-Tower.prototype.drawRange = function(context) {
-	this.upgrade.drawRange(context, this.x, this.y);
+Tower.prototype.drawRange = function() {
+	this.upgrade.drawRange(this.state.context, this.x, this.y);
 }
 
-Tower.prototype.drawOutline = function(context) {
-	this.upgrade.drawOutline(context, this.x, this.y, this.angle);
+Tower.prototype.drawOutline = function() {
+	this.upgrade.drawOutline(this.state.context, this.x, this.y, this.angle);
 }
 
 Tower.prototype.addProjectile = function(type, x, y, angle) {
 	this.projectiles.push(new Projectile(this.state, type, x, y, angle));
 }
 
-Tower.prototype.drawProjectiles = function(context) {
+Tower.prototype.drawProjectiles = function() {
 	for (let projectile of this.projectiles) {
-		projectile.draw(context);
+		projectile.draw(this.state.context);
 	}
 }
 

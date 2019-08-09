@@ -22,11 +22,11 @@ function Enemy(state, type) {
 	this.y = point.y;
 }
 
-Enemy.prototype.draw = function(context) {
-	context.beginPath();
-	context.arc(this.x, this.y, 13, 0, 2*Math.PI);
-	context.fillStyle = this.type.color;
-	context.fill();
+Enemy.prototype.draw = function() {
+	this.state.context.beginPath();
+	this.state.context.arc(this.x, this.y, 13, 0, 2*Math.PI);
+	this.state.context.fillStyle = this.type.color;
+	this.state.context.fill();
 }
 
 //Advances the distance of enemy traveled based on speed

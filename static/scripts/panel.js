@@ -15,123 +15,123 @@ function Panel(state) {
 }
 
 //Draws the panel
-Panel.prototype.draw = function(context) {
+Panel.prototype.draw = function() {
 	
-	this.drawBase(context);
+	this.drawBase();
 	
-	this.drawTopBox(context);
+	this.drawTopBox();
 	
 	this.towerOptionSize = 40;
-	this.drawTowerBox(context);
+	this.drawTowerBox();
 
-	this.drawBottom(context);
+	this.drawBottom();
 }
 
-Panel.prototype.drawBase = function(context) {
-	context.fillStyle = "#996633";
-	context.fillRect(PANEL_X, PANEL_Y, PANEL_WIDTH, PANEL_HEIGHT);
+Panel.prototype.drawBase = function() {
+	this.state.context.fillStyle = "#996633";
+	this.state.context.fillRect(PANEL_X, PANEL_Y, PANEL_WIDTH, PANEL_HEIGHT);
 }
 
 //Draws the top container for health and money
-Panel.prototype.drawTopBox = function(context) {
-	context.fillStyle = "#d3a06e";
-	context.fillRect(PANEL_TOP_BOX_X, PANEL_TOP_BOX_Y, PANEL_TOP_BOX_WIDTH, PANEL_TOP_BOX_HEIGHT);
+Panel.prototype.drawTopBox = function() {
+	this.state.context.fillStyle = "#d3a06e";
+	this.state.context.fillRect(PANEL_TOP_BOX_X, PANEL_TOP_BOX_Y, PANEL_TOP_BOX_WIDTH, PANEL_TOP_BOX_HEIGHT);
 	
-	context.font = "small-caps 16px Oeztype";
-	context.textAlign = "start";
-	context.fillStyle = "#ffd630";
+	this.state.context.font = "small-caps 16px Oeztype";
+	this.state.context.textAlign = "start";
+	this.state.context.fillStyle = "#ffd630";
 	
 	var healthImage = new Image();
 	healthImage.src = "../images/heart.png";
-	context.drawImage(healthImage, 510, 15, 22, 20);
+	this.state.context.drawImage(healthImage, 510, 15, 22, 20);
 	
-	context.font = "small-caps 22px Oeztype";
-	context.textAlign = "center";
-	context.fillStyle = "#ffba30";
-	context.strokeStyle = "#c48a16";
-	context.lineWidth = 3;
-	context.strokeText("$", 521, 58);
-	context.fillText("$", 521, 58);
-	context.lineWidth = 1;
+	this.state.context.font = "small-caps 22px Oeztype";
+	this.state.context.textAlign = "center";
+	this.state.context.fillStyle = "#ffba30";
+	this.state.context.strokeStyle = "#c48a16";
+	this.state.context.lineWidth = 3;
+	this.state.context.strokeText("$", 521, 58);
+	this.state.context.fillText("$", 521, 58);
+	this.state.context.lineWidth = 1;
 	
-	context.font = "small-caps 16px Oeztype";
-	context.textAlign = "start";
-	context.fillStyle = "#ffd630";
-	context.fillText(this.state.health, 538, 31);
-	context.fillText(this.state.money, 538, 56);
+	this.state.context.font = "small-caps 16px Oeztype";
+	this.state.context.textAlign = "start";
+	this.state.context.fillStyle = "#ffd630";
+	this.state.context.fillText(this.state.health, 538, 31);
+	this.state.context.fillText(this.state.money, 538, 56);
 }
 
 //Draws the container and its contexts for the tower options
-Panel.prototype.drawTowerBox = function(context) {
-	context.fillStyle = "#d3a06e";
-	context.fillRect(495, 75, 130, 40);
+Panel.prototype.drawTowerBox = function() {
+	this.state.context.fillStyle = "#d3a06e";
+	this.state.context.fillRect(495, 75, 130, 40);
 	
-	context.textAlign = "center";
-	context.fillStyle = "#ffd630";
+	this.state.context.textAlign = "center";
+	this.state.context.fillStyle = "#ffd630";
 	if(this.state.draggingTower || this.state.hoveringTowerOption) {
-		context.font = "small-caps 18px Oeztype";
-		context.fillText("$" + this.state.selection.cost, 560, 95);
-		context.font = "small-caps 15px Oeztype";
-		context.fillText(this.state.selection.name, 560, 110);
+		this.state.context.font = "small-caps 18px Oeztype";
+		this.state.context.fillText("$" + this.state.selection.cost, 560, 95);
+		this.state.context.font = "small-caps 15px Oeztype";
+		this.state.context.fillText(this.state.selection.name, 560, 110);
 	} else {
-		context.font = "small-caps 27px Oeztype";
-		context.fillText("-Towers-", 560, 105);
+		this.state.context.font = "small-caps 27px Oeztype";
+		this.state.context.fillText("-Towers-", 560, 105);
 	}
 	
-	context.fillStyle = "#d3a06e";
-	context.fillRect(495, 125, 130, 180);
+	this.state.context.fillStyle = "#d3a06e";
+	this.state.context.fillRect(495, 125, 130, 180);
 	
 	for (var i=0; i<this.state.towerTypes.length; i++) {
-		context.filter = "none";
-		context.fillStyle = "#f4cea8";
+		this.state.context.filter = "none";
+		this.state.context.fillStyle = "#f4cea8";
 		var towerCoors = this.getTowerOptionCoors(i);
-		context.fillRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
+		this.state.context.fillRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
 
 		if((this.state.draggingTower || this.state.hoveringTowerOption) && this.state.selection==this.state.towerTypes[i]) {
-			context.strokeStyle = "#b07b48";
-			context.lineWidth = 3;
-			context.strokeRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
+			this.state.context.strokeStyle = "#b07b48";
+			this.state.context.lineWidth = 3;
+			this.state.context.strokeRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
 		}
 
 		if (this.state.money < this.state.towerTypes[i].cost) {
-			context.filter = "brightness(50%)";
+			this.state.context.filter = "brightness(50%)";
 		}
 		
-		this.state.towerTypes[i].upgrades[0].drawFit(context, towerCoors.x+this.towerOptionSize/2, towerCoors.y+this.towerOptionSize/2, 40);
-		context.filter = "none";
+		this.state.towerTypes[i].upgrades[0].drawFit(this.state.context, towerCoors.x+this.towerOptionSize/2, towerCoors.y+this.towerOptionSize/2, 40);
+		this.state.context.filter = "none";
 	}
 	
-	this.drawScrollBar(context);
+	this.drawScrollBar(this.state.context);
 }
 
 //Draws the scrollbar in the tower box
-Panel.prototype.drawScrollBar = function(context) {
-	context.fillStyle = "#664321";
-	context.fillRect(600, 135, 15, 160);
+Panel.prototype.drawScrollBar = function() {
+	this.state.context.fillStyle = "#664321";
+	this.state.context.fillRect(600, 135, 15, 160);
 }
 
-Panel.prototype.drawBottom = function(context) {
+Panel.prototype.drawBottom = function() {
 	if (!this.playButton.active) {
-		context.filter = "opacity(30%)";
+		this.state.context.filter = "opacity(30%)";
 	}
 	if(this.state.buttonPressed && this.state.selection == this.playButton) {
-		context.fillStyle = "#664321";
+		this.state.context.fillStyle = "#664321";
 	} else {
-		context.fillStyle = "#804c1b";
+		this.state.context.fillStyle = "#804c1b";
 	}
-	context.beginPath();
-	context.arc(this.playx, this.playy, this.playr, 0, 2*Math.PI);
-	context.fill();
+	this.state.context.beginPath();
+	this.state.context.arc(this.playx, this.playy, this.playr, 0, 2*Math.PI);
+	this.state.context.fill();
 
-	context.fillStyle = "#ffd630";
-	context.beginPath();
-	context.moveTo(this.playx - this.playr/4, this.playy - this.playr/2);
-	context.lineTo(this.playx - this.playr/4, this.playy + this.playr/2);
-	context.lineTo(this.playx + this.playr/2, this.playy);
-	context.closePath();
-	context.fill();
+	this.state.context.fillStyle = "#ffd630";
+	this.state.context.beginPath();
+	this.state.context.moveTo(this.playx - this.playr/4, this.playy - this.playr/2);
+	this.state.context.lineTo(this.playx - this.playr/4, this.playy + this.playr/2);
+	this.state.context.lineTo(this.playx + this.playr/2, this.playy);
+	this.state.context.closePath();
+	this.state.context.fill();
 
-	context.filter = "none";
+	this.state.context.filter = "none";
 }
 
 //Gets the coordinates of the top left corner of the tower option in the panel

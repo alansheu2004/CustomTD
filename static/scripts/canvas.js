@@ -125,7 +125,7 @@ CanvasState.prototype.update = function() {
 //Redraws all the elements
 CanvasState.prototype.validate = function() {
 	this.mapscreen.draw();
-	this.panel.draw(this.context);
+	this.panel.draw();
 
 	this.drawRoundNumber();
 	if(this.roundNotifyTimer > 0) {
