@@ -1,6 +1,8 @@
 const CANVAS_WIDTH = 640;
 const CANVAS_HEIGHT = 360;
 
+const MAP_X = 0;
+const MAP_Y = 0;
 const MAP_WIDTH = 480;
 const MAP_HEIGHT = 360;
 

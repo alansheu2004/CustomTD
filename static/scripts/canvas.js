@@ -40,6 +40,7 @@ function CanvasState(canvas) {
 	
 	this.buttons = [];
 
+	this.mapscreen = new MapScreen(this);
 	this.panel = new Panel(this);
 	
 	this.backgroundImage = "../images/map.png";
@@ -55,11 +56,11 @@ function CanvasState(canvas) {
 
 	this.enemies = [];
 	this.enemywaves = defaultwaves;
-	this.currentWave = [];
-	this.bunchTimer = [];
-	this.enemyCountdown = [];
+	this.currentWave = []; //
+	this.bunchTimer = []; //Countdown timer for each enemy bunch in the round
+	this.enemyCountdown = []; //How many enemies are left in each bunch
 
-	this.roundNotifyTimer = 0;
+	this.roundNotifyTimer = 0; //Time left until big round notification disappears
 
 	this.restartx = 320;
 	this.restarty = 210;
@@ -123,12 +124,7 @@ CanvasState.prototype.update = function() {
 
 //Redraws all the elements
 CanvasState.prototype.validate = function() {
-	this.clear();
-	this.drawBackground();
-	//this.path.draw(this.context);
-	this.drawEnemies();
-	this.drawTowers();
-
+	this.mapscreen.draw();
 	this.panel.draw(this.context);
 
 	this.drawRoundNumber();
@@ -146,18 +142,6 @@ CanvasState.prototype.validate = function() {
 	}
 	
 	this.valid = true;
-}
-
-//Clears the canvas, leaving it blank
-CanvasState.prototype.clear = function() {
-	this.context.clearRect(0,0,this.width,this.height);
-}
-
-//Draws the background of the game
-CanvasState.prototype.drawBackground = function() {
-	var background = new Image();
-	background.src = this.backgroundImage;
-	this.context.drawImage(background, 0, 0, this.canvas.width-160, this.canvas.height);
 }
 
 //Advances the position of each enemy
@@ -264,27 +248,6 @@ CanvasState.prototype.updateTowerStates = function(){
 //Sorts the enemies array from first in the path to last
 CanvasState.prototype.sortEnemies = function() {
 	this.enemies.sort(function(a, b) {return b.dist - a.dist});
-}
-
-//Draws each enemy
-CanvasState.prototype.drawEnemies = function() {
-	for (let enemy of this.enemies) {
-		enemy.draw(this.context);
-	}
-}
-
-//Draws each tower and their range/outline if necessary
-CanvasState.prototype.drawTowers = function() {
-	for (let tower of this.towers) {
-		if (this.hoveringTower) {
-			if (this.selection == tower) {
-				this.selection.drawRange(this.context);
-				this.selection.drawOutline(this.context);
-			}
-		}
-		tower.draw(this.context);
-		tower.drawProjectiles(this.context);
-	}
 }
 
 CanvasState.prototype.drawRoundNumber = function() {
