@@ -7,7 +7,8 @@ MapScreen.prototype.draw = function() {
 	this.drawBackground();
 	//this.path.draw(this.context);
 	this.drawEnemies();
-	this.drawTowers();
+    this.drawTowers();
+    this.drawResources();
 }
 
 //Clears the canvas, leaving it blank
@@ -41,4 +42,28 @@ MapScreen.prototype.drawTowers = function() {
 		tower.draw(this.state.context);
 		tower.drawProjectiles(this.state.context);
 	}
+}
+
+MapScreen.prototype.drawResources = function() {
+	
+	var healthImage = new Image();
+	healthImage.src = "../images/heart.png";
+	this.state.context.drawImage(healthImage, 10, 10, 20, 20);
+	
+	this.state.context.font = "small-caps 22px Oeztype";
+	this.state.context.textAlign = "center";
+	this.state.context.fillStyle = "#ffba30";
+	this.state.context.strokeStyle = "#c48a16";
+	this.state.context.lineWidth = 3;
+	this.state.context.strokeText("$", 20, 55);
+	this.state.context.fillText("$", 20, 55);
+	
+	this.state.context.font = "small-caps 18px Oeztype";
+	this.state.context.textAlign = "start";
+    this.state.context.fillStyle = "#ffd630";
+    this.state.context.lineWidth = 2;
+    this.state.context.strokeText(this.state.health, 37, 27);
+    this.state.context.fillText(this.state.health, 37, 27);
+    this.state.context.strokeText(this.state.money, 37, 52);
+    this.state.context.fillText(this.state.money, 37, 52);
 }

@@ -127,7 +127,7 @@ CanvasState.prototype.validate = function() {
 	this.mapscreen.draw();
 	this.panel.draw();
 
-	this.drawRoundNumber();
+	//this.drawRoundNumber();
 	if(this.roundNotifyTimer > 0) {
 		this.drawRoundNotification();
 	}
