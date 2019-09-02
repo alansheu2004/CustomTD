@@ -45,25 +45,43 @@ MapScreen.prototype.drawTowers = function() {
 }
 
 MapScreen.prototype.drawResources = function() {
+	this.state.context.font = "small-caps 22px Oeztype";
+	this.state.context.textAlign = "start";
+	this.state.context.fillStyle = "#ffd630";
+	this.state.context.strokeStyle = "#c48a16";
+	this.state.context.lineWidth = 2;
+	this.state.context.strokeText("Round", 13, 35);
+	this.state.context.fillText("Round", 13, 35);
+
+	this.state.context.font = "small-caps 30px Oeztype";
+	this.state.context.lineWidth = 3;
+	if(this.state.round > 0) {
+		this.state.context.strokeText(this.state.round, 85, 35);
+		this.state.context.fillText(this.state.round, 85, 35);
+	} else {
+		this.state.context.strokeText("-", 83, 35);
+		this.state.context.fillText("-", 83, 35);
+	}
 	
+
 	var healthImage = new Image();
 	healthImage.src = "../images/heart.png";
-	this.state.context.drawImage(healthImage, 10, 10, 20, 20);
+	this.state.context.drawImage(healthImage, 10, 45, 20, 20);
 	
 	this.state.context.font = "small-caps 22px Oeztype";
 	this.state.context.textAlign = "center";
 	this.state.context.fillStyle = "#ffba30";
 	this.state.context.strokeStyle = "#c48a16";
 	this.state.context.lineWidth = 3;
-	this.state.context.strokeText("$", 20, 55);
-	this.state.context.fillText("$", 20, 55);
+	this.state.context.strokeText("$", 20, 90);
+	this.state.context.fillText("$", 20, 90);
 	
 	this.state.context.font = "small-caps 18px Oeztype";
 	this.state.context.textAlign = "start";
     this.state.context.fillStyle = "#ffd630";
     this.state.context.lineWidth = 2;
-    this.state.context.strokeText(this.state.health, 37, 27);
-    this.state.context.fillText(this.state.health, 37, 27);
-    this.state.context.strokeText(this.state.money, 37, 52);
-    this.state.context.fillText(this.state.money, 37, 52);
+    this.state.context.strokeText(this.state.health, 37, 62);
+    this.state.context.fillText(this.state.health, 37, 62);
+    this.state.context.strokeText(this.state.money, 37, 87);
+    this.state.context.fillText(this.state.money, 37, 87);
 }
