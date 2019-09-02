@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Tower Defense Project</title>
+		<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+
+		{% include "snippets/favicons.html" %}
+	</head>
+	
+	<body>
+		<canvas id="mainCanvas" width="640" height="360">
+			Your browser does not support HTML5 Canvas.
+		</canvas>
+		
+		
+		<!--<u><h2 style="margin-top: 1vh;">Send Some Enemies!</h2></u>
+		<div style="margin-top: 1vh;">
+			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, RED))" style="background-color: red;"></button>
+			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, BLUE))" style="background-color: skyblue;"></button>
+			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, GREEN))" style="background-color: limegreen;"></button>
+			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, YELLOW))" style="background-color: yellow;"></button>
+			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, PINK))" style="background-color: pink;"></button>
+		</div>-->
+		
+	</body>
+	
+	{% for filename in scripts %}
+		{% if filename %}
+			<script type="text/javascript" src="{{ filename }}"></script>
+		{% endif %}
+	{% endfor %}
+</html>
