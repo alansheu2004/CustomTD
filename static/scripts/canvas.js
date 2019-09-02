@@ -22,6 +22,7 @@ function CanvasState(canvas) {
 	}
 	
 	this.valid = false; //Needs to be redrawn?
+	this.validating = false;
 	this.revalidationTimer = 1000; //Milliseconds until stop auto revalidation (Allow resources time to load)
 	
 	this.draggingTower = false; //Whether in the process of placing a tower
@@ -72,10 +73,6 @@ function CanvasState(canvas) {
 		function(state) {state.restartButton.active = false; window.clearInterval(state.loop); init();},
 		false);
 	this.addButton(this.restartButton);
-	
-	
-
-
 
 	this.interval = 20;
 	
@@ -117,13 +114,15 @@ CanvasState.prototype.update = function() {
 		}
 	}
 	
-	if(!this.valid) {
+	if(!this.valid && !this.validating) {
 		this.validate();
 	}
 }
 
 //Redraws all the elements
 CanvasState.prototype.validate = function() {
+	this.validating = true;
+
 	this.mapscreen.draw();
 	this.panel.draw();
 
@@ -142,6 +141,7 @@ CanvasState.prototype.validate = function() {
 	}
 	
 	this.valid = true;
+	this.validating = false;
 }
 
 //Advances the position of each enemy
