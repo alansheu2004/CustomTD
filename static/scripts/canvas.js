@@ -5,16 +5,27 @@ function init() {
 	if(currentState != null) {
 		currentState.nextRound = null;
 	}
-	currentState = new CanvasState(document.getElementById("mainCanvas"));
+
+	const DEFAULT_GAME = {
+		"backgroundImage" : "../images/map.png", 
+		"health" : 100,
+		"money" : 275,
+		"towerTypes" : defaultTowerTypes,
+		"path" : defaultPath,
+		"enemyWaves" : defaultWaves
+	}
+
+	currentState = new CanvasState(document.getElementById("mainCanvas"), DEFAULT_GAME);
 }
 
-//Defines the Canvas, game,  and all its properties
-function CanvasState(canvas) {
+//Defines the Canvas, game, and all its properties
+function CanvasState(canvas, game) {
 	this.canvas = canvas;
 	this.width = CANVAS_WIDTH || canvas.width;
 	this.height = CANVAS_HEIGHT || canvas.height;
 	this.context = canvas.getContext("2d");
 	var thisState = this; //To be referenced by anonymous inner classes
+	this.game = game;
 	
 	this.calibrateMeasures(this.canvas);
 	if (document.defaultView && document.defaultView.getComputedStyle) {
@@ -44,29 +55,23 @@ function CanvasState(canvas) {
 	this.mapscreen = new MapScreen(this);
 	this.panel = new Panel(this);
 	
-	this.backgroundImage = "../images/map.png";
-	
-	this.health = 100;
-	this.money = 275;
+	this.backgroundImage = game.backgroundImage;
+	this.health = game.health;
+	this.money = game.money;
 	this.round = 0;
 	this.inRound = false;
-	
-	this.towerTypes = defaultTowerTypes;
+	this.towerTypes = game.towerTypes;
 	this.towers = [];
-	this.path = defaultPath;
+	this.path = game.path;
 
 	this.enemies = [];
-	this.enemywaves = defaultwaves;
+	this.enemywaves = game.enemyWaves;
 	this.currentWave = []; //
 	this.bunchTimer = []; //Countdown timer for each enemy bunch in the round
 	this.enemyCountdown = []; //How many enemies are left in each bunch
 
 	this.roundNotifyTimer = 0; //Time left until big round notification disappears
 
-	this.restartx = 320;
-	this.restarty = 210;
-	this.restartw = 180;
-	this.restarth = 50;
 	this.restartButton = RESTART_BUTTON
 	this.addButton(this.restartButton);
 
@@ -326,6 +331,7 @@ CanvasState.prototype.calibrateMeasures = function(canvas) {
 
 window.onload = function() {
 	try {
+		
 		init();
 	} catch (e) {
 		alert("There's an error in the code:\n\n" + e.message + "\n\nPlease notify me1234q@gmail.com about this and wait approximately a month for a reply because that's how often he checks his email.")
