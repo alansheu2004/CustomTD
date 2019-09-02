@@ -9,7 +9,7 @@ function init() {
 	const DEFAULT_GAME = {
 		"backgroundImage" : "../images/map.png", 
 		"health" : 100,
-		"money" : 275,
+		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"path" : defaultPath,
 		"enemyWaves" : defaultWaves
@@ -195,6 +195,7 @@ CanvasState.prototype.updateEnemyWaves = function() {
 			this.gameOverText = "You Won!";
 			this.gameOver = true;
 		} else {
+			this.money += 50; //CHANGE THIS LATER
 			this.panel.playButton.active = true;
 		}
 		this.valid = false;

@@ -1,8 +1,8 @@
-var RED = new EnemyType(100, "red", null, 3, 1, 18);
-var BLUE = new EnemyType(133, "skyblue", RED, 3, 2, 18);
-var GREEN = new EnemyType(167, "limegreen", BLUE, 4, 3, 18);
-var YELLOW = new EnemyType(333, "yellow", GREEN, 4, 4, 18);
-var PINK = new EnemyType(367, "pink", YELLOW, 5, 5, 18);
+var RED = new EnemyType(100, "red", null, 1, 1, 16);
+var BLUE = new EnemyType(133, "skyblue", RED, 1, 2, 17);
+var GREEN = new EnemyType(167, "limegreen", BLUE, 2, 3, 18);
+var YELLOW = new EnemyType(333, "yellow", GREEN, 2, 4, 19);
+var PINK = new EnemyType(367, "pink", YELLOW, 3, 5, 20);
 
 function EnemyType(speed, color, child, rbe, damage, size) {
 	this.speed = speed; // px per sec
