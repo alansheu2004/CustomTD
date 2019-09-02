@@ -5,7 +5,7 @@ import sys
 freezer = Freezer(app)
 
 app.config['FREEZER_RELATIVE_URLS'] = True
-app.config['FREEZER_BASE_URL'] = "TowerDefense"
+app.config['FREEZER_BASE_URL'] = "TowerDefense/build"
 
 if __name__ == '__main__':
     freezer.freeze()
