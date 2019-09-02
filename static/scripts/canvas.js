@@ -5,16 +5,27 @@ function init() {
 	if(currentState != null) {
 		currentState.nextRound = null;
 	}
-	currentState = new CanvasState(document.getElementById("mainCanvas"));
+
+	const DEFAULT_GAME = {
+		"backgroundImage" : "../images/map.png", 
+		"health" : 100,
+		"money" : 200,
+		"towerTypes" : defaultTowerTypes,
+		"path" : defaultPath,
+		"enemyWaves" : defaultWaves
+	}
+
+	currentState = new CanvasState(document.getElementById("mainCanvas"), DEFAULT_GAME);
 }
 
-//Defines the Canvas, game,  and all its properties
-function CanvasState(canvas) {
+//Defines the Canvas, game, and all its properties
+function CanvasState(canvas, game) {
 	this.canvas = canvas;
-	this.width = canvas.width;
-	this.height = canvas.height;
+	this.width = CANVAS_WIDTH || canvas.width;
+	this.height = CANVAS_HEIGHT || canvas.height;
 	this.context = canvas.getContext("2d");
 	var thisState = this; //To be referenced by anonymous inner classes
+	this.game = game;
 	
 	this.calibrateMeasures(this.canvas);
 	if (document.defaultView && document.defaultView.getComputedStyle) {
@@ -22,16 +33,18 @@ function CanvasState(canvas) {
 	}
 	
 	this.valid = false; //Needs to be redrawn?
-	this.revalidationTimer = 1000; //Milliseconds until stop auto revalidation
+	this.validating = false;
+	this.revalidationTimer = 1000; //Milliseconds until stop auto revalidation (Allow resources time to load)
 	
-	this.dragging = false; //Whether in the process of placing a tower
-	this.focusing = false; //Hovering over a tower
-	this.optionFocusing = false; //Hovering over a tower option
+	this.draggingTower = false; //Whether in the process of placing a tower
+	this.hoveringTower = false; //Hovering over a placed tower
+	this.hoveringTowerOption = false; //Hovering over a tower option
 	this.selection = null; //The Object that is being dragged or hovered
 	this.selectionNumber = 0; //The Number of the TowerType selected
 	this.mouse = {x: 0, y: 0};
-	this.dragOutOfOption = false; //Has dragging tower left option box?
+	this.towerDraggedOutOfOptionBox = false; //Has dragging tower left option box?
 	this.buttonPressed = false;
+	this.mouseHandler = new MouseHandler(this);
 
 	this.gameOver = false;
 	this.gameOverFade = 0; //opacity of the game over screen fading in
@@ -39,110 +52,38 @@ function CanvasState(canvas) {
 	
 	this.buttons = [];
 
+	this.mapscreen = new MapScreen(this);
 	this.panel = new Panel(this);
 	
-	this.backgroundImage = "../images/map.png";
-	
-	this.health = 100;
-	this.money = 275;
+	this.backgroundImage = game.backgroundImage;
+	this.health = game.health;
+	this.money = game.money;
 	this.round = 0;
 	this.inRound = false;
-	
-	this.towerTypes = defaultTowerTypes;
+	this.towerTypes = game.towerTypes;
 	this.towers = [];
-	this.path = defaultPath;
+	this.path = game.path;
 
 	this.enemies = [];
-	this.enemywaves = defaultwaves;
-	this.currentWave = [];
-	this.bunchTimer = [];
-	this.enemyCountdown = [];
+	this.enemywaves = game.enemyWaves;
+	this.currentWave = []; //
+	this.bunchTimer = []; //Countdown timer for each enemy bunch in the round
+	this.enemyCountdown = []; //How many enemies are left in each bunch
 
-	this.roundNotifyTimer = 0;
+	this.roundNotifyTimer = 0; //Time left until big round notification disappears
 
-	this.restartx = 320;
-	this.restarty = 210;
-	this.restartw = 180;
-	this.restarth = 50;
-	this.restartButton = new Button(this, 
-		function(x, y) {return x>=thisState.restartx-thisState.restartw/2 && x<=thisState.restartx+thisState.restartw/2 &&
-			y>=thisState.restarty-thisState.restarty/2 && y<=thisState.restarty+thisState.restarth/2;},
-		function(state) {state.restartButton.active = false; window.clearInterval(state.loop); init();},
-		false);
+	this.restartButton = RESTART_BUTTON
 	this.addButton(this.restartButton);
-	
-	//Disables double clicking on the canvas to select text
-	canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
-	
-	
-	canvas.addEventListener('mousedown', function(e) {
-		var mouse = thisState.setMouse(e);
-		if (!thisState.startDragging(mouse)) {
-			return;
-		}
-	}, true);
-
-	canvas.addEventListener('mousemove', function(e) {
-		var mouse = thisState.setMouse(e);
-		if (thisState.moveDragging(mouse)){
-			//Do nothing
-		} else if (thisState.towerHovering(mouse)) {
-			return;
-		} else if (thisState.optionHovering(mouse)) {
-			return;
-		}
-		//Stops focusing if nothing returned
-		thisState.stopFocusing();
-	}, true);
-
-	canvas.addEventListener('mouseup', function(e) {
-		var mouse = thisState.setMouse(e);
-		if (thisState.dropTower(mouse)){
-			return;
-		} else if (thisState.releaseButton(mouse)) {
-			return;
-		}
-	}, true);
-
-
-
-	canvas.addEventListener('touchstart', function(e) {
-		e.preventDefault();
-		var mouse = thisState.setMouse(thisState.touchToMouseEvent(e, 'mousedown'));
-		if (thisState.startDragging(mouse)) {
-			
-		} else if (thisState.towerHovering(mouse)) {
-			return;
-		} else if (thisState.optionHovering(mouse)) {
-			return;
-		}
-		//Stops focusing if nothing returned
-		thisState.stopFocusing();
-	}, true);
-
-	canvas.addEventListener('touchmove', function(e) {
-		e.preventDefault();
-		var mouse = thisState.setMouse(thisState.touchToMouseEvent(e, 'mousemove'));
-		if (thisState.moveDragging(mouse)){
-			//Do nothing
-		} 
-	}, true);
-
-	canvas.addEventListener('touchend', function(e) {
-		e.preventDefault();
-		var mouse = thisState.mouse;
-		if (thisState.dropTowerTouch(mouse)){
-			return;
-		} else if (thisState.releaseButton(mouse)) {
-			return;
-		}
-	}, true);
-
-
 
 	this.interval = 20;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
+}
+
+//Adds a new tower
+CanvasState.prototype.addTower = function(towerType, x, y) {
+	this.towers.push(new Tower(this, towerType, x, y));
+	this.valid = false;
 }
 
 //Adds a new enemy
@@ -174,22 +115,19 @@ CanvasState.prototype.update = function() {
 		}
 	}
 	
-	if(!this.valid) {
+	if(!this.valid && !this.validating) {
 		this.validate();
 	}
 }
 
 //Redraws all the elements
 CanvasState.prototype.validate = function() {
-	this.clear();
-	this.drawBackground();
-	//this.path.draw(this.context);
-	this.drawEnemies();
-	this.drawTowers();
+	this.validating = true;
 
-	this.panel.draw(this.context);
+	this.mapscreen.draw();
+	this.panel.draw();
 
-	this.drawRoundNumber();
+	//this.drawRoundNumber();
 	if(this.roundNotifyTimer > 0) {
 		this.drawRoundNotification();
 	}
@@ -197,25 +135,14 @@ CanvasState.prototype.validate = function() {
 	if(this.gameOver) {
 		this.drawGameOver();
 	} else {
-		if(this.dragging && this.dragOutOfOption) {
+		if(this.draggingTower && this.towerDraggedOutOfOptionBox) {
 			this.selection.upgrades[0].drawRange(this.context, this.mouse.x, this.mouse.y);
 			this.selection.upgrades[0].draw(this.context, this.mouse.x, this.mouse.y);
 		}
 	}
 	
 	this.valid = true;
-}
-
-//Clears the canvas, leaving it blank
-CanvasState.prototype.clear = function() {
-	this.context.clearRect(0,0,this.width,this.height);
-}
-
-//Draws the background of the game
-CanvasState.prototype.drawBackground = function() {
-	var background = new Image();
-	background.src = this.backgroundImage;
-	this.context.drawImage(background, 0, 0, this.canvas.width-160, this.canvas.height);
+	this.validating = false;
 }
 
 //Advances the position of each enemy
@@ -268,6 +195,7 @@ CanvasState.prototype.updateEnemyWaves = function() {
 			this.gameOverText = "You Won!";
 			this.gameOver = true;
 		} else {
+			this.money += 50; //CHANGE THIS LATER
 			this.panel.playButton.active = true;
 		}
 		this.valid = false;
@@ -292,22 +220,7 @@ CanvasState.prototype.drawGameOver = function() {
 	if (this.gameOverFade >= 1) {
 		this.restartButton.active = true;
 
-		this.drawRestartButton();
-	}
-}
-
-CanvasState.prototype.drawRestartButton = function() {
-	if (this.restartButton.active) {
-		this.context.fillStyle = "#a6703c";
-		this.context.strokeStyle = "#664321";
-		this.context.lineWidth = 5;
-		this.context.fillRect(this.restartx-this.restartw/2, this.restarty-this.restarth/2, this.restartw, this.restarth);
-		this.context.strokeRect(this.restartx-this.restartw/2, this.restarty-this.restarth/2, this.restartw, this.restarth);
-
-		this.context.font = "small-caps " + 0.8*this.restarth + "px Oeztype";
-		this.context.textAlign = "center";
-		this.context.fillStyle = "#664321";
-		this.context.fillText("Restart", this.restartx, this.restarty+0.3*this.restarth);
+		this.restartButton.draw(this.context);
 	}
 }
 
@@ -322,27 +235,6 @@ CanvasState.prototype.updateTowerStates = function(){
 //Sorts the enemies array from first in the path to last
 CanvasState.prototype.sortEnemies = function() {
 	this.enemies.sort(function(a, b) {return b.dist - a.dist});
-}
-
-//Draws each enemy
-CanvasState.prototype.drawEnemies = function() {
-	for (let enemy of this.enemies) {
-		enemy.draw(this.context);
-	}
-}
-
-//Draws each tower and their range/outline if necessary
-CanvasState.prototype.drawTowers = function() {
-	for (let tower of this.towers) {
-		if (this.focusing) {
-			if (this.selection == tower) {
-				this.selection.drawRange(this.context);
-				this.selection.drawOutline(this.context);
-			}
-		}
-		tower.draw(this.context);
-		tower.drawProjectiles(this.context);
-	}
 }
 
 CanvasState.prototype.drawRoundNumber = function() {
@@ -422,156 +314,7 @@ CanvasState.prototype.setMouse = function(e) {
 	return this.mouse;
 }
 
-CanvasState.prototype.touchToMouseEvent = function(me, eventName) {
-	var touch = me.touches[0];
-	return new MouseEvent(eventName, {clientX: touch.clientX, clientY: touch.clientY})
-}
 
-//Returns whether dragging tower actually started
-CanvasState.prototype.startDragging = function(mouse) {
-	if (!this.dragging) {
-		for (var i = 0; i < this.towerTypes.length; i++) {
-			if (this.panel.optionContains(i, mouse.x, mouse.y) && this.money >= this.towerTypes[i].cost) {
-				this.dragging = true;
-				this.selectionNumber = i;
-				this.selection = this.towerTypes[i];
-				this.dragOutOfOption = false;
-				this.valid = false;
-				return true;
-			}
-		}
-
-		for (var i = 0; i < this.buttons.length; i++) {
-			
-			if (this.buttons[i].active && this.buttons[i].inBounds(mouse.x, mouse.y)) {
-				this.buttonPressed = true;
-				this.selection = this.buttons[i];
-				this.valid = false;
-				return true;
-			}
-		}
-		//Not selected any option
-		return false;
-	} else {
-		this.valid = false;
-		return true;
-	}
-}
-
-//Returns whether currently dragging
-CanvasState.prototype.moveDragging = function(mouse) {
-	if (this.dragging){
-		if(!this.dragOutOfOption) {
-			if(!this.panel.optionContains(this.selectionNumber, mouse.x, mouse.y)) {
-				this.dragOutOfOption = true;
-			}
-		}
-		this.valid = false;
-		return true;
-	} else if (this.buttonPressed){
-		if (!this.selection.inBounds(mouse.x, mouse.y)) {
-			this.buttonPressed = false;
-			this.valid = false;
-			return true;
-		}
-	} else {
-		return false;
-	}
-}
-
-CanvasState.prototype.towerHovering = function(mouse) {
-	if (mouse.x <= 480) {
-		for (var i = 0; i < this.towers.length; i++) {
-			if (this.towers[i].inBounds(mouse.x, mouse.y)) {
-				this.selection = this.towers[i];
-				this.focusing = true;
-				this.valid = false;
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-CanvasState.prototype.optionHovering = function(mouse) {
-	if (mouse.x > 480) {
-		for (var i = 0; i < this.towerTypes.length; i++) {
-			if(this.panel.optionContains(i, mouse.x, mouse.y)) {
-				this.optionFocusing = true;
-				this.selectionNumber = i;
-				this.selection = this.towerTypes[i];
-				this.valid = false;
-				return true;;
-			}
-		}
-	}
-	return false;
-	
-}
-
-CanvasState.prototype.stopFocusing = function() {
-	if (this.focusing) {
-		this.focusing = false;
-		this.valid = false;
-	}
-
-	if (this.optionFocusing) {
-		this.optionFocusing = false;
-		this.valid = false;
-	}
-}
-
-CanvasState.prototype.dropTower = function(mouse) {
-	if (this.dragging){
-		if(this.dragOutOfOption) {
-			if (mouse.x < 480) {
-				this.towers.push(new Tower(this, this.selection, mouse.x, mouse.y));
-				this.money -= this.selection.cost;
-			}
-			this.valid = false;
-			this.dragging = false;
-			return true;
-		} else {
-			this.dragOutOfOption = true;
-			this.dragging = true;
-		}
-		this.valid = false;
-		return true;
-	}
-	return false;
-}
-
-CanvasState.prototype.dropTowerTouch = function(mouse) {
-	if (this.dragging){
-		if(this.dragOutOfOption) {
-			if (mouse.x < 480) {
-				this.towers.push(new Tower(this, this.selection, mouse.x, mouse.y));
-				this.money -= this.selection.cost;
-			}
-			this.valid = false;
-			this.dragging = false;
-			return true;
-		} else {
-			this.optionFocusing = true;
-			this.dragging = false;
-		}
-		this.valid = false;
-		return true;
-	}
-	return false;
-}
-
-CanvasState.prototype.releaseButton = function(mouse) {
-	if (this.buttonPressed) {
-		this.buttonPressed = false;
-		if(this.selection.inBounds(mouse.x, mouse.y)) {
-			this.selection.action(this);
-			this.valid = false;
-			return true;
-		}
-	}
-	return false;
-}
 
 //Calculates accurate dimensions for the canvas
 CanvasState.prototype.calibrateMeasures = function(canvas) {
@@ -589,6 +332,7 @@ CanvasState.prototype.calibrateMeasures = function(canvas) {
 
 window.onload = function() {
 	try {
+		
 		init();
 	} catch (e) {
 		alert("There's an error in the code:\n\n" + e.message + "\n\nPlease notify me1234q@gmail.com about this and wait approximately a month for a reply because that's how often he checks his email.")

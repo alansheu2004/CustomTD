@@ -1,8 +1,8 @@
-var RED = new EnemyType(100, "red", null, 3, 1, 18);
-var BLUE = new EnemyType(133, "skyblue", RED, 3, 2, 18);
-var GREEN = new EnemyType(167, "limegreen", BLUE, 4, 3, 18);
-var YELLOW = new EnemyType(333, "yellow", GREEN, 4, 4, 18);
-var PINK = new EnemyType(367, "pink", YELLOW, 5, 5, 18);
+var RED = new EnemyType(100, "red", null, 1, 1, 16);
+var BLUE = new EnemyType(133, "skyblue", RED, 1, 2, 17);
+var GREEN = new EnemyType(167, "limegreen", BLUE, 2, 3, 18);
+var YELLOW = new EnemyType(333, "yellow", GREEN, 2, 4, 19);
+var PINK = new EnemyType(367, "pink", YELLOW, 3, 5, 20);
 
 function EnemyType(speed, color, child, rbe, damage, size) {
 	this.speed = speed; // px per sec
@@ -22,11 +22,11 @@ function Enemy(state, type) {
 	this.y = point.y;
 }
 
-Enemy.prototype.draw = function(context) {
-	context.beginPath();
-	context.arc(this.x, this.y, 13, 0, 2*Math.PI);
-	context.fillStyle = this.type.color;
-	context.fill();
+Enemy.prototype.draw = function() {
+	this.state.context.beginPath();
+	this.state.context.arc(this.x, this.y, 13, 0, 2*Math.PI);
+	this.state.context.fillStyle = this.type.color;
+	this.state.context.fill();
 }
 
 //Advances the distance of enemy traveled based on speed

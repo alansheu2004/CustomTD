@@ -1,10 +1,10 @@
-PEA = new ProjectileType(2, 1200, null, 
+PEA = new ProjectileType(2, 800, null, 
 						false,
 						"../images/pea.png", 15, 15);
-SMALL_PEA = new ProjectileType(1, 1200, null, 
+SMALL_PEA = new ProjectileType(1, 1000, null, 
 						false,
 						"../images/pea.png", 10, 10);
-STAR = new ProjectileType(null, 1200, 80, 
+STAR = new ProjectileType(null, 800, 80, 
 						false,
 						"../images/star.png", 18, 18);
 
@@ -89,6 +89,6 @@ Projectile.prototype.update = function() {
 	return false;
 }
 
-Projectile.prototype.draw = function(context) {
-	this.type.draw(context, this.x, this.y, this.angle);
+Projectile.prototype.draw = function() {
+	this.type.draw(this.state.context, this.x, this.y, this.angle);
 }
