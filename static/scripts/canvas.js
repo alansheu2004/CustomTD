@@ -67,11 +67,7 @@ function CanvasState(canvas) {
 	this.restarty = 210;
 	this.restartw = 180;
 	this.restarth = 50;
-	this.restartButton = new Button(this, 
-		function(x, y) {return x>=thisState.restartx-thisState.restartw/2 && x<=thisState.restartx+thisState.restartw/2 &&
-			y>=thisState.restarty-thisState.restarty/2 && y<=thisState.restarty+thisState.restarth/2;},
-		function(state) {state.restartButton.active = false; window.clearInterval(state.loop); init();},
-		false);
+	this.restartButton = RESTART_BUTTON
 	this.addButton(this.restartButton);
 
 	this.interval = 20;
@@ -218,22 +214,7 @@ CanvasState.prototype.drawGameOver = function() {
 	if (this.gameOverFade >= 1) {
 		this.restartButton.active = true;
 
-		this.drawRestartButton();
-	}
-}
-
-CanvasState.prototype.drawRestartButton = function() {
-	if (this.restartButton.active) {
-		this.context.fillStyle = "#a6703c";
-		this.context.strokeStyle = "#664321";
-		this.context.lineWidth = 5;
-		this.context.fillRect(this.restartx-this.restartw/2, this.restarty-this.restarth/2, this.restartw, this.restarth);
-		this.context.strokeRect(this.restartx-this.restartw/2, this.restarty-this.restarth/2, this.restartw, this.restarth);
-
-		this.context.font = "small-caps " + 0.8*this.restarth + "px Oeztype";
-		this.context.textAlign = "center";
-		this.context.fillStyle = "#664321";
-		this.context.fillText("Restart", this.restartx, this.restarty+0.3*this.restarth);
+		this.restartButton.draw(this.context);
 	}
 }
 

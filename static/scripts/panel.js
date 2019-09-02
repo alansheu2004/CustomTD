@@ -1,14 +1,27 @@
 function Panel(state) {
 	this.state = state;
 
-	this.playx = 560;
-	this.playy = 332;
-	this.playr = 20;
+	
 
 	var thisPanel = this;
 
 	this.playButton = new Button(state, 
-		function(x, y) {return Math.hypot(x-thisPanel.playx, y-thisPanel.playy) <= thisPanel.playr;},
+		function(x, y) {return Math.hypot(x-PLAY_BUTTON_X, y-PLAY_BUTTON_Y) <= PLAY_BUTTON_R;},
+		function(context) {
+			context.beginPath();
+			context.arc(PLAY_BUTTON_X, PLAY_BUTTON_Y, PLAY_BUTTON_R, 0, 2*Math.PI);
+			context.fill();
+
+			context.fillStyle = "#ffd630";
+			context.beginPath();
+			context.moveTo(PLAY_BUTTON_X - PLAY_BUTTON_R/4, PLAY_BUTTON_Y - PLAY_BUTTON_R/2);
+			context.lineTo(PLAY_BUTTON_X - PLAY_BUTTON_R/4, PLAY_BUTTON_Y + PLAY_BUTTON_R/2);
+			context.lineTo(PLAY_BUTTON_X + PLAY_BUTTON_R/2, PLAY_BUTTON_Y);
+			context.closePath();
+			context.fill();
+
+			context.filter = "none";
+		},
 		function(state) {state.nextRound();},
 		true);
 	state.addButton(this.playButton);
@@ -88,19 +101,7 @@ Panel.prototype.drawBottom = function() {
 	} else {
 		this.state.context.fillStyle = "#804c1b";
 	}
-	this.state.context.beginPath();
-	this.state.context.arc(this.playx, this.playy, this.playr, 0, 2*Math.PI);
-	this.state.context.fill();
-
-	this.state.context.fillStyle = "#ffd630";
-	this.state.context.beginPath();
-	this.state.context.moveTo(this.playx - this.playr/4, this.playy - this.playr/2);
-	this.state.context.lineTo(this.playx - this.playr/4, this.playy + this.playr/2);
-	this.state.context.lineTo(this.playx + this.playr/2, this.playy);
-	this.state.context.closePath();
-	this.state.context.fill();
-
-	this.state.context.filter = "none";
+	 this.playButton.draw(this.state.context);
 }
 
 //Gets the coordinates of the top left corner of the tower option in the panel
