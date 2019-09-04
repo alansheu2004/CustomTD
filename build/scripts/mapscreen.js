@@ -65,7 +65,7 @@ MapScreen.prototype.drawResources = function() {
 	
 
 	var healthImage = new Image();
-	healthImage.src = "../images/heart.png";
+	healthImage.src = "images/heart.png";
 	this.state.context.drawImage(healthImage, 10, 45, 20, 20);
 	
 	this.state.context.font = "small-caps 22px Oeztype";
