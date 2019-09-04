@@ -8,7 +8,7 @@ function init() {
 
 	const DEFAULT_GAME = {
 		"backgroundImage" : "images/map.png", 
-		"health" : 100,
+		"health" : 20,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"path" : defaultPath,
