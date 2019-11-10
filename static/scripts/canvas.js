@@ -6,13 +6,21 @@ function init() {
 		currentState.nextRound = null;
 	}
 
-	const DEFAULT_GAME = {
+	var DEFAULT_GAME = {
 		"backgroundImage" : "images/map.png", 
 		"health" : 100,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"path" : defaultPath,
-		"enemyWaves" : defaultWaves
+		"enemyWaves" : defaultWaves,
+		"font" : "Oeztype",
+
+		"panelBaseColor" : "#996633",
+		"panelBoxColor": "#d3a06e",
+		"panelTopBoxTextColor" : "#ffd630",
+		"panelTowerOptionBoxFillColor" : "#f4cea8",
+		"panelTowerOptionBoxHoverOutlineColor" : "#f4cea8",
+		"panelTowerOptionScrollBarColor" : "#664321"
 	}
 
 	currentState = new CanvasState(document.getElementById("mainCanvas"), DEFAULT_GAME);
@@ -21,8 +29,8 @@ function init() {
 //Defines the Canvas, game, and all its properties
 function CanvasState(canvas, game) {
 	this.canvas = canvas;
-	this.width = CANVAS_WIDTH || canvas.width;
-	this.height = CANVAS_HEIGHT || canvas.height;
+	this.width = CANVAS_WIDTH;
+	this.height = CANVAS_HEIGHT;
 	this.context = canvas.getContext("2d");
 	var thisState = this; //To be referenced by anonymous inner classes
 	this.game = game;
@@ -54,6 +62,8 @@ function CanvasState(canvas, game) {
 
 	this.mapscreen = new MapScreen(this);
 	this.panel = new Panel(this);
+
+	this.font = game.font;
 	
 	this.backgroundImage = game.backgroundImage;
 	this.health = game.health;
@@ -72,7 +82,15 @@ function CanvasState(canvas, game) {
 
 	this.roundNotifyTimer = 0; //Time left until big round notification disappears
 
-	this.restartButton = RESTART_BUTTON
+	this.restartButton = new Button(this, 
+	    function(x, y) { //inbounds
+	        return x>=RESTART_BUTTON_MID_X-RESTART_BUTTON_W/2 && x<=RESTART_BUTTON_MID_X+RESTART_BUTTON_W/2 &&
+	        y>=RESTART_BUTTON_MID_Y-RESTART_BUTTON_H/2 && y<=RESTART_BUTTON_MID_Y+RESTART_BUTTON_H/2;
+	    },
+	    function(state) { //action
+	        state.restartButton.active = false; window.clearInterval(state.loop); init();
+	    },
+	    false);
 	this.addButton(this.restartButton);
 
 	this.interval = 20;
@@ -220,8 +238,21 @@ CanvasState.prototype.drawGameOver = function() {
 	if (this.gameOverFade >= 1) {
 		this.restartButton.active = true;
 
-		this.restartButton.draw(this.context);
+		this.drawRestartButton()
 	}
+}
+
+CanvasState.prototype.drawRestartButton = function() {
+    this.context.fillStyle = "#a6703c";
+	this.context.strokeStyle = "#664321";
+	this.context.lineWidth = 5;
+	this.context.fillRect(RESTART_BUTTON_MID_X-RESTART_BUTTON_W/2, RESTART_BUTTON_MID_Y-RESTART_BUTTON_H/2, RESTART_BUTTON_W, RESTART_BUTTON_H);
+	this.context.strokeRect(RESTART_BUTTON_MID_X-RESTART_BUTTON_W/2, RESTART_BUTTON_MID_Y-RESTART_BUTTON_H/2, RESTART_BUTTON_W, RESTART_BUTTON_H);
+
+	this.context.font = "small-caps " + 0.8*RESTART_BUTTON_H + "px Oeztype";
+	this.context.textAlign = "center";
+	this.context.fillStyle = "#664321";
+	this.context.fillText("Restart", RESTART_BUTTON_MID_X, RESTART_BUTTON_MID_Y+0.3*RESTART_BUTTON_H);
 }
 
 //Updates the towers based on enemies
@@ -328,6 +359,15 @@ CanvasState.prototype.calibrateMeasures = function(canvas) {
 	var html = document.body.parentNode;
 	this.htmlTop = html.offsetTop;
 	this.htmlLeft = html.offsetLeft;
+}
+
+CanvasState.prototype.toggleFullscreen = function() {
+	var thisState = this;
+	if(document.fullscreenElement==null) {
+		this.canvas.requestFullscreen().then(function() {thisState.valid = false;});
+	} else {
+		document.exitFullscreen().then(function() {thisState.valid = false;});;
+	}
 }
 
 window.onload = function() {
