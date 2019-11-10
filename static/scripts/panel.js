@@ -1,6 +1,6 @@
 function Panel(state) {
 	this.state = state;
-
+	this.game = state.game;
 	
 
 	var thisPanel = this;
@@ -22,55 +22,58 @@ function Panel(state) {
 Panel.prototype.draw = function() {
 	
 	this.drawBase();
+
+	this.drawTopBox();
 	
-	this.towerOptionSize = 40;
 	this.drawTowerBox();
 
 	this.drawButtons();
 }
 
 Panel.prototype.drawBase = function() {
-	this.state.context.fillStyle = "#996633";
+	this.state.context.fillStyle = this.game.panelBaseColor;
 	this.state.context.fillRect(PANEL_X, PANEL_Y, PANEL_WIDTH, PANEL_HEIGHT);
+}
+
+Panel.prototype.drawTopBox = function() {
+	this.state.context.fillStyle = this.game.panelBoxColor;
+	this.state.context.fillRect(PANEL_TOWER_BOX_X, PANEL_TOWER_BOX_Y, PANEL_TOWER_BOX_WIDTH, PANEL_TOWER_BOX_HEIGHT);
+	
+	this.state.context.textAlign = "center";
+	this.state.context.fillStyle = this.game.panelTopBoxTextColor;
+	if(this.state.draggingTower || this.state.hoveringTowerOption) {
+		this.state.context.font = "small-caps 18px " + this.game.font;
+		this.state.context.fillText("$" + this.state.selection.cost, PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_COST_OFFSET_Y);
+		this.state.context.font = "small-caps 14px " + this.game.font;
+		this.state.context.fillText(this.state.selection.name, PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_NAME_OFFSET_Y);
+	} else {
+		this.state.context.font = "small-caps 27px " + this.game.font;
+		this.state.context.fillText("-Towers-", PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_TEXT_OFFSET_Y);
+	}
 }
 
 //Draws the container and its contexts for the tower options
 Panel.prototype.drawTowerBox = function() {
-	this.state.context.fillStyle = "#d3a06e";
-	this.state.context.fillRect(PANEL_TOWER_BOX_X, PANEL_TOWER_BOX_Y, PANEL_TOWER_BOX_WIDTH, PANEL_TOWER_BOX_HEIGHT);
-	
-	this.state.context.textAlign = "center";
-	this.state.context.fillStyle = "#ffd630";
-	if(this.state.draggingTower || this.state.hoveringTowerOption) {
-		this.state.context.font = "small-caps 18px Oeztype";
-		this.state.context.fillText("$" + this.state.selection.cost, PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_COST_OFFSET_Y);
-		this.state.context.font = "small-caps 14px Oeztype";
-		this.state.context.fillText(this.state.selection.name, PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_NAME_OFFSET_Y);
-	} else {
-		this.state.context.font = "small-caps 27px Oeztype";
-		this.state.context.fillText("-Towers-", PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_TEXT_OFFSET_Y);
-	}
-	
-	this.state.context.fillStyle = "#d3a06e";
+	this.state.context.fillStyle = this.game.panelBoxColor;
 	this.state.context.fillRect(PANEL_TOWER_OPTION_BOX_X, PANEL_TOWER_OPTION_BOX_Y, PANEL_TOWER_OPTION_BOX_WIDTH, PANEL_TOWER_OPTION_BOX_HEIGHT);
 	
 	for (var i=0; i<this.state.towerTypes.length; i++) {
 		this.state.context.filter = "none";
-		this.state.context.fillStyle = "#f4cea8";
+		this.state.context.fillStyle = this.game.panelTowerOptionBoxFillColor;
 		var towerCoors = this.getTowerOptionCoors(i);
-		this.state.context.fillRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
+		this.state.context.fillRect(towerCoors.x+PANEL_TOWER_OPTION_PADDING, towerCoors.y+PANEL_TOWER_OPTION_PADDING, PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING), PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING));
 
 		if((this.state.draggingTower || this.state.hoveringTowerOption) && this.state.selection==this.state.towerTypes[i]) {
-			this.state.context.strokeStyle = "#b07b48";
-			this.state.context.lineWidth = 3;
-			this.state.context.strokeRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
+			this.state.context.strokeStyle = this.game.panelTowerOptionBoxHoverOutlineColor;
+			this.state.context.lineWidth = PANEL_TOWER_OPTION_PADDING;
+			this.state.context.strokeRect(towerCoors.x+PANEL_TOWER_OPTION_PADDING, towerCoors.y+PANEL_TOWER_OPTION_PADDING, PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING), PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING));
 		}
 
 		if (this.state.money < this.state.towerTypes[i].cost) {
 			this.state.context.filter = "brightness(40%)";
 		}
 		
-		this.state.towerTypes[i].upgrades[0].drawFit(this.state.context, towerCoors.x+this.towerOptionSize/2, towerCoors.y+this.towerOptionSize/2, 40);
+		this.state.towerTypes[i].upgrades[0].drawFit(this.state.context, towerCoors.x+PANEL_TOWER_OPTION_SIZE/2, towerCoors.y+PANEL_TOWER_OPTION_SIZE/2, PANEL_TOWER_OPTION_SIZE);
 		this.state.context.filter = "none";
 	}
 	
@@ -79,7 +82,7 @@ Panel.prototype.drawTowerBox = function() {
 
 //Draws the scrollbar in the tower box
 Panel.prototype.drawScrollBar = function() {
-	this.state.context.fillStyle = "#664321";
+	this.state.context.fillStyle = this.game.panelTowerOptionScrollBarColor;
 	this.state.context.fillRect(PANEL_TOWER_OPTION_SCROLL_BAR_X, PANEL_TOWER_OPTION_SCROLL_BAR_Y, PANEL_TOWER_OPTION_SCROLL_BAR_WIDTH, PANEL_TOWER_OPTION_SCROLL_BAR_HEIGHT);
 }
 

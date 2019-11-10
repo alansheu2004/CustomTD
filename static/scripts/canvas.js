@@ -6,14 +6,21 @@ function init() {
 		currentState.nextRound = null;
 	}
 
-	const DEFAULT_GAME = {
+	var DEFAULT_GAME = {
 		"backgroundImage" : "images/map.png", 
 		"health" : 100,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"path" : defaultPath,
 		"enemyWaves" : defaultWaves,
-		"font" : "Oeztype"
+		"font" : "Oeztype",
+
+		"panelBaseColor" : "#996633",
+		"panelBoxColor": "#d3a06e",
+		"panelTopBoxTextColor" : "#ffd630",
+		"panelTowerOptionBoxFillColor" : "#f4cea8",
+		"panelTowerOptionBoxHoverOutlineColor" : "#f4cea8",
+		"panelTowerOptionScrollBarColor" : "#664321"
 	}
 
 	currentState = new CanvasState(document.getElementById("mainCanvas"), DEFAULT_GAME);

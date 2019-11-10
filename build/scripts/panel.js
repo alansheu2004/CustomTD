@@ -1,85 +1,79 @@
 function Panel(state) {
 	this.state = state;
-
+	this.game = state.game;
 	
 
 	var thisPanel = this;
 
 	this.playButton = new Button(state, 
 		function(x, y) {return Math.hypot(x-PLAY_BUTTON_X, y-PLAY_BUTTON_Y) <= PLAY_BUTTON_R;},
-		function(context) {
-			context.beginPath();
-			context.arc(PLAY_BUTTON_X, PLAY_BUTTON_Y, PLAY_BUTTON_R, 0, 2*Math.PI);
-			context.fill();
-
-			context.fillStyle = "#ffd630";
-			context.beginPath();
-			context.moveTo(PLAY_BUTTON_X - PLAY_BUTTON_R/4, PLAY_BUTTON_Y - PLAY_BUTTON_R/2);
-			context.lineTo(PLAY_BUTTON_X - PLAY_BUTTON_R/4, PLAY_BUTTON_Y + PLAY_BUTTON_R/2);
-			context.lineTo(PLAY_BUTTON_X + PLAY_BUTTON_R/2, PLAY_BUTTON_Y);
-			context.closePath();
-			context.fill();
-
-			context.filter = "none";
-		},
 		function(state) {state.nextRound();},
 		true);
 	state.addButton(this.playButton);
+
+	this.fullscreenButton = new Button(state, 
+		function(x, y) {return Math.hypot(x-FULLSCREEN_BUTTON_X, y-FULLSCREEN_BUTTON_Y) <= FULLSCREEN_BUTTON_R;},
+		function(state) {state.toggleFullscreen();},
+		true);
+	state.addButton(this.fullscreenButton);
 }
 
 //Draws the panel
 Panel.prototype.draw = function() {
 	
 	this.drawBase();
+
+	this.drawTopBox();
 	
-	this.towerOptionSize = 40;
 	this.drawTowerBox();
 
-	this.drawBottom();
+	this.drawButtons();
 }
 
 Panel.prototype.drawBase = function() {
-	this.state.context.fillStyle = "#996633";
+	this.state.context.fillStyle = this.game.panelBaseColor;
 	this.state.context.fillRect(PANEL_X, PANEL_Y, PANEL_WIDTH, PANEL_HEIGHT);
+}
+
+Panel.prototype.drawTopBox = function() {
+	this.state.context.fillStyle = this.game.panelBoxColor;
+	this.state.context.fillRect(PANEL_TOWER_BOX_X, PANEL_TOWER_BOX_Y, PANEL_TOWER_BOX_WIDTH, PANEL_TOWER_BOX_HEIGHT);
+	
+	this.state.context.textAlign = "center";
+	this.state.context.fillStyle = this.game.panelTopBoxTextColor;
+	if(this.state.draggingTower || this.state.hoveringTowerOption) {
+		this.state.context.font = "small-caps 18px " + this.game.font;
+		this.state.context.fillText("$" + this.state.selection.cost, PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_COST_OFFSET_Y);
+		this.state.context.font = "small-caps 14px " + this.game.font;
+		this.state.context.fillText(this.state.selection.name, PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_NAME_OFFSET_Y);
+	} else {
+		this.state.context.font = "small-caps 27px " + this.game.font;
+		this.state.context.fillText("-Towers-", PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_TEXT_OFFSET_Y);
+	}
 }
 
 //Draws the container and its contexts for the tower options
 Panel.prototype.drawTowerBox = function() {
-	this.state.context.fillStyle = "#d3a06e";
-	this.state.context.fillRect(PANEL_TOWER_BOX_X, PANEL_TOWER_BOX_Y, PANEL_TOWER_BOX_WIDTH, PANEL_TOWER_BOX_HEIGHT);
-	
-	this.state.context.textAlign = "center";
-	this.state.context.fillStyle = "#ffd630";
-	if(this.state.draggingTower || this.state.hoveringTowerOption) {
-		this.state.context.font = "small-caps 18px Oeztype";
-		this.state.context.fillText("$" + this.state.selection.cost, PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_COST_OFFSET_Y);
-		this.state.context.font = "small-caps 15px Oeztype";
-		this.state.context.fillText(this.state.selection.name, PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_NAME_OFFSET_Y);
-	} else {
-		this.state.context.font = "small-caps 27px Oeztype";
-		this.state.context.fillText("-Towers-", PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_TEXT_OFFSET_Y);
-	}
-	
-	this.state.context.fillStyle = "#d3a06e";
+	this.state.context.fillStyle = this.game.panelBoxColor;
 	this.state.context.fillRect(PANEL_TOWER_OPTION_BOX_X, PANEL_TOWER_OPTION_BOX_Y, PANEL_TOWER_OPTION_BOX_WIDTH, PANEL_TOWER_OPTION_BOX_HEIGHT);
 	
 	for (var i=0; i<this.state.towerTypes.length; i++) {
 		this.state.context.filter = "none";
-		this.state.context.fillStyle = "#f4cea8";
+		this.state.context.fillStyle = this.game.panelTowerOptionBoxFillColor;
 		var towerCoors = this.getTowerOptionCoors(i);
-		this.state.context.fillRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
+		this.state.context.fillRect(towerCoors.x+PANEL_TOWER_OPTION_PADDING, towerCoors.y+PANEL_TOWER_OPTION_PADDING, PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING), PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING));
 
 		if((this.state.draggingTower || this.state.hoveringTowerOption) && this.state.selection==this.state.towerTypes[i]) {
-			this.state.context.strokeStyle = "#b07b48";
-			this.state.context.lineWidth = 3;
-			this.state.context.strokeRect(towerCoors.x+3, towerCoors.y+3, this.towerOptionSize-6, this.towerOptionSize-6);
+			this.state.context.strokeStyle = this.game.panelTowerOptionBoxHoverOutlineColor;
+			this.state.context.lineWidth = PANEL_TOWER_OPTION_PADDING;
+			this.state.context.strokeRect(towerCoors.x+PANEL_TOWER_OPTION_PADDING, towerCoors.y+PANEL_TOWER_OPTION_PADDING, PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING), PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING));
 		}
 
 		if (this.state.money < this.state.towerTypes[i].cost) {
-			this.state.context.filter = "brightness(50%)";
+			this.state.context.filter = "brightness(40%)";
 		}
 		
-		this.state.towerTypes[i].upgrades[0].drawFit(this.state.context, towerCoors.x+this.towerOptionSize/2, towerCoors.y+this.towerOptionSize/2, 40);
+		this.state.towerTypes[i].upgrades[0].drawFit(this.state.context, towerCoors.x+PANEL_TOWER_OPTION_SIZE/2, towerCoors.y+PANEL_TOWER_OPTION_SIZE/2, PANEL_TOWER_OPTION_SIZE);
 		this.state.context.filter = "none";
 	}
 	
@@ -88,11 +82,16 @@ Panel.prototype.drawTowerBox = function() {
 
 //Draws the scrollbar in the tower box
 Panel.prototype.drawScrollBar = function() {
-	this.state.context.fillStyle = "#664321";
+	this.state.context.fillStyle = this.game.panelTowerOptionScrollBarColor;
 	this.state.context.fillRect(PANEL_TOWER_OPTION_SCROLL_BAR_X, PANEL_TOWER_OPTION_SCROLL_BAR_Y, PANEL_TOWER_OPTION_SCROLL_BAR_WIDTH, PANEL_TOWER_OPTION_SCROLL_BAR_HEIGHT);
 }
 
-Panel.prototype.drawBottom = function() {
+Panel.prototype.drawButtons = function() {
+	this.drawPlayButton();
+	this.drawFullscreenButton();
+}
+
+Panel.prototype.drawPlayButton = function() {
 	if (!this.playButton.active) {
 		this.state.context.filter = "opacity(30%)";
 	}
@@ -101,7 +100,80 @@ Panel.prototype.drawBottom = function() {
 	} else {
 		this.state.context.fillStyle = "#804c1b";
 	}
-	 this.playButton.draw(this.state.context);
+
+	this.state.context.beginPath();
+	this.state.context.arc(PLAY_BUTTON_X, PLAY_BUTTON_Y, PLAY_BUTTON_R, 0, 2*Math.PI);
+	this.state.context.fill();
+
+	this.state.context.fillStyle = "#ffd630";
+	this.state.context.beginPath();
+	this.state.context.moveTo(PLAY_BUTTON_X - PLAY_BUTTON_R/4, PLAY_BUTTON_Y - PLAY_BUTTON_R/2);
+	this.state.context.lineTo(PLAY_BUTTON_X - PLAY_BUTTON_R/4, PLAY_BUTTON_Y + PLAY_BUTTON_R/2);
+	this.state.context.lineTo(PLAY_BUTTON_X + PLAY_BUTTON_R/2, PLAY_BUTTON_Y);
+	this.state.context.closePath();
+	this.state.context.fill();
+
+	this.state.context.filter = "none";
+}
+
+Panel.prototype.drawFullscreenButton = function() {
+	if(this.state.buttonPressed && this.state.selection == this.fullscreenButton) {
+		this.state.context.fillStyle = "#664321";
+	} else {
+		this.state.context.fillStyle = "#804c1b";
+	}
+
+	this.state.context.beginPath();
+	this.state.context.arc(FULLSCREEN_BUTTON_X, FULLSCREEN_BUTTON_Y, FULLSCREEN_BUTTON_R, 0, 2*Math.PI);
+	this.state.context.fill();
+
+	this.state.context.strokeStyle = "#ffd630";
+	this.state.context.lineWidth = FULLSCREEN_BUTTON_R / 6;
+
+	var nfss = 8;
+	var nfsb = 2;
+	var fss = 4.5;
+	var fsb = 1.75
+
+	if(document.fullscreenElement == null) {
+		this.state.context.beginPath();
+		this.state.context.moveTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/nfss, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/nfsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/nfsb, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/nfsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/nfsb, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/nfss);
+
+		this.state.context.moveTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/nfss, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/nfsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/nfsb, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/nfsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/nfsb, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/nfss);
+
+		this.state.context.moveTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/nfss, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/nfsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/nfsb, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/nfsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/nfsb, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/nfss);
+
+		this.state.context.moveTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/nfss, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/nfsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/nfsb, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/nfsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/nfsb, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/nfss);
+	} else {
+		this.state.context.beginPath();
+		this.state.context.moveTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/fss, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/fsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/fss, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/fss);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/fsb, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/fss);
+
+		this.state.context.moveTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/fss, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/fsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/fss, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/fss);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/fsb, FULLSCREEN_BUTTON_Y - FULLSCREEN_BUTTON_R/fss);
+
+		this.state.context.moveTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/fss, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/fsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/fss, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/fss);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X - FULLSCREEN_BUTTON_R/fsb, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/fss);
+
+		this.state.context.moveTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/fss, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/fsb);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/fss, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/fss);
+		this.state.context.lineTo(FULLSCREEN_BUTTON_X + FULLSCREEN_BUTTON_R/fsb, FULLSCREEN_BUTTON_Y + FULLSCREEN_BUTTON_R/fss);
+	}
+
+	this.state.context.stroke();
+
+	this.state.context.filter = "none";
 }
 
 //Gets the coordinates of the top left corner of the tower option in the panel
