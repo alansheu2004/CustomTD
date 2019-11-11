@@ -8,12 +8,16 @@ function init() {
 
 	var DEFAULT_GAME = {
 		"backgroundImage" : "images/map.png", 
-		"health" : 50,
+		"health" : 1,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"path" : defaultPath,
 		"enemyWaves" : defaultWaves,
 		"font" : "Oeztype",
+
+		"gameOverBackgroundColor" : "rgb(211, 160, 110)",
+		"gameOverTextColor" : "#996633",
+		"gameOverTextStrokeColor" : "rgb(102, 67, 33)",
 
 		"mapScreenTextColor" : "#ffd630",
 		"mapScreenTextStrokeColor" : "#c48a16",
@@ -89,8 +93,8 @@ function CanvasState(canvas, game) {
 
 	this.restartButton = new Button(this, 
 	    function(x, y) { //inbounds
-	        return x>=RESTART_BUTTON_MID_X-RESTART_BUTTON_W/2 && x<=RESTART_BUTTON_MID_X+RESTART_BUTTON_W/2 &&
-	        y>=RESTART_BUTTON_MID_Y-RESTART_BUTTON_H/2 && y<=RESTART_BUTTON_MID_Y+RESTART_BUTTON_H/2;
+	        return x>=0 && x<=CANVAS_WIDTH &&
+	        y>=0 && y<=CANVAS_HEIGHT;
 	    },
 	    function(state) { //action
 	        state.restartButton.active = false; window.clearInterval(state.loop); init();
@@ -146,6 +150,8 @@ CanvasState.prototype.update = function() {
 //Redraws all the elements
 CanvasState.prototype.validate = function() {
 	this.validating = true;
+
+	this.context.filter= "none";
 
 	this.mapscreen.draw();
 	this.panel.draw();
@@ -229,36 +235,30 @@ CanvasState.prototype.updateEnemyWaves = function() {
 
 //Disactivates the update loop and displays a game over screen
 CanvasState.prototype.drawGameOver = function() {
-	this.context.fillStyle = "rgb(211, 160, 110, " + this.gameOverFade + ")";
-	this.context.fillRect(0, 0, 640, 480);
+	this.context.globalAlpha = this.gameOverFade;
+	this.context.fillStyle = this.game.gameOverBackgroundColor;
+	this.context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	
-	this.context.font = "small-caps 72px Oeztype";
+	this.context.font = "small-caps " + GAME_OVER_TEXT_FONT_SIZE + "px " + this.game.font;
 	this.context.textAlign = "center";
 	this.context.textBaseline = "alphabetic";
-	this.context.fillStyle = "rgb(255, 214, 48, " + this.gameOverFade + ")";
-	this.context.strokeStyle = "rgb(102, 67, 33, " + this.gameOverFade + ")";
-	this.context.lineWidth = 3;
-	this.context.fillText(this.gameOverText, 320, 150);
-	this.context.strokeText(this.gameOverText, 320, 150);
+	this.context.fillStyle =  this.game.gameOverTextColor;
+	this.context.strokeStyle =  this.game.gameOverTextStrokeColor;
+	this.context.lineWidth = GAME_OVER_TEXT_FONT_SIZE/20;
+	this.context.fillText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
+	//this.context.strokeText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
 	
+	this.context.globalAlpha = 1;
+
 	if (this.gameOverFade >= 1) {
 		this.restartButton.active = true;
 
-		this.drawRestartButton()
+		this.setFontFit("Click Anywhere to Restart", RESTART_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
+		this.context.textAlign = "center";
+		this.context.baseLine = "hanging";
+		this.context.fillStyle = this.game.gameOverTextColor;
+		this.context.fillText("Click Anywhere to Restart", CANVAS_WIDTH/2, RESTART_TEXT_CENTER_Y);
 	}
-}
-
-CanvasState.prototype.drawRestartButton = function() {
-    this.context.fillStyle = "#a6703c";
-	this.context.strokeStyle = "#664321";
-	this.context.lineWidth = 5;
-	this.context.fillRect(RESTART_BUTTON_MID_X-RESTART_BUTTON_W/2, RESTART_BUTTON_MID_Y-RESTART_BUTTON_H/2, RESTART_BUTTON_W, RESTART_BUTTON_H);
-	this.context.strokeRect(RESTART_BUTTON_MID_X-RESTART_BUTTON_W/2, RESTART_BUTTON_MID_Y-RESTART_BUTTON_H/2, RESTART_BUTTON_W, RESTART_BUTTON_H);
-
-	this.context.font = "small-caps " + 0.8*RESTART_BUTTON_H + "px Oeztype";
-	this.context.textAlign = "center";
-	this.context.fillStyle = "#664321";
-	this.context.fillText("Restart", RESTART_BUTTON_MID_X, RESTART_BUTTON_MID_Y+0.3*RESTART_BUTTON_H);
 }
 
 //Updates the towers based on enemies
