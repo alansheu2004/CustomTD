@@ -22,7 +22,7 @@ function init() {
 		"panelBoxColor": "#d3a06e",
 		"panelTextColor" : "#ffd630",
 		"panelTowerOptionBoxFillColor" : "#f4cea8",
-		"panelTowerOptionBoxHoverOutlineColor" : "#f4cea8",
+		"panelTowerOptionBoxHoverOutlineColor" : "#996633",
 		"panelTowerOptionScrollBarColor" : "#664321",
 		"panelButtonFillColor" : "#804c1b",
 		"panelButtonSymbolColor" : "#ffd630"
@@ -234,6 +234,7 @@ CanvasState.prototype.drawGameOver = function() {
 	
 	this.context.font = "small-caps 72px Oeztype";
 	this.context.textAlign = "center";
+	this.context.textBaseline = "alphabetic";
 	this.context.fillStyle = "rgb(255, 214, 48, " + this.gameOverFade + ")";
 	this.context.strokeStyle = "rgb(102, 67, 33, " + this.gameOverFade + ")";
 	this.context.lineWidth = 3;
@@ -273,37 +274,23 @@ CanvasState.prototype.sortEnemies = function() {
 	this.enemies.sort(function(a, b) {return b.dist - a.dist});
 }
 
-CanvasState.prototype.drawRoundNumber = function() {
-	if(this.round != 0) {
-		this.context.textAlign = "start";
-		this.context.fillStyle = "#ffd630";
-		this.context.strokeStyle = "#c48a16";
-		this.context.lineWidth = 1;
-
-		this.context.font = "small-caps 20px Oeztype";
-		this.context.fillText("Round", 10, 30);
-		this.context.strokeText("Round", 10, 30);
-
-		this.context.font = "small-caps 25px Oeztype";
-		this.context.fillText(this.round, 75, 30);
-		this.context.strokeText(this.round, 75, 30);
-	}
-}
-
 CanvasState.prototype.drawRoundNotification = function() {
 	if(this.round != 0) {
 		this.context.textAlign = "center";
-		this.context.fillStyle = "#ffd630";
-		this.context.strokeStyle = "#c48a16";
-		this.context.lineWidth = 2;
+		this.context.fillStyle = this.game.mapScreenTextColor;
+		this.context.strokeStyle = this.game.mapScreenTextStrokeColor;
 
-		this.context.font = "small-caps 30px Oeztype";
-		this.context.fillText("Round", 240, 150);
-		this.context.strokeText("Round", 240, 150);
+		this.context.textBaseline = "bottom";
+		this.context.lineWidth = ROUND_NOTIFICATION_TEXT_FONT_SIZE/15;
+		this.context.font = "small-caps " + ROUND_NOTIFICATION_TEXT_FONT_SIZE + "px " + this.game.font;
+		this.context.fillText("Round", ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_TEXT_Y);
+		this.context.strokeText("Round", ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_TEXT_Y);
 
-		this.context.font = "small-caps 50px Oeztype";
-		this.context.fillText(this.round, 240, 200);
-		this.context.strokeText(this.round, 240, 200);
+		this.context.textBaseline = "hanging";
+		this.context.lineWidth = ROUND_NOTIFICATION_NUMBER_FONT_SIZE/15;
+		this.context.font = "small-caps " + ROUND_NOTIFICATION_NUMBER_FONT_SIZE + "px " + this.game.font;
+		this.context.fillText(this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
+		this.context.strokeText(this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
 	}
 }
 
