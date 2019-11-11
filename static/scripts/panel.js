@@ -40,15 +40,16 @@ Panel.prototype.drawTopBox = function() {
 	this.state.context.fillRect(PANEL_TOWER_BOX_X, PANEL_TOWER_BOX_Y, PANEL_TOWER_BOX_WIDTH, PANEL_TOWER_BOX_HEIGHT);
 	
 	this.state.context.textAlign = "center";
+	this.state.context.textBaseline = "middle";
 	this.state.context.fillStyle = this.game.panelTextColor;
 	if(this.state.draggingTower || this.state.hoveringTowerOption) {
-		this.state.context.font = "small-caps 18px " + this.game.font;
+		this.state.setFontFit("$" + this.state.selection.cost, PANEL_TOWER_BOX_TOWER_COST_FONT_SIZE, PANEL_TOWER_BOX_INNER_WIDTH);
 		this.state.context.fillText("$" + this.state.selection.cost, PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_COST_OFFSET_Y);
-		this.state.context.font = "small-caps 14px " + this.game.font;
+		this.state.setFontFit(this.state.selection.name, PANEL_TOWER_BOX_TOWER_NAME_FONT_SIZE, PANEL_TOWER_BOX_INNER_WIDTH);
 		this.state.context.fillText(this.state.selection.name, PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_NAME_OFFSET_Y);
 	} else {
-		this.state.context.font = "small-caps 27px " + this.game.font;
-		this.state.context.fillText("-Towers-", PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_TEXT_OFFSET_Y);
+		this.state.setFontFit("Towers", PANEL_TOWER_BOX_TOWER_TEXT_FONT_SIZE, PANEL_TOWER_BOX_INNER_WIDTH);
+		this.state.context.fillText("Towers", PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_TEXT_OFFSET_Y);
 	}
 }
 

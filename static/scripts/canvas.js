@@ -8,12 +8,15 @@ function init() {
 
 	var DEFAULT_GAME = {
 		"backgroundImage" : "images/map.png", 
-		"health" : 100,
+		"health" : 50,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"path" : defaultPath,
 		"enemyWaves" : defaultWaves,
 		"font" : "Oeztype",
+
+		"mapScreenTextColor" : "#ffd630",
+		"mapScreenTextStrokeColor" : "#c48a16",
 
 		"panelBaseColor" : "#996633",
 		"panelBoxColor": "#d3a06e",
@@ -347,6 +350,16 @@ CanvasState.prototype.setMouse = function(e) {
 	return this.mouse;
 }
 
+
+CanvasState.prototype.setFontFit = function(text, targetFontSize, maxWidth) { //Returns the font size given that it must fit within maxWidth. If small enough, returns targetFontSize
+	var fontSize = targetFontSize;
+	this.context.font = "small-caps " + fontSize + "px " + this.game.font;
+	while (maxWidth <= this.context.measureText(text).width) {
+		fontSize--;
+		this.context.font = "small-caps " + fontSize + "px " + this.game.font;
+	}
+	return fontSize + "px";
+}
 
 
 //Calculates accurate dimensions for the canvas
