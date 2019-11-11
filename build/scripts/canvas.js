@@ -8,19 +8,28 @@ function init() {
 
 	var DEFAULT_GAME = {
 		"backgroundImage" : "images/map.png", 
-		"health" : 20,
+		"health" : 50,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"path" : defaultPath,
 		"enemyWaves" : defaultWaves,
 		"font" : "Oeztype",
 
+		"gameOverBackgroundColor" : "rgb(211, 160, 110)",
+		"gameOverTextColor" : "#996633",
+		"gameOverTextStrokeColor" : "rgb(102, 67, 33)",
+
+		"mapScreenTextColor" : "#ffd630",
+		"mapScreenTextStrokeColor" : "#c48a16",
+
 		"panelBaseColor" : "#996633",
 		"panelBoxColor": "#d3a06e",
-		"panelTopBoxTextColor" : "#ffd630",
+		"panelTextColor" : "#ffd630",
 		"panelTowerOptionBoxFillColor" : "#f4cea8",
-		"panelTowerOptionBoxHoverOutlineColor" : "#f4cea8",
-		"panelTowerOptionScrollBarColor" : "#664321"
+		"panelTowerOptionBoxHoverOutlineColor" : "#996633",
+		"panelTowerOptionScrollBarColor" : "#664321",
+		"panelButtonFillColor" : "#804c1b",
+		"panelButtonSymbolColor" : "#ffd630"
 	}
 
 	currentState = new CanvasState(document.getElementById("mainCanvas"), DEFAULT_GAME);
@@ -29,8 +38,8 @@ function init() {
 //Defines the Canvas, game, and all its properties
 function CanvasState(canvas, game) {
 	this.canvas = canvas;
-	this.width = CANVAS_WIDTH;
-	this.height = CANVAS_HEIGHT;
+	this.canvas.width = CANVAS_WIDTH;
+	this.canvas.height = CANVAS_HEIGHT;
 	this.context = canvas.getContext("2d");
 	var thisState = this; //To be referenced by anonymous inner classes
 	this.game = game;
@@ -84,8 +93,8 @@ function CanvasState(canvas, game) {
 
 	this.restartButton = new Button(this, 
 	    function(x, y) { //inbounds
-	        return x>=RESTART_BUTTON_MID_X-RESTART_BUTTON_W/2 && x<=RESTART_BUTTON_MID_X+RESTART_BUTTON_W/2 &&
-	        y>=RESTART_BUTTON_MID_Y-RESTART_BUTTON_H/2 && y<=RESTART_BUTTON_MID_Y+RESTART_BUTTON_H/2;
+	        return x>=0 && x<=CANVAS_WIDTH &&
+	        y>=0 && y<=CANVAS_HEIGHT;
 	    },
 	    function(state) { //action
 	        state.restartButton.active = false; window.clearInterval(state.loop); init();
@@ -141,6 +150,8 @@ CanvasState.prototype.update = function() {
 //Redraws all the elements
 CanvasState.prototype.validate = function() {
 	this.validating = true;
+
+	this.context.filter= "none";
 
 	this.mapscreen.draw();
 	this.panel.draw();
@@ -224,35 +235,30 @@ CanvasState.prototype.updateEnemyWaves = function() {
 
 //Disactivates the update loop and displays a game over screen
 CanvasState.prototype.drawGameOver = function() {
-	this.context.fillStyle = "rgb(211, 160, 110, " + this.gameOverFade + ")";
-	this.context.fillRect(0, 0, 640, 480);
+	this.context.globalAlpha = this.gameOverFade;
+	this.context.fillStyle = this.game.gameOverBackgroundColor;
+	this.context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	
-	this.context.font = "small-caps 72px Oeztype";
+	this.context.font = "small-caps " + GAME_OVER_TEXT_FONT_SIZE + "px " + this.game.font;
 	this.context.textAlign = "center";
-	this.context.fillStyle = "rgb(255, 214, 48, " + this.gameOverFade + ")";
-	this.context.strokeStyle = "rgb(102, 67, 33, " + this.gameOverFade + ")";
-	this.context.lineWidth = 3;
-	this.context.fillText(this.gameOverText, 320, 150);
-	this.context.strokeText(this.gameOverText, 320, 150);
+	this.context.textBaseline = "alphabetic";
+	this.context.fillStyle =  this.game.gameOverTextColor;
+	this.context.strokeStyle =  this.game.gameOverTextStrokeColor;
+	this.context.lineWidth = GAME_OVER_TEXT_FONT_SIZE/20;
+	this.context.fillText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
+	//this.context.strokeText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
 	
+	this.context.globalAlpha = 1;
+
 	if (this.gameOverFade >= 1) {
 		this.restartButton.active = true;
 
-		this.drawRestartButton()
+		this.setFontFit("Click Anywhere to Restart", RESTART_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
+		this.context.textAlign = "center";
+		this.context.baseLine = "hanging";
+		this.context.fillStyle = this.game.gameOverTextColor;
+		this.context.fillText("Click Anywhere to Restart", CANVAS_WIDTH/2, RESTART_TEXT_CENTER_Y);
 	}
-}
-
-CanvasState.prototype.drawRestartButton = function() {
-    this.context.fillStyle = "#a6703c";
-	this.context.strokeStyle = "#664321";
-	this.context.lineWidth = 5;
-	this.context.fillRect(RESTART_BUTTON_MID_X-RESTART_BUTTON_W/2, RESTART_BUTTON_MID_Y-RESTART_BUTTON_H/2, RESTART_BUTTON_W, RESTART_BUTTON_H);
-	this.context.strokeRect(RESTART_BUTTON_MID_X-RESTART_BUTTON_W/2, RESTART_BUTTON_MID_Y-RESTART_BUTTON_H/2, RESTART_BUTTON_W, RESTART_BUTTON_H);
-
-	this.context.font = "small-caps " + 0.8*RESTART_BUTTON_H + "px Oeztype";
-	this.context.textAlign = "center";
-	this.context.fillStyle = "#664321";
-	this.context.fillText("Restart", RESTART_BUTTON_MID_X, RESTART_BUTTON_MID_Y+0.3*RESTART_BUTTON_H);
 }
 
 //Updates the towers based on enemies
@@ -268,37 +274,23 @@ CanvasState.prototype.sortEnemies = function() {
 	this.enemies.sort(function(a, b) {return b.dist - a.dist});
 }
 
-CanvasState.prototype.drawRoundNumber = function() {
-	if(this.round != 0) {
-		this.context.textAlign = "start";
-		this.context.fillStyle = "#ffd630";
-		this.context.strokeStyle = "#c48a16";
-		this.context.lineWidth = 1;
-
-		this.context.font = "small-caps 20px Oeztype";
-		this.context.fillText("Round", 10, 30);
-		this.context.strokeText("Round", 10, 30);
-
-		this.context.font = "small-caps 25px Oeztype";
-		this.context.fillText(this.round, 75, 30);
-		this.context.strokeText(this.round, 75, 30);
-	}
-}
-
 CanvasState.prototype.drawRoundNotification = function() {
 	if(this.round != 0) {
 		this.context.textAlign = "center";
-		this.context.fillStyle = "#ffd630";
-		this.context.strokeStyle = "#c48a16";
-		this.context.lineWidth = 2;
+		this.context.fillStyle = this.game.mapScreenTextColor;
+		this.context.strokeStyle = this.game.mapScreenTextStrokeColor;
 
-		this.context.font = "small-caps 30px Oeztype";
-		this.context.fillText("Round", 240, 150);
-		this.context.strokeText("Round", 240, 150);
+		this.context.textBaseline = "bottom";
+		this.context.lineWidth = ROUND_NOTIFICATION_TEXT_FONT_SIZE/15;
+		this.context.font = "small-caps " + ROUND_NOTIFICATION_TEXT_FONT_SIZE + "px " + this.game.font;
+		this.context.fillText("Round", ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_TEXT_Y);
+		this.context.strokeText("Round", ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_TEXT_Y);
 
-		this.context.font = "small-caps 50px Oeztype";
-		this.context.fillText(this.round, 240, 200);
-		this.context.strokeText(this.round, 240, 200);
+		this.context.textBaseline = "hanging";
+		this.context.lineWidth = ROUND_NOTIFICATION_NUMBER_FONT_SIZE/15;
+		this.context.font = "small-caps " + ROUND_NOTIFICATION_NUMBER_FONT_SIZE + "px " + this.game.font;
+		this.context.fillText(this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
+		this.context.strokeText(this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
 	}
 }
 
@@ -338,13 +330,23 @@ CanvasState.prototype.setMouse = function(e) {
 	mx = e.pageX - offsetX;
 	my = e.pageY - offsetY;
 	
-	mx *= 640 / this.styleWidth;
-	my *= 360 / this.styleHeight;
+	mx *= CANVAS_WIDTH / this.styleWidth;
+	my *= CANVAS_HEIGHT / this.styleHeight;
 
 	this.mouse = {x: mx, y: my};
 	return this.mouse;
 }
 
+
+CanvasState.prototype.setFontFit = function(text, targetFontSize, maxWidth) { //Returns the font size given that it must fit within maxWidth. If small enough, returns targetFontSize
+	var fontSize = targetFontSize;
+	this.context.font = "small-caps " + fontSize + "px " + this.game.font;
+	while (maxWidth <= this.context.measureText(text).width) {
+		fontSize--;
+		this.context.font = "small-caps " + fontSize + "px " + this.game.font;
+	}
+	return fontSize + "px";
+}
 
 
 //Calculates accurate dimensions for the canvas

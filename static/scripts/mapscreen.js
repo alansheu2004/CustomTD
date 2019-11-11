@@ -1,5 +1,28 @@
 function MapScreen(state) {
     this.state = state;
+    this.game = state.game;
+
+    this.healthButton = new Button(this, 
+	    function(x, y) { //inbounds
+	        return x>=MAP_RESOURCE_ICON_CENTER_X-0.5*MAP_RESOURCE_ICON_WIDTH && x<=MAP_RESOURCE_ICON_CENTER_X+0.5*MAP_RESOURCE_ICON_WIDTH &&
+	        y>=MAP_HEALTH_CENTER_Y-0.5*MAP_RESOURCE_ICON_HEIGHT && y<=MAP_HEALTH_CENTER_Y+0.5*MAP_RESOURCE_ICON_HEIGHT;
+	    },
+	    function(state) { //action
+	        state.health = Infinity; state.valid = false;
+	    },
+	    true);
+	this.state.addButton(this.healthButton);
+
+    this.moneyButton = new Button(this, 
+	    function(x, y) { //inbounds
+	        return x>=MAP_RESOURCE_ICON_CENTER_X-0.5*MAP_RESOURCE_ICON_WIDTH && x<=MAP_RESOURCE_ICON_CENTER_X+0.5*MAP_RESOURCE_ICON_WIDTH &&
+	        y>=MAP_MONEY_CENTER_Y-0.5*MAP_RESOURCE_ICON_HEIGHT && y<=MAP_MONEY_CENTER_Y+0.5*MAP_RESOURCE_ICON_HEIGHT;
+	    },
+	    function(state) { //action
+	        state.money = Infinity; state.valid = false;
+	    },
+	    true);
+	this.state.addButton(this.moneyButton);
 }
 
 MapScreen.prototype.draw = function() {
@@ -45,43 +68,42 @@ MapScreen.prototype.drawTowers = function() {
 }
 
 MapScreen.prototype.drawResources = function() {
-	this.state.context.font = "small-caps 22px Oeztype";
 	this.state.context.textAlign = "start";
-	this.state.context.fillStyle = "#ffd630";
-	this.state.context.strokeStyle = "#c48a16";
-	this.state.context.lineWidth = 2;
-	this.state.context.strokeText("Round", 13, 35);
-	this.state.context.fillText("Round", 13, 35);
+	this.state.context.textBaseline = "alphabetic";
 
-	this.state.context.font = "small-caps 30px Oeztype";
-	this.state.context.lineWidth = 3;
+	this.state.context.fillStyle = this.game.mapScreenTextColor;
+	this.state.context.strokeStyle = this.game.mapScreenTextStrokeColor;
+	
 	if(this.state.round > 0) {
-		this.state.context.strokeText(this.state.round, 85, 35);
-		this.state.context.fillText(this.state.round, 85, 35);
-	} else {
-		this.state.context.strokeText("-", 83, 35);
-		this.state.context.fillText("-", 83, 35);
+		this.state.context.font = "small-caps " + MAP_ROUND_FONT_SIZE + "px " + this.game.font;
+		this.state.context.lineWidth = MAP_ROUND_FONT_SIZE/8;
+		this.state.context.strokeText("Round", MAP_ROUND_OFFSET_X, MAP_ROUND_OFFSET_Y);
+		this.state.context.fillText("Round", MAP_ROUND_OFFSET_X, MAP_ROUND_OFFSET_Y);
+
+		var roundNumberOffsetX = MAP_ROUND_OFFSET_X + this.state.context.measureText("Round ").width;
+
+		this.state.context.font = "small-caps " + MAP_ROUND_NUMBER_FONT_SIZE + "px " + this.game.font;
+		this.state.context.lineWidth = MAP_ROUND_NUMBER_FONT_SIZE/10;
+
+		this.state.context.strokeText(this.state.round, roundNumberOffsetX, MAP_ROUND_OFFSET_Y);
+		this.state.context.fillText(this.state.round, roundNumberOffsetX, MAP_ROUND_OFFSET_Y);
 	}
 	
 
 	var healthImage = new Image();
 	healthImage.src = "images/heart.png";
-	this.state.context.drawImage(healthImage, 10, 45, 20, 20);
+	this.state.context.drawImage(healthImage, MAP_RESOURCE_ICON_CENTER_X - MAP_RESOURCE_ICON_WIDTH/2, MAP_HEALTH_CENTER_Y - MAP_RESOURCE_ICON_WIDTH/2, MAP_RESOURCE_ICON_WIDTH, MAP_RESOURCE_ICON_HEIGHT);
 	
-	this.state.context.font = "small-caps 22px Oeztype";
-	this.state.context.textAlign = "center";
-	this.state.context.fillStyle = "#ffba30";
-	this.state.context.strokeStyle = "#c48a16";
-	this.state.context.lineWidth = 3;
-	this.state.context.strokeText("$", 20, 90);
-	this.state.context.fillText("$", 20, 90);
+	var moneyImage = new Image();
+	moneyImage.src = "images/money.png";
+	this.state.context.drawImage(moneyImage, MAP_RESOURCE_ICON_CENTER_X - MAP_RESOURCE_ICON_WIDTH/2, MAP_MONEY_CENTER_Y - MAP_RESOURCE_ICON_HEIGHT/2, MAP_RESOURCE_ICON_WIDTH, MAP_RESOURCE_ICON_HEIGHT);
 	
-	this.state.context.font = "small-caps 18px Oeztype";
+	this.state.context.font = "small-caps " + MAP_RESOURCE_TEXT_FONT_SIZE + "px " + this.game.font;
 	this.state.context.textAlign = "start";
-    this.state.context.fillStyle = "#ffd630";
-    this.state.context.lineWidth = 2;
-    this.state.context.strokeText(this.state.health, 37, 62);
-    this.state.context.fillText(this.state.health, 37, 62);
-    this.state.context.strokeText(this.state.money, 37, 87);
-    this.state.context.fillText(this.state.money, 37, 87);
+	this.state.context.textBaseline = "middle";
+    this.state.context.lineWidth = MAP_RESOURCE_TEXT_FONT_SIZE/8;
+    this.state.context.strokeText(this.state.health, MAP_RESOURCE_TEXT_OFFSET_X, MAP_HEALTH_CENTER_Y);
+    this.state.context.fillText(this.state.health, MAP_RESOURCE_TEXT_OFFSET_X, MAP_HEALTH_CENTER_Y);
+    this.state.context.strokeText(this.state.money, MAP_RESOURCE_TEXT_OFFSET_X, MAP_MONEY_CENTER_Y);
+    this.state.context.fillText(this.state.money, MAP_RESOURCE_TEXT_OFFSET_X, MAP_MONEY_CENTER_Y);
 }
