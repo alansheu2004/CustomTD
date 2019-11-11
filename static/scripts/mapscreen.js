@@ -1,6 +1,28 @@
 function MapScreen(state) {
     this.state = state;
     this.game = state.game;
+
+    this.healthButton = new Button(this, 
+	    function(x, y) { //inbounds
+	        return x>=MAP_RESOURCE_ICON_CENTER_X-0.5*MAP_RESOURCE_ICON_WIDTH && x<=MAP_RESOURCE_ICON_CENTER_X+0.5*MAP_RESOURCE_ICON_WIDTH &&
+	        y>=MAP_HEALTH_CENTER_Y-0.5*MAP_RESOURCE_ICON_HEIGHT && y<=MAP_HEALTH_CENTER_Y+0.5*MAP_RESOURCE_ICON_HEIGHT;
+	    },
+	    function(state) { //action
+	        state.health = Infinity; state.valid = false;
+	    },
+	    true);
+	this.state.addButton(this.healthButton);
+
+    this.moneyButton = new Button(this, 
+	    function(x, y) { //inbounds
+	        return x>=MAP_RESOURCE_ICON_CENTER_X-0.5*MAP_RESOURCE_ICON_WIDTH && x<=MAP_RESOURCE_ICON_CENTER_X+0.5*MAP_RESOURCE_ICON_WIDTH &&
+	        y>=MAP_MONEY_CENTER_Y-0.5*MAP_RESOURCE_ICON_HEIGHT && y<=MAP_MONEY_CENTER_Y+0.5*MAP_RESOURCE_ICON_HEIGHT;
+	    },
+	    function(state) { //action
+	        state.money = Infinity; state.valid = false;
+	    },
+	    true);
+	this.state.addButton(this.moneyButton);
 }
 
 MapScreen.prototype.draw = function() {
@@ -54,7 +76,7 @@ MapScreen.prototype.drawResources = function() {
 	
 	if(this.state.round > 0) {
 		this.state.context.font = "small-caps " + MAP_ROUND_FONT_SIZE + "px " + this.game.font;
-		this.state.context.lineWidth = MAP_ROUND_FONT_SIZE/10;
+		this.state.context.lineWidth = MAP_ROUND_FONT_SIZE/8;
 		this.state.context.strokeText("Round", MAP_ROUND_OFFSET_X, MAP_ROUND_OFFSET_Y);
 		this.state.context.fillText("Round", MAP_ROUND_OFFSET_X, MAP_ROUND_OFFSET_Y);
 
@@ -79,7 +101,7 @@ MapScreen.prototype.drawResources = function() {
 	this.state.context.font = "small-caps " + MAP_RESOURCE_TEXT_FONT_SIZE + "px " + this.game.font;
 	this.state.context.textAlign = "start";
 	this.state.context.textBaseline = "middle";
-    this.state.context.lineWidth = MAP_RESOURCE_TEXT_FONT_SIZE/10;
+    this.state.context.lineWidth = MAP_RESOURCE_TEXT_FONT_SIZE/8;
     this.state.context.strokeText(this.state.health, MAP_RESOURCE_TEXT_OFFSET_X, MAP_HEALTH_CENTER_Y);
     this.state.context.fillText(this.state.health, MAP_RESOURCE_TEXT_OFFSET_X, MAP_HEALTH_CENTER_Y);
     this.state.context.strokeText(this.state.money, MAP_RESOURCE_TEXT_OFFSET_X, MAP_MONEY_CENTER_Y);

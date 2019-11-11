@@ -66,7 +66,7 @@ Panel.prototype.drawTowerBox = function() {
 
 		if((this.state.draggingTower || this.state.hoveringTowerOption) && this.state.selection==this.state.towerTypes[i]) {
 			this.state.context.strokeStyle = this.game.panelTowerOptionBoxHoverOutlineColor;
-			this.state.context.lineWidth = PANEL_TOWER_OPTION_SIZE/10;
+			this.state.context.lineWidth = PANEL_TOWER_OPTION_SIZE/15;
 			this.state.context.strokeRect(towerCoors.x+PANEL_TOWER_OPTION_PADDING, towerCoors.y+PANEL_TOWER_OPTION_PADDING, PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING), PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING));
 		}
 

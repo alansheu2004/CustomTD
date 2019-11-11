@@ -120,42 +120,42 @@ function drawCriticalPoints(context) {
 
 var defaultPath = new Path({
 	start_x : 0,
-	start_y : 180,
+	start_y : 360,
 	steps : [
 		{
 			type : "line",
-			x : 160,
-			y : 180
-		},
-		{
-			type : "line",
-			x : 240,
-			y : 45
-		},
-		{
-			type : "line",
-			x : 360,
-			y : 90
-		},
-		{
-			type : "line",
-			x : 120,
-			y : 270
-		},
-		{
-			type : "line",
-			x : 240,
-			y : 315
-		},
-		{
-			type : "line",
 			x : 320,
-			y : 180
+			y : 360
 		},
 		{
 			type : "line",
 			x : 480,
+			y : 90
+		},
+		{
+			type : "line",
+			x : 720,
 			y : 180
+		},
+		{
+			type : "line",
+			x : 240,
+			y : 540
+		},
+		{
+			type : "line",
+			x : 480,
+			y : 630
+		},
+		{
+			type : "line",
+			x : 640,
+			y : 360
+		},
+		{
+			type : "line",
+			x : 960,
+			y : 360
 		},
 	],
 });

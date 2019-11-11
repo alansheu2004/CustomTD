@@ -1,12 +1,12 @@
-PEA = new ProjectileType(2, 800, null, 
+PEA = new ProjectileType(2, 1600, null, 
 						false,
-						"images/pea.png", 15, 15);
-SMALL_PEA = new ProjectileType(1, 1000, null, 
+						"images/pea.png", 30, 30);
+SMALL_PEA = new ProjectileType(1, 2000, null, 
 						false,
-						"images/pea.png", 10, 10);
-STAR = new ProjectileType(null, 800, 80, 
+						"images/pea.png", 20, 20);
+STAR = new ProjectileType(null, 1600, 160, 
 						false,
-						"images/star.png", 18, 18);
+						"images/star.png", 36, 36);
 
 function ProjectileType(pierce, speed, maxRange,
 						rotating,
@@ -57,7 +57,7 @@ Projectile.prototype.update = function() {
 	this.x += dx;
 	this.y += dy;
 	
-	if(this.x < 0 || this.x > 480 || this.y < 0 || this.y > 360) {
+	if(this.x < 0 || this.x > CANVAS_WIDTH || this.y < 0 || this.y > CANVAS_HEIGHT) {
 		return true;
 	}
 

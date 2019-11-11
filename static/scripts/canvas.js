@@ -8,7 +8,7 @@ function init() {
 
 	var DEFAULT_GAME = {
 		"backgroundImage" : "images/map.png", 
-		"health" : 1,
+		"health" : 50,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"path" : defaultPath,
@@ -38,8 +38,8 @@ function init() {
 //Defines the Canvas, game, and all its properties
 function CanvasState(canvas, game) {
 	this.canvas = canvas;
-	this.width = CANVAS_WIDTH;
-	this.height = CANVAS_HEIGHT;
+	this.canvas.width = CANVAS_WIDTH;
+	this.canvas.height = CANVAS_HEIGHT;
 	this.context = canvas.getContext("2d");
 	var thisState = this; //To be referenced by anonymous inner classes
 	this.game = game;
@@ -330,8 +330,8 @@ CanvasState.prototype.setMouse = function(e) {
 	mx = e.pageX - offsetX;
 	my = e.pageY - offsetY;
 	
-	mx *= 640 / this.styleWidth;
-	my *= 360 / this.styleHeight;
+	mx *= CANVAS_WIDTH / this.styleWidth;
+	my *= CANVAS_HEIGHT / this.styleHeight;
 
 	this.mouse = {x: mx, y: my};
 	return this.mouse;
