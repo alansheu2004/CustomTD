@@ -17,10 +17,12 @@ function init() {
 
 		"panelBaseColor" : "#996633",
 		"panelBoxColor": "#d3a06e",
-		"panelTopBoxTextColor" : "#ffd630",
+		"panelTextColor" : "#ffd630",
 		"panelTowerOptionBoxFillColor" : "#f4cea8",
 		"panelTowerOptionBoxHoverOutlineColor" : "#f4cea8",
-		"panelTowerOptionScrollBarColor" : "#664321"
+		"panelTowerOptionScrollBarColor" : "#664321",
+		"panelButtonFillColor" : "#804c1b",
+		"panelButtonSymbolColor" : "#ffd630"
 	}
 
 	currentState = new CanvasState(document.getElementById("mainCanvas"), DEFAULT_GAME);
