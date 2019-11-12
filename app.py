@@ -1,6 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import os
 import sys
+from requests import get
 
 app = Flask(__name__, static_folder = "static", static_url_path = "/")
 app.debug = True
