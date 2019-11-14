@@ -1,7 +1,8 @@
 var currentState = null; //The current state (should be used for testing primarily)
-
+alert("whoop");
 //This function is called when starting a new game
 function init() {
+	alert("nice");
 	if(currentState != null) {
 		currentState.nextRound = null;
 	}
