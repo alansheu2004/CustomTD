@@ -7,11 +7,10 @@ function init() {
 	}
 
 	var DEFAULT_GAME = {
-		"backgroundImage" : "images/map.png", 
+		"map" : defaultMap, 
 		"health" : 50,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
-		"path" : defaultPath,
 		"enemyWaves" : defaultWaves,
 		"font" : "Oeztype",
 
@@ -69,7 +68,8 @@ function CanvasState(canvas, game) {
 	
 	this.buttons = [];
 
-	this.mapscreen = new MapScreen(this);
+	this.map = this.game.map;
+	this.mapscreen = new MapScreen(this, this.map);
 	this.panel = new Panel(this);
 
 	this.font = game.font;
@@ -180,7 +180,7 @@ CanvasState.prototype.updateEnemyPositions = function() {
 	if (this.enemies.length > 0) {
 		for (var i = 0; i<this.enemies.length; i++) {
 			this.enemies[i].updateDist();
-			if (this.enemies[i].dist > this.path.totalLength) {
+			if (this.enemies[i].dist > this.map.path.totalLength) {
 				this.health = Math.max(this.health - this.enemies[i].type.damage, 0);
 				if (this.health<=0) {
 					this.gameOver = true;

@@ -1,4 +1,4 @@
-function MapScreen(state) {
+function MapScreen(state, map) {
     this.state = state;
     this.game = state.game;
 
@@ -23,12 +23,14 @@ function MapScreen(state) {
 	    },
 	    true);
 	this.state.addButton(this.moneyButton);
+
+	this.map = map;
 }
 
 MapScreen.prototype.draw = function() {
     this.clear();
 	this.drawBackground();
-	//this.path.draw(this.context);
+	this.drawBoundaries();
 	this.drawEnemies();
     this.drawTowers();
     this.drawResources();
@@ -42,8 +44,13 @@ MapScreen.prototype.clear = function() {
 //Draws the background of the game
 MapScreen.prototype.drawBackground = function() {
 	var background = new Image();
-	background.src = this.state.backgroundImage;
+	background.src = this.state.map.background;
 	this.state.context.drawImage(background, MAP_X, MAP_Y, MAP_WIDTH, MAP_HEIGHT);
+}
+
+MapScreen.prototype.drawBoundaries = function() {
+	this.map.drawPathBoundary(this.state.context, 'red', 4, 0.35);
+	this.map.drawPath(this.state.context, 'red', 6);
 }
 
 //Draws each enemy

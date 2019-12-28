@@ -8,7 +8,7 @@ app.debug = True
 
 @app.route('/')
 def index():
-    scripts = ['mousehandler', 'buttons', 'constants', 'path', 'map', 'enemies', 'enemywaves', 'projectile', 'towers', 'mapscreen', 'panel', 'canvas']
+    scripts = ['mousehandler', 'buttons', 'constants', 'polygon', 'path', 'map', 'enemies', 'enemywaves', 'projectile', 'towers', 'mapscreen', 'panel', 'canvas']
     scripts = [os.path.join('scripts/', filename + ".js") for filename in scripts]
     return render_template('index.html', scripts=scripts)
 

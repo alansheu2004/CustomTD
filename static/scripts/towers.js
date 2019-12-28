@@ -117,9 +117,6 @@ TowerUpgrade.prototype.drawOutline = function(context, x, y, angle) {
 	context.filter = "none";
 }
 
-
-
-
 function Tower(state, type, x, y) {
 	this.state = state;
 	this.type = type;

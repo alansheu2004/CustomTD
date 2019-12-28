@@ -8,6 +8,9 @@ function Path(data) {
 	this.stepYs = [];
 	this.totalLength = 0;
 
+	this.width = data.width;
+	this.boundary = this.getBoundary();
+
 	this.setStepProperties();
 }
 
@@ -78,9 +81,9 @@ Path.prototype.setStepProperties = function() {
 }
 
 //Draws the path (currently not used)
-Path.prototype.draw = function(context) {
-	context.lineWidth = "2";
-	context.strokeStyle = "green";
+Path.prototype.draw = function(context, color, lineWidth) {
+	context.lineWidth = lineWidth.toString();
+	context.strokeStyle = color;
 	context.beginPath();
 	
 	context.moveTo(this.start_x, this.start_y);
@@ -114,8 +117,82 @@ function drawCriticalPoints(context) {
 		context.arc(stepXs[i], stepYs[i], 3, 0, 2*Math.PI);
 		context.fill();
 	}
-	
-	
+}
+
+Path.prototype.getBoundary = function(context, color, lineWidth, fillOpacity) {
+    var poly = new Polygon([]);
+
+    var angles = [Math.atan2(this.steps[0].y-this.start_y, this.steps[0].x-this.start_x)];
+    for (var i = 0; i<this.steps.length-1; i++) {
+    	angles.push(Math.atan2(this.steps[i+1].y-this.steps[i].y, this.steps[i+1].x-this.steps[i].x));
+ 	}
+
+    if(this.start_x == MAP_X || this.start_x == MAP_WIDTH) {
+    	poly.addPoint(
+    		this.start_x, 
+    		this.start_y - (1/Math.cos(angles[0])) * this.width/2
+    	);
+    	poly.addPoint(
+    		this.start_x, 
+    		this.start_y + (1/Math.cos(angles[0])) * this.width/2
+    	)
+    } else if(this.start_y == MAP_Y || this.start_y == MAP_HEIGHT) {
+    	poly.addPoint(
+    		this.start_x - (1/Math.sin(angles[0])) * this.width/2,
+    		this.start_y 
+    	);
+    	poly.addPoint(
+    		this.start_x + (1/Math.sin(angles[0])) * this.width/2,
+    		this.start_y 
+    	)
+    }
+
+    for(var i = 0; i<this.steps.length; i++) {
+    	var angle = (angles[i]+angles[i+1])/2 + Math.PI/2;
+    	var mag = (1/Math.sin(angle - angles[i+1])) * this.width/2;
+    	poly.addPoint(
+    		this.steps[i].x + mag*Math.cos(angle),
+    		this.steps[i].y + mag*Math.sin(angle)
+    	);
+    }
+
+    var end = this.steps[this.steps.length - 1];
+    var lastAngle = angles[angles.length - 1];
+
+    if(end.x == MAP_X || end.x == MAP_WIDTH) {
+    	poly.addPoint(
+    		end.x, 
+    		end.y + (1/Math.cos(lastAngle)) * this.width/2
+    	);
+    	poly.addPoint(
+    		end.x, 
+    		end.y - (1/Math.cos(lastAngle)) * this.width/2
+    	)
+    } else if(end.y == MAP_Y || end.y == MAP_HEIGHT) {
+    	poly.addPoint(
+    		end.x + (1/Math.sin(lastAngle)) * this.width/2, 
+    		end.y
+    	);
+    	poly.addPoint(
+    		end.x - (1/Math.sin(lastAngle)) * this.width/2, 
+    		end.y
+    	)
+    }
+
+    for(var i = this.steps.length-1; i>=0; i--) {
+    	var angle = (angles[i]+angles[i+1])/2 + Math.PI/2;
+    	var mag = (1/Math.sin(angle - angles[i+1])) * this.width/2;
+    	poly.addPoint(
+    		this.steps[i].x - mag*Math.cos(angle),
+    		this.steps[i].y - mag*Math.sin(angle)
+    	);
+    }
+
+    return poly;
+}
+
+Path.prototype.drawBoundary = function(context, color, lineWidth, fillOpacity) {
+	this.boundary.draw(context, color, lineWidth, fillOpacity);
 }
 
 var defaultPath = new Path({
@@ -158,4 +235,5 @@ var defaultPath = new Path({
 			y : 360
 		},
 	],
+	width : 60
 });
