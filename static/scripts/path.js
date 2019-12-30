@@ -235,5 +235,5 @@ var defaultPath = new Path({
 			y : 360
 		},
 	],
-	width : 60
+	width : 50
 });
