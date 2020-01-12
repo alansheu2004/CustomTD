@@ -17,7 +17,7 @@ function Enemy(state, type) {
 	this.type = type;
 	this.dist = 0;
 	this.state = state;
-	var point = state.path.pointOnPath(0);
+	var point = state.map.path.pointOnPath(0);
 	this.x = point.x;
 	this.y = point.y;
 }
@@ -36,7 +36,7 @@ Enemy.prototype.updateDist = function() {
 
 //Set x and y coordinates based on distance
 Enemy.prototype.updatePosition = function() {
-	var point = this.state.path.pointOnPath(this.dist);
+	var point = this.state.map.path.pointOnPath(this.dist);
 	this.x = point.x;
 	this.y = point.y;
 }

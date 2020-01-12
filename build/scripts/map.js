@@ -1,4 +1,4 @@
-Map = function(background,
+    Map = function(background,
 				path,
 				obstacles,
 				water) {
