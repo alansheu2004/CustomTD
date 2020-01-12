@@ -7,11 +7,10 @@ function init() {
 	}
 
 	var DEFAULT_GAME = {
-		"backgroundImage" : "images/map.png", 
+		"map" : defaultMap, 
 		"health" : 50,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
-		"path" : defaultPath,
 		"enemyWaves" : defaultWaves,
 		"font" : "Oeztype",
 
@@ -69,7 +68,8 @@ function CanvasState(canvas, game) {
 	
 	this.buttons = [];
 
-	this.mapscreen = new MapScreen(this);
+	this.map = this.game.map;
+	this.mapscreen = new MapScreen(this, this.map);
 	this.panel = new Panel(this);
 
 	this.font = game.font;
@@ -82,6 +82,7 @@ function CanvasState(canvas, game) {
 	this.towerTypes = game.towerTypes;
 	this.towers = [];
 	this.path = game.path;
+	this.showingBoundaries= false;
 
 	this.enemies = [];
 	this.enemywaves = game.enemyWaves;
@@ -90,6 +91,8 @@ function CanvasState(canvas, game) {
 	this.enemyCountdown = []; //How many enemies are left in each bunch
 
 	this.roundNotifyTimer = 0; //Time left until big round notification disappears
+
+	this.time = false;
 
 	this.restartButton = new Button(this, 
 	    function(x, y) { //inbounds
@@ -122,22 +125,49 @@ CanvasState.prototype.addEnemy = function(enemy) {
 //Called every frame; updates all element states and calls validate() if necessary
 CanvasState.prototype.update = function() {
 	if (!(this.gameOverFade >= 1))	 {
-		this.updateEnemyPositions();
-		this.updateEnemyWaves();
+		if(this.time) {
+			console.log(new Date().getMilliseconds());
+			this.updateEnemyPositions();
+			console.log(new Date().getMilliseconds());
+			this.updateEnemyWaves();
+			console.log(new Date().getMilliseconds());
 
-		if (this.gameOver) {
-			this.valid = false;
-			this.gameOverFade += 0.03;
-		} else {
-			this.sortEnemies();
-			this.updateTowerStates();
-			if (this.revalidationTimer > 0) {
+			if (this.gameOver) {
 				this.valid = false;
-				this.revalidationTimer -= this.interval;
+				this.gameOverFade += 0.03;
+			} else {
+				this.sortEnemies();
+				console.log(new Date().getMilliseconds());
+				this.updateTowerStates();
+				console.log(new Date().getMilliseconds());
+				if (this.revalidationTimer > 0) {
+					this.valid = false;
+					this.revalidationTimer -= this.interval;
+				}
+				if (this.roundNotifyTimer > 0) {
+					this.valid = false;
+					this.roundNotifyTimer -= this.interval;
+				}
 			}
-			if (this.roundNotifyTimer > 0) {
+			this.time = false;
+		} else {
+			this.updateEnemyPositions();
+			this.updateEnemyWaves();
+
+			if (this.gameOver) {
 				this.valid = false;
-				this.roundNotifyTimer -= this.interval;
+				this.gameOverFade += 0.03;
+			} else {
+				this.sortEnemies();
+				this.updateTowerStates();
+				if (this.revalidationTimer > 0) {
+					this.valid = false;
+					this.revalidationTimer -= this.interval;
+				}
+				if (this.roundNotifyTimer > 0) {
+					this.valid = false;
+					this.roundNotifyTimer -= this.interval;
+				}
 			}
 		}
 	}
@@ -180,7 +210,7 @@ CanvasState.prototype.updateEnemyPositions = function() {
 	if (this.enemies.length > 0) {
 		for (var i = 0; i<this.enemies.length; i++) {
 			this.enemies[i].updateDist();
-			if (this.enemies[i].dist > this.path.totalLength) {
+			if (this.enemies[i].dist > this.map.path.totalLength) {
 				this.health = Math.max(this.health - this.enemies[i].type.damage, 0);
 				if (this.health<=0) {
 					this.gameOver = true;
@@ -259,6 +289,15 @@ CanvasState.prototype.drawGameOver = function() {
 		this.context.fillStyle = this.game.gameOverTextColor;
 		this.context.fillText("Click Anywhere to Restart", CANVAS_WIDTH/2, RESTART_TEXT_CENTER_Y);
 	}
+}
+
+CanvasState.prototype.showBoundaries = function(show) {
+	if (show) {
+		this.showingBoundaries = true;
+	} else {
+		this.showingBoundaries= false;
+	}
+	this.valid = false;
 }
 
 //Updates the towers based on enemies

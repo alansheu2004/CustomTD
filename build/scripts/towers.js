@@ -1,21 +1,21 @@
 var defaultTowerTypes = [
 	new TowerType("Peashooter", 100, 30, true,
 					[
-						new TowerUpgrade("Peashooter", 100, 200,
+						new TowerUpgrade("BASE", 100, 200,
 							"images/peashooter.svg", 70, 70,
 							[new ProjectileShot(PEA, 1000, {type:"single"}, null)])
 					]
 	), 
 	new TowerType("Threepeater", 200, 30, true,
 					[
-						new TowerUpgrade("Threepeater", 200, 160,
+						new TowerUpgrade("BASE", 200, 160,
 							"images/threepeater.svg", 74, 68,
 							[new ProjectileShot(SMALL_PEA, 1500, {type:"spray", number:3, angle: Math.PI/8}, null)])
 					]
 	), 
 	new TowerType("Starfruit", 150, 30, false,
 					[
-						new TowerUpgrade("Starfruit", 150, 160,
+						new TowerUpgrade("BASE", 150, 160,
 							"images/starfruit.svg", 70, 70,
 							[new ProjectileShot(STAR, 1200, {type:"radial", number:5}, -Math.PI/2)])
 					]
@@ -29,6 +29,18 @@ function TowerType(name, cost, towerSize, turning,
 	this.towerSize = towerSize;
 	this.upgrades = upgrades;
 	this.turning = turning;
+}
+
+TowerType.prototype.drawBoundary = function(context, x, y, color, lineWidth, fillOpacity) {
+	context.fillStyle = color;
+	context.strokeStyle = color;
+	context.lineWidth = lineWidth.toString();
+	context.beginPath();
+	context.filter = "opacity(" + fillOpacity + ")"
+	context.arc(x, y, this.towerSize, 0, 2*Math.PI);
+	context.fill();
+	context.filter = "none";
+	context.stroke();
 }
 
 function TowerUpgrade(name, cost, range,
@@ -95,11 +107,6 @@ TowerUpgrade.prototype.drawRange = function(context, x, y) {
 	context.fill();
 	context.stroke();
 	context.lineWidth = 1;
-	
-	context.fillStyle = "rgb(0, 0, 0, 0.3)";
-	context.beginPath();
-	context.arc(x, y, this.towerSize, 0, 2*Math.PI);
-	context.fill();
 }
 
 //Draw the outline of a tower
@@ -116,9 +123,6 @@ TowerUpgrade.prototype.drawOutline = function(context, x, y, angle) {
 	
 	context.filter = "none";
 }
-
-
-
 
 function Tower(state, type, x, y) {
 	this.state = state;
@@ -198,6 +202,10 @@ Tower.prototype.inBounds = function(mx, my) {
 
 Tower.prototype.drawRange = function() {
 	this.upgrade.drawRange(this.state.context, this.x, this.y);
+}
+
+Tower.prototype.drawBoundary = function(color, lineWidth, fillOpacity) {
+	this.type.drawBoundary(this.state.context, this.x, this.y, color, lineWidth, fillOpacity);
 }
 
 Tower.prototype.drawOutline = function() {

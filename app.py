@@ -8,12 +8,8 @@ app.debug = True
 
 @app.route('/')
 def index():
-    scripts = []
-    for filename in os.listdir('static/scripts'):
-        if filename.endswith(".js"):
-            scripts.append(os.path.join('scripts/', filename))
-        else:
-            continue
+    scripts = ['mousehandler', 'buttons', 'constants', 'polygon', 'path', 'map', 'enemies', 'enemywaves', 'projectile', 'towers', 'mapscreen', 'panel', 'canvas']
+    scripts = [os.path.join('scripts/', filename + ".js") for filename in scripts]
     return render_template('index.html', scripts=scripts)
 
 if __name__ == "__main__":
