@@ -1,14 +1,10 @@
-function Path(data) {
-	this.start_x = data.start_x;
-	this.start_y = data.start_y;
-	this.steps = data.steps;
+function Path(points, width) {
+	this.points = points;
 	
 	this.stepLengths = [];
-	this.stepXs = [];
-	this.stepYs = [];
 	this.totalLength = 0;
 
-	this.width = data.width;
+	this.width = width;
 	this.boundary = this.getBoundary();
 
 	this.setStepProperties();
@@ -23,60 +19,25 @@ Path.prototype.pointOnPath = function(dist) {
 		counter++;
 	}
 	
-	return this.pointOnStep(counter, this.steps[counter], dist-totalDistance);
+	return this.pointOnStep(counter, this.points[counter+1], dist-totalDistance);
 	
 }
 
-//Returns the coordinates given a distance traveled on a step
-Path.prototype.pointOnStep = function(num, step, dist) {
-	switch(step.type) {
-		case "line":
-			return {x: this.stepXs[num] + (step.x-this.stepXs[num])*(dist/this.stepLengths[num]), y: this.stepYs[num] + (step.y-this.stepYs[num])*(dist/this.stepLengths[num])};
-			break;
-		case "arc":
-			var multiplier = 1;
-			
-			if(step.widdershins) {
-				return [step.center_x - step.radius * Math.cos(step.angle_s + dist/step.radius), step.center_y + step.radius * Math.sin(step.angle_s + dist/step.radius)];
-			} else {
-				return [step.center_x - step.radius * Math.cos(step.angle_s + dist/step.radius), step.center_y + step.radius * Math.sin(step.angle_s + dist/step.radius)];
-			}
-			break;
-	}
+//Returns the coordinates given a distance traveled on a point
+Path.prototype.pointOnStep = function(num, point, dist) {
+	return {
+        x: this.points[num].x + (point.x-this.points[num].x)*(dist/this.stepLengths[num]), 
+        y: this.points[num].y + (point.y-this.points[num].y)*(dist/this.stepLengths[num])
+    };
 }
 
-//Calculates thelengths and starting points for all steps
+//Calculates thelengths and starting points for all points
 Path.prototype.setStepProperties = function() {
-	var x = this.start_x;
-	var y = this.start_y;
-	var length = 0;
-	this.stepXs.push(x);
-	this.stepYs.push(y);
-	
-	for (let step of this.steps) {
-		switch(step.type) {
-			case "line":
-				length = Math.hypot(step.x-x, step.y-y);
-				
-				x = step.x;
-				y = step.y;
-				break;
-			case "arc":
-				if(step.widdershins) {
-					length = 2 * Math.PI * step.radius * (2*Math.PI - (step.angle_e - step.angle_s))/(2*Math.PI);
-				}else {
-					length = 2 * Math.PI * step.radius * (step.angle_e - step.angle_s)/(2*Math.PI);
-				}
-				length %= 2 * Math.PI * step.radius;
-				x = step.center_x + step.radius * Math.cos(step.angle_e);
-				y = step.center_y + step.radius * Math.sin(step.angle_e);
-				break;
-		}
+	for (i=1 ; i< this.points.length ; i++) {
+        var length = Math.hypot(this.points[i].x-this.points[i-1].x, this.points[i].y-this.points[i-1].y);
 		
 		this.stepLengths.push(length);
 		this.totalLength += length;
-		this.stepXs.push(x);
-		this.stepYs.push(y);
 	}
 }
 
@@ -86,35 +47,21 @@ Path.prototype.draw = function(context, color, lineWidth) {
 	context.strokeStyle = color;
 	context.beginPath();
 	
-	context.moveTo(this.start_x, this.start_y);
-	for (let step of this.steps) {
-		switch(step.type) {
-			case "line":
-				context.lineTo(step.x, step.y);
-				break;
-			case "arc":
-				context.arc(step.center_x, step.center_y, step.radius, step.angle_s, step.angle_e, step.widdershins);
-				break;
-			case "quadratic":
-				context.quadraticCurveTo(step.control_x, step.control_y, step.end_x, step.end_y);
-				break;
-			case "cubic":
-				context.bezierCurveTo(step.control1_x, step.control1_y, step.control2_x, step.control2_y, step.end_x, step.end_y);
-				break;
-		}
+	context.moveTo(this.points[0].x, this.points[0].y);
+	for (i=1 ; i< this.points.length ; i++) {
+		context.lineTo(this.points[i].x, this.points[i].y);
 	}
 	
 	context.stroke();
 }
 
-//Draws the Starting points for each step (currently not used)
-function drawCriticalPoints(context) {
-	context.strokeStyle = "blue";
-	context.fillStyle = "blue";
-	context.lineWidth = 1;
-	for (i=0 ; i<stepXs.length ; i++) {
+//Draws the Starting points for each point (currently not used)
+function drawCriticalPoints(context, color, radius) {
+	context.strokeStyle = color;
+	context.fillStyle = color;
+	for (i=0 ; i< this.points.length ; i++) {
 		context.beginPath();
-		context.arc(stepXs[i], stepYs[i], 3, 0, 2*Math.PI);
+		context.arc(this.points[i].x, this.points[i].y, radius, 0, 2*Math.PI);
 		context.fill();
 	}
 }
@@ -122,41 +69,41 @@ function drawCriticalPoints(context) {
 Path.prototype.getBoundary = function(context, color, lineWidth, fillOpacity) {
     var poly = new Polygon([]);
 
-    var angles = [Math.atan2(this.steps[0].y-this.start_y, this.steps[0].x-this.start_x)];
-    for (var i = 0; i<this.steps.length-1; i++) {
-    	angles.push(Math.atan2(this.steps[i+1].y-this.steps[i].y, this.steps[i+1].x-this.steps[i].x));
+    var angles = [];
+    for (var i = 1; i<this.points.length; i++) {
+    	angles.push(Math.atan2(this.points[i].y-this.points[i-1].y, this.points[i].x-this.points[i-1].x));
  	}
 
-    if(this.start_x == MAP_X || this.start_x == MAP_WIDTH) {
+    if(this.points[0].x == MAP_X || this.points[0].y == MAP_WIDTH) {
     	poly.addPoint(
-    		this.start_x, 
-    		this.start_y - (1/Math.cos(angles[0])) * this.width/2
+    		this.points[0].x, 
+    		this.points[0].y - (1/Math.cos(angles[0])) * this.width/2
     	);
     	poly.addPoint(
-    		this.start_x, 
-    		this.start_y + (1/Math.cos(angles[0])) * this.width/2
+    		this.points[0].x, 
+    		this.points[0].y + (1/Math.cos(angles[0])) * this.width/2
     	)
-    } else if(this.start_y == MAP_Y || this.start_y == MAP_HEIGHT) {
+    } else if(this.points[0].x == MAP_Y || this.points[0].y == MAP_HEIGHT) {
     	poly.addPoint(
-    		this.start_x - (1/Math.sin(angles[0])) * this.width/2,
-    		this.start_y 
+    		this.points[0].x - (1/Math.sin(angles[0])) * this.width/2,
+    		this.points[0].y 
     	);
     	poly.addPoint(
-    		this.start_x + (1/Math.sin(angles[0])) * this.width/2,
-    		this.start_y 
+    		this.points[0].x + (1/Math.sin(angles[0])) * this.width/2,
+    		this.points[0].y 
     	)
     }
 
-    for(var i = 0; i<this.steps.length; i++) {
-    	var angle = (angles[i]+angles[i+1])/2 + Math.PI/2;
-    	var mag = (1/Math.sin(angle - angles[i+1])) * this.width/2;
+    for(var i = 1; i<this.points.length-1; i++) {
+    	var angle = (angles[i]+angles[i-1])/2 + Math.PI/2;
+    	var mag = (1/Math.sin(angle - angles[i-1])) * this.width/2;
     	poly.addPoint(
-    		this.steps[i].x + mag*Math.cos(angle),
-    		this.steps[i].y + mag*Math.sin(angle)
+    		this.points[i].x + mag*Math.cos(angle),
+    		this.points[i].y + mag*Math.sin(angle)
     	);
     }
 
-    var end = this.steps[this.steps.length - 1];
+    var end = this.points[this.points.length - 1];
     var lastAngle = angles[angles.length - 1];
 
     if(end.x == MAP_X || end.x == MAP_WIDTH) {
@@ -179,12 +126,12 @@ Path.prototype.getBoundary = function(context, color, lineWidth, fillOpacity) {
     	)
     }
 
-    for(var i = this.steps.length-1; i>=0; i--) {
-    	var angle = (angles[i]+angles[i+1])/2 + Math.PI/2;
-    	var mag = (1/Math.sin(angle - angles[i+1])) * this.width/2;
+    for(var i = this.points.length-1; i>=0; i--) {
+    	var angle = (angles[i]+angles[i-1])/2 + Math.PI/2;
+    	var mag = (1/Math.sin(angle - angles[i-1])) * this.width/2;
     	poly.addPoint(
-    		this.steps[i].x - mag*Math.cos(angle),
-    		this.steps[i].y - mag*Math.sin(angle)
+    		this.points[i].x - mag*Math.cos(angle),
+    		this.points[i].y - mag*Math.sin(angle)
     	);
     }
 
@@ -195,45 +142,16 @@ Path.prototype.drawBoundary = function(context, color, lineWidth, fillOpacity) {
 	this.boundary.draw(context, color, lineWidth, fillOpacity);
 }
 
-var defaultPath = new Path({
-	start_x : 0,
-	start_y : 360,
-	steps : [
-		{
-			type : "line",
-			x : 320,
-			y : 360
-		},
-		{
-			type : "line",
-			x : 480,
-			y : 90
-		},
-		{
-			type : "line",
-			x : 720,
-			y : 180
-		},
-		{
-			type : "line",
-			x : 240,
-			y : 540
-		},
-		{
-			type : "line",
-			x : 480,
-			y : 630
-		},
-		{
-			type : "line",
-			x : 640,
-			y : 360
-		},
-		{
-			type : "line",
-			x : 960,
-			y : 360
-		},
+var defaultPath = new Path(
+	[
+        {x : 0, y  : 360},
+		{x : 320, y : 360},
+		{x : 480, y : 90},
+		{x : 720,y : 180},
+		{x : 240, y : 540},
+		{x : 480, y : 630},
+		{x : 640, y : 360},
+		{x : 960, y : 360},
 	],
-	width : 50
-});
+	50
+);

@@ -31,7 +31,9 @@ MapScreen.prototype.draw = function() {
 	this.drawBackground();
 	this.drawEnemies();
     this.drawTowers();
-	this.drawBoundaries();
+	if(this.state.showingBoundaries) {
+		this.drawBoundaries();
+	}
     this.drawResources();
 }
 
