@@ -1,4 +1,4 @@
-function MapScreen(state) {
+function MapScreen(state, map) {
     this.state = state;
     this.game = state.game;
 
@@ -23,27 +23,40 @@ function MapScreen(state) {
 	    },
 	    true);
 	this.state.addButton(this.moneyButton);
+
+	this.map = map;
 }
 
 MapScreen.prototype.draw = function() {
-    this.clear();
 	this.drawBackground();
-	//this.path.draw(this.context);
 	this.drawEnemies();
     this.drawTowers();
+	if(this.state.showingBoundaries) {
+		this.drawBoundaries();
+	}
     this.drawResources();
 }
 
 //Clears the canvas, leaving it blank
 MapScreen.prototype.clear = function() {
-	this.state.context.clearRect(0,0,this.width,this.height);
+	this.state.context.clearRect(MAP_X,MAP_Y,MAP_WIDTH,MAP_HEIGHT);
 }
 
 //Draws the background of the game
 MapScreen.prototype.drawBackground = function() {
 	var background = new Image();
-	background.src = this.state.backgroundImage;
+	background.src = this.state.map.background;
 	this.state.context.drawImage(background, MAP_X, MAP_Y, MAP_WIDTH, MAP_HEIGHT);
+}
+
+MapScreen.prototype.drawBoundaries = function() {
+	this.map.drawWaterBoundary(this.state.context, 'blue', 4, 0.4);
+	this.map.drawPathBoundary(this.state.context, 'red', 4, 0.4);
+	this.map.drawPath(this.state.context, 'red', 6);
+	this.map.drawObstacles(this.state.context, 'green', 4, 0.4);
+	for (let tower of this.state.towers) {
+		tower.drawBoundary('orange', 4, 0.5);
+	}
 }
 
 //Draws each enemy
@@ -58,12 +71,12 @@ MapScreen.prototype.drawTowers = function() {
 	for (let tower of this.state.towers) {
 		if (this.state.hoveringTower) {
 			if (this.state.selection == tower) {
-				this.state.selection.drawRange(this.state.context);
-				this.state.selection.drawOutline(this.state.context);
+				this.state.selection.drawRange();
+				this.state.selection.drawOutline();
 			}
 		}
-		tower.draw(this.state.context);
-		tower.drawProjectiles(this.state.context);
+		tower.draw();
+		tower.drawProjectiles();
 	}
 }
 
