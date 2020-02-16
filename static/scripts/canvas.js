@@ -58,6 +58,8 @@ function CanvasState(canvas, game) {
 	this.selection = null; //The Object that is being dragged or hovered
 	this.selectionNumber = 0; //The Number of the TowerType selected
 	this.mouse = {x: 0, y: 0};
+	this.selectionCoors = {x:0, y:0};
+	this.dropValid = false; //Whether the selected tower can be placed
 	this.towerDraggedOutOfOptionBox = false; //Has dragging tower left option box?
 	this.buttonPressed = false;
 	this.mouseHandler = new MouseHandler(this);
@@ -105,6 +107,7 @@ function CanvasState(canvas, game) {
 	    false);
 	this.addButton(this.restartButton);
 
+
 	this.interval = 20;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
@@ -125,49 +128,22 @@ CanvasState.prototype.addEnemy = function(enemy) {
 //Called every frame; updates all element states and calls validate() if necessary
 CanvasState.prototype.update = function() {
 	if (!(this.gameOverFade >= 1))	 {
-		if(this.time) {
-			console.log(new Date().getMilliseconds());
-			this.updateEnemyPositions();
-			console.log(new Date().getMilliseconds());
-			this.updateEnemyWaves();
-			console.log(new Date().getMilliseconds());
+		this.updateEnemyPositions();
+		this.updateEnemyWaves();
 
-			if (this.gameOver) {
-				this.valid = false;
-				this.gameOverFade += 0.03;
-			} else {
-				this.sortEnemies();
-				console.log(new Date().getMilliseconds());
-				this.updateTowerStates();
-				console.log(new Date().getMilliseconds());
-				if (this.revalidationTimer > 0) {
-					this.valid = false;
-					this.revalidationTimer -= this.interval;
-				}
-				if (this.roundNotifyTimer > 0) {
-					this.valid = false;
-					this.roundNotifyTimer -= this.interval;
-				}
-			}
-			this.time = false;
+		if (this.gameOver) {
+			this.valid = false;
+			this.gameOverFade += 0.03;
 		} else {
-			this.updateEnemyPositions();
-			this.updateEnemyWaves();
-
-			if (this.gameOver) {
+			this.sortEnemies();
+			this.updateTowerStates();
+			if (this.revalidationTimer > 0) {
 				this.valid = false;
-				this.gameOverFade += 0.03;
-			} else {
-				this.sortEnemies();
-				this.updateTowerStates();
-				if (this.revalidationTimer > 0) {
-					this.valid = false;
-					this.revalidationTimer -= this.interval;
-				}
-				if (this.roundNotifyTimer > 0) {
-					this.valid = false;
-					this.roundNotifyTimer -= this.interval;
-				}
+				this.revalidationTimer -= this.interval;
+			}
+			if (this.roundNotifyTimer > 0) {
+				this.valid = false;
+				this.roundNotifyTimer -= this.interval;
 			}
 		}
 	}
@@ -195,10 +171,12 @@ CanvasState.prototype.validate = function() {
 		this.drawGameOver();
 	} else {
 		if(this.draggingTower && this.towerDraggedOutOfOptionBox) {
-			this.selection.upgrades[0].drawRange(this.context, this.mouse.x, this.mouse.y);
-			this.selection.upgrades[0].draw(this.context, this.mouse.x, this.mouse.y);
+			this.selection.upgrades[0].drawRange(this.context, this.selectionCoors.x, this.selectionCoors.y, this.dropValid);
+			this.selection.upgrades[0].draw(this.context, this.selectionCoors.x, this.selectionCoors.y);
 		}
 	}
+
+	this.context.fillRect(0,0,10,10);
 	
 	this.valid = true;
 	this.validating = false;
@@ -373,9 +351,9 @@ CanvasState.prototype.setMouse = function(e) {
 	my *= CANVAS_HEIGHT / this.styleHeight;
 
 	this.mouse = {x: mx, y: my};
+	this.selectionCoors = {x:Math.round(this.mouse.x/10)*10, y:Math.round(this.mouse.y/10)*10};
 	return this.mouse;
 }
-
 
 CanvasState.prototype.setFontFit = function(text, targetFontSize, maxWidth) { //Returns the font size given that it must fit within maxWidth. If small enough, returns targetFontSize
 	var fontSize = targetFontSize;

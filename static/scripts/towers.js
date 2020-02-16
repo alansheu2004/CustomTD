@@ -22,11 +22,11 @@ var defaultTowerTypes = [
 	)
 ];
 
-function TowerType(name, cost, towerSize, turning,
+function TowerType(name, cost, footprint, turning,
 					upgrades) {
 	this.name = name;
 	this.cost = cost;
-	this.towerSize = towerSize;
+	this.footprint = footprint;
 	this.upgrades = upgrades;
 	this.turning = turning;
 }
@@ -37,7 +37,7 @@ TowerType.prototype.drawBoundary = function(context, x, y, color, lineWidth, fil
 	context.lineWidth = lineWidth.toString();
 	context.beginPath();
 	context.filter = "opacity(" + fillOpacity + ")"
-	context.arc(x, y, this.towerSize, 0, 2*Math.PI);
+	context.arc(x, y, this.footprint, 0, 2*Math.PI);
 	context.fill();
 	context.filter = "none";
 	context.stroke();
@@ -98,14 +98,23 @@ TowerUpgrade.prototype.draw = function(context, x, y, angle) {
 }
 
 //Draws the range of a tower
-TowerUpgrade.prototype.drawRange = function(context, x, y) {
+TowerUpgrade.prototype.drawRange = function(context, x, y, valid) {
 	context.lineWidth = 2;
-	context.strokeStyle = "rgb(0, 0, 0, 0.3)";
-	context.fillStyle = "rgb(0, 0, 0, 0.2)";
+	if(valid) {
+		context.strokeStyle = RANGE_VALID_COLOR;
+		context.fillStyle = RANGE_VALID_COLOR;
+	} else  {
+		context.strokeStyle = RANGE_INVALID_COLOR;
+		context.fillStyle = RANGE_INVALID_COLOR;
+	}
+	
 	context.beginPath();
 	context.arc(x, y, this.range, 0, 2*Math.PI);
+	context.filter = "opacity(0.3)";
 	context.fill();
+	context.filter = "opacity(0.5)";
 	context.stroke();
+	context.filter = "none";
 	context.lineWidth = 1;
 }
 
@@ -193,15 +202,15 @@ Tower.prototype.draw = function() {
 }
 
 Tower.prototype.inBounds = function(mx, my) {
-	if(Math.hypot(this.x - mx, this.y - my) < this.type.towerSize) {
+	if(Math.hypot(this.x - mx, this.y - my) < this.type.footprint) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-Tower.prototype.drawRange = function() {
-	this.upgrade.drawRange(this.state.context, this.x, this.y);
+Tower.prototype.drawRange = function(valid) {
+	this.upgrade.drawRange(this.state.context, this.x, this.y, valid);
 }
 
 Tower.prototype.drawBoundary = function(color, lineWidth, fillOpacity) {

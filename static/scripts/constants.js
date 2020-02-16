@@ -30,6 +30,9 @@ const MAP_MONEY_CENTER_Y = 100;
 const MAP_RESOURCE_TEXT_FONT_SIZE = 36;
 const MAP_RESOURCE_TEXT_OFFSET_X = 80;
 
+const RANGE_VALID_COLOR = "black";
+const RANGE_INVALID_COLOR = "red";
+
 const PANEL_X = 960;
 const PANEL_Y = 0;
 const PANEL_WIDTH = 320;
