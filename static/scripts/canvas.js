@@ -7,11 +7,10 @@ function init() {
 	}
 
 	var DEFAULT_GAME = {
-		"backgroundImage" : "images/map.png", 
-		"health" : 50,
+		"map" : defaultMap, 
+		"health" : 20,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
-		"path" : defaultPath,
 		"enemyWaves" : defaultWaves,
 		"font" : "Oeztype",
 
@@ -55,13 +54,18 @@ function CanvasState(canvas, game) {
 	
 	this.draggingTower = false; //Whether in the process of placing a tower
 	this.hoveringTower = false; //Hovering over a placed tower
+	this.pressingTower = false; //Pressing over a placed tower
 	this.hoveringTowerOption = false; //Hovering over a tower option
 	this.selection = null; //The Object that is being dragged or hovered
 	this.selectionNumber = 0; //The Number of the TowerType selected
 	this.mouse = {x: 0, y: 0};
+	this.selectionCoors = {x:0, y:0};
+	this.dropValid = false; //Whether the selected tower can be placed
 	this.towerDraggedOutOfOptionBox = false; //Has dragging tower left option box?
 	this.buttonPressed = false;
 	this.mouseHandler = new MouseHandler(this);
+	
+	this.focusedTower = null; //The tower that currently has their menu up
 
 	this.gameOver = false;
 	this.gameOverFade = 0; //opacity of the game over screen fading in
@@ -69,7 +73,8 @@ function CanvasState(canvas, game) {
 	
 	this.buttons = [];
 
-	this.mapscreen = new MapScreen(this);
+	this.map = this.game.map;
+	this.mapscreen = new MapScreen(this, this.map);
 	this.panel = new Panel(this);
 
 	this.font = game.font;
@@ -82,6 +87,7 @@ function CanvasState(canvas, game) {
 	this.towerTypes = game.towerTypes;
 	this.towers = [];
 	this.path = game.path;
+	this.showingBoundaries= false;
 
 	this.enemies = [];
 	this.enemywaves = game.enemyWaves;
@@ -90,6 +96,8 @@ function CanvasState(canvas, game) {
 	this.enemyCountdown = []; //How many enemies are left in each bunch
 
 	this.roundNotifyTimer = 0; //Time left until big round notification disappears
+
+	this.time = false;
 
 	this.restartButton = new Button(this, 
 	    function(x, y) { //inbounds
@@ -101,6 +109,7 @@ function CanvasState(canvas, game) {
 	    },
 	    false);
 	this.addButton(this.restartButton);
+
 
 	this.interval = 20;
 	
@@ -165,8 +174,8 @@ CanvasState.prototype.validate = function() {
 		this.drawGameOver();
 	} else {
 		if(this.draggingTower && this.towerDraggedOutOfOptionBox) {
-			this.selection.upgrades[0].drawRange(this.context, this.mouse.x, this.mouse.y);
-			this.selection.upgrades[0].draw(this.context, this.mouse.x, this.mouse.y);
+			this.selection.upgrades[0].drawRange(this.context, this.selectionCoors.x, this.selectionCoors.y, this.dropValid);
+			this.selection.upgrades[0].draw(this.context, this.selectionCoors.x, this.selectionCoors.y);
 		}
 	}
 	
@@ -180,7 +189,7 @@ CanvasState.prototype.updateEnemyPositions = function() {
 	if (this.enemies.length > 0) {
 		for (var i = 0; i<this.enemies.length; i++) {
 			this.enemies[i].updateDist();
-			if (this.enemies[i].dist > this.path.totalLength) {
+			if (this.enemies[i].dist > this.map.path.totalLength) {
 				this.health = Math.max(this.health - this.enemies[i].type.damage, 0);
 				if (this.health<=0) {
 					this.gameOver = true;
@@ -261,6 +270,15 @@ CanvasState.prototype.drawGameOver = function() {
 	}
 }
 
+CanvasState.prototype.showBoundaries = function(show) {
+	if (show) {
+		this.showingBoundaries = true;
+	} else {
+		this.showingBoundaries= false;
+	}
+	this.valid = false;
+}
+
 //Updates the towers based on enemies
 CanvasState.prototype.updateTowerStates = function(){
 	for (var i = 0; i<this.towers.length; i++) {
@@ -334,9 +352,9 @@ CanvasState.prototype.setMouse = function(e) {
 	my *= CANVAS_HEIGHT / this.styleHeight;
 
 	this.mouse = {x: mx, y: my};
+	this.selectionCoors = {x:Math.round(this.mouse.x/10)*10, y:Math.round(this.mouse.y/10)*10};
 	return this.mouse;
 }
-
 
 CanvasState.prototype.setFontFit = function(text, targetFontSize, maxWidth) { //Returns the font size given that it must fit within maxWidth. If small enough, returns targetFontSize
 	var fontSize = targetFontSize;

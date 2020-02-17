@@ -1,34 +1,46 @@
 var defaultTowerTypes = [
 	new TowerType("Peashooter", 100, 30, true,
 					[
-						new TowerUpgrade("Peashooter", 100, 200,
+						new TowerUpgrade("BASE", 100, 200,
 							"images/peashooter.svg", 70, 70,
-							[new ProjectileShot(PEA, 1000, {type:"single"}, null)])
+							[new ProjectileShot(PEA, 700, {type:"single"}, null)])
 					]
 	), 
-	new TowerType("Threepeater", 200, 30, true,
+	new TowerType("Threepeater", 175, 30, true,
 					[
-						new TowerUpgrade("Threepeater", 200, 160,
+						new TowerUpgrade("BASE", 200, 160,
 							"images/threepeater.svg", 74, 68,
-							[new ProjectileShot(SMALL_PEA, 1500, {type:"spray", number:3, angle: Math.PI/8}, null)])
+							[new ProjectileShot(SMALL_PEA, 1000, {type:"spray", number:3, angle: Math.PI/8}, null)])
 					]
 	), 
-	new TowerType("Starfruit", 150, 30, false,
+	new TowerType("Starfruit", 125, 30, false,
 					[
-						new TowerUpgrade("Starfruit", 150, 160,
+						new TowerUpgrade("BASE", 150, 160,
 							"images/starfruit.svg", 70, 70,
-							[new ProjectileShot(STAR, 1200, {type:"radial", number:5}, -Math.PI/2)])
+							[new ProjectileShot(STAR, 650, {type:"radial", number:5}, -Math.PI/2)])
 					]
 	)
 ];
 
-function TowerType(name, cost, towerSize, turning,
+function TowerType(name, cost, footprint, turning,
 					upgrades) {
 	this.name = name;
 	this.cost = cost;
-	this.towerSize = towerSize;
+	this.footprint = footprint;
 	this.upgrades = upgrades;
 	this.turning = turning;
+}
+
+TowerType.prototype.drawBoundary = function(context, x, y, color, lineWidth, fillOpacity) {
+	context.fillStyle = color;
+	context.strokeStyle = color;
+	context.lineWidth = lineWidth.toString();
+	context.beginPath();
+	context.filter = "opacity(" + fillOpacity + ")"
+	context.arc(x, y, this.footprint, 0, 2*Math.PI);
+	context.fill();
+	context.filter = "none";
+	context.stroke();
 }
 
 function TowerUpgrade(name, cost, range,
@@ -86,20 +98,24 @@ TowerUpgrade.prototype.draw = function(context, x, y, angle) {
 }
 
 //Draws the range of a tower
-TowerUpgrade.prototype.drawRange = function(context, x, y) {
+TowerUpgrade.prototype.drawRange = function(context, x, y, valid) {
 	context.lineWidth = 2;
-	context.strokeStyle = "rgb(0, 0, 0, 0.3)";
-	context.fillStyle = "rgb(0, 0, 0, 0.2)";
+	if(valid) {
+		context.strokeStyle = RANGE_VALID_COLOR;
+		context.fillStyle = RANGE_VALID_COLOR;
+	} else  {
+		context.strokeStyle = RANGE_INVALID_COLOR;
+		context.fillStyle = RANGE_INVALID_COLOR;
+	}
+	
 	context.beginPath();
 	context.arc(x, y, this.range, 0, 2*Math.PI);
+	context.filter = "opacity(0.3)";
 	context.fill();
+	context.filter = "opacity(0.5)";
 	context.stroke();
+	context.filter = "none";
 	context.lineWidth = 1;
-	
-	context.fillStyle = "rgb(0, 0, 0, 0.3)";
-	context.beginPath();
-	context.arc(x, y, this.towerSize, 0, 2*Math.PI);
-	context.fill();
 }
 
 //Draw the outline of a tower
@@ -116,9 +132,6 @@ TowerUpgrade.prototype.drawOutline = function(context, x, y, angle) {
 	
 	context.filter = "none";
 }
-
-
-
 
 function Tower(state, type, x, y) {
 	this.state = state;
@@ -189,15 +202,19 @@ Tower.prototype.draw = function() {
 }
 
 Tower.prototype.inBounds = function(mx, my) {
-	if(Math.hypot(this.x - mx, this.y - my) < this.type.towerSize) {
+	if(Math.hypot(this.x - mx, this.y - my) < this.type.footprint) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-Tower.prototype.drawRange = function() {
-	this.upgrade.drawRange(this.state.context, this.x, this.y);
+Tower.prototype.drawRange = function(valid) {
+	this.upgrade.drawRange(this.state.context, this.x, this.y, valid);
+}
+
+Tower.prototype.drawBoundary = function(color, lineWidth, fillOpacity) {
+	this.type.drawBoundary(this.state.context, this.x, this.y, color, lineWidth, fillOpacity);
 }
 
 Tower.prototype.drawOutline = function() {

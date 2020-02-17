@@ -10,22 +10,26 @@ function MouseHandler(state) {
 	
 	state.canvas.addEventListener('mousedown', function(e) {
 		var mouse = thisState.setMouse(e);
-		if (thisHandler.startDraggingTower(mouse)) {
+		if (thisHandler.startDraggingTower(thisState.selectionCoors)) {
 			return;
-		} else if (thisHandler.startPressingButton(mouse)) {
+		} else if (thisHandler.startPressingButton(thisState.selectionCoors)) {
+			return;
+		} else if (thisHandler.startPressingTower(thisState.selectionCoors)) {
 			return;
 		}
 	}, true);
 
 	state.canvas.addEventListener('mousemove', function(e) {
 		var mouse = thisState.setMouse(e);
-		if (thisHandler.dragTower(mouse)){
+		if (thisHandler.dragTower(thisState.selectionCoors)){
 			return;
-		} else if (thisHandler.checkButtonPressed(mouse)) {
+		} else if (thisHandler.checkButtonPressed(thisState.selectionCoors)) {
 			return;
-		} else if (thisHandler.hoverTowerOption(mouse)) {
+		} else if (thisHandler.checkTowerPressed(thisState.selectionCoors)) {
 			return;
-		} else if (thisHandler.hoverTower(mouse)) {
+		} else if (thisHandler.hoverTowerOption(thisState.selectionCoors)) {
+			return;
+		} else if (thisHandler.hoverTower(thisState.selectionCoors)) {
 			return;
 		} 
 		thisHandler.stopHovering();
@@ -33,9 +37,11 @@ function MouseHandler(state) {
 
 	state.canvas.addEventListener('mouseup', function(e) {
 		var mouse = thisState.setMouse(e);
-		if (thisHandler.dropTower(mouse)){
+		if (thisHandler.dropTower(thisState.selectionCoors)){
 			return;
-		} else if (thisHandler.releaseButton(mouse)) {
+		} else if (thisHandler.releaseButton(thisState.selectionCoors)) {
+			return;
+		} else if (thisHandler.releaseTower(thisState.selectionCoors)) {
 			return;
 		}
 	}, true);
@@ -88,6 +94,7 @@ MouseHandler.prototype.startDraggingTower = function(mouse) {
 			this.state.towerDraggedOutOfOptionBox = false;
 
 			this.state.valid = false;
+			this.setDropValid(mouse);
 			return true;
 		}
 	}
@@ -100,9 +107,23 @@ MouseHandler.prototype.startPressingButton = function(mouse) {
 		if (this.state.buttons[i].active && this.state.buttons[i].inBounds(mouse.x, mouse.y)) {
 			this.state.buttonPressed = true;
 			this.state.selection = this.state.buttons[i];
-
 			this.state.valid = false;
 			return true;
+		}
+	}
+	return false;
+}
+
+//Returns whether started hovering over aplaced tower
+MouseHandler.prototype.startPressingTower = function(mouse) {
+	if (mouse.x <= MAP_WIDTH) {
+		for (var i = 0; i < this.state.towers.length; i++) {
+			if (this.state.towers[i].inBounds(mouse.x, mouse.y)) {
+				this.state.selection = this.state.towers[i];
+				this.state.pressingTower = true;
+				this.state.valid = false;
+				return true;
+			}
 		}
 	}
 	return false;
@@ -117,8 +138,10 @@ MouseHandler.prototype.dragTower = function(mouse) {
 				this.state.valid = false;
 			}
 		} else {
+			this.setDropValid(mouse);
 			this.state.valid = false;
 		}
+		console.log();
 		return true;
 	} else {
 		return false;
@@ -130,6 +153,19 @@ MouseHandler.prototype.checkButtonPressed = function(mouse) {
 	if (this.state.buttonPressed) {
 		if (!this.state.selection.inBounds(mouse.x, mouse.y)) {
 			this.state.buttonPressed = false;
+			this.state.valid = false;
+			return true;
+		}
+	} else {
+		return false;
+	}
+}
+
+//Returns whether a tower is current being pressed
+MouseHandler.prototype.checkTowerPressed = function(mouse) {
+	if (this.state.towerPressed) {
+		if (!this.state.selection.inBounds(mouse.x, mouse.y)) {
+			this.state.pressingTower = false;
 			this.state.valid = false;
 			return true;
 		}
@@ -181,13 +217,18 @@ MouseHandler.prototype.stopHovering = function() {
 		this.state.hoveringTowerOption = false;
 		this.state.valid = false;
 	}
+
+	if (this.state.pressingTower) {
+		this.state.pressingTower = false;
+		this.state.valid = false;
+	}
 }
 
 MouseHandler.prototype.dropTower = function(mouse) {
 	if (this.state.draggingTower) {
 
 		if(this.state.towerDraggedOutOfOptionBox) {
-			if (mouse.x <= MAP_WIDTH) {
+			if (this.state.dropValid) {
 				this.state.addTower(this.state.selection, mouse.x, mouse.y);
 				this.state.money -= this.state.selection.cost;
 				this.state.hoveringTowerOption = false;
@@ -212,6 +253,31 @@ MouseHandler.prototype.releaseButton = function(mouse) {
 		}
 	}
 	return false;
+}
+
+MouseHandler.prototype.releaseTower = function(mouse) {
+	if (this.state.pressingTower) {
+		this.state.pressingTower = false;
+		if(this.state.selection.inBounds(mouse.x, mouse.y)) {
+			this.state.focusedTower = this.state.selection;
+			this.state.valid = false;
+			return true;
+		}
+	}
+	return false;
+}
+
+MouseHandler.prototype.setDropValid = function(mouse) {
+	var inMap = mouse.x <= MAP_WIDTH;
+	var inBounds = this.state.map.getCollision(mouse)==false;
+	var overlappingTowers = false;
+	for(let tower of this.state.towers) {
+		if(Math.hypot(tower.x - mouse.x, tower.y - mouse.y) < this.state.selection.footprint + tower.type.footprint) {
+			overlappingTowers = true;
+			break;
+		}
+	}
+	this.state.dropValid = inMap && inBounds && !overlappingTowers;
 }
 
 
