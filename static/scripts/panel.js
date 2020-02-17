@@ -23,9 +23,12 @@ Panel.prototype.draw = function() {
 	
 	this.drawBase();
 
-	this.drawTopBox();
-	
-	this.drawTowerBox();
+	if (this.state.focusedTower == null) {
+		this.drawTopBox();
+		this.drawTowerBox();
+	} else {
+		this.drawDescriptionBox();
+	}
 
 	this.drawButtons();
 }
@@ -42,6 +45,7 @@ Panel.prototype.drawTopBox = function() {
 	this.state.context.textAlign = "center";
 	this.state.context.textBaseline = "middle";
 	this.state.context.fillStyle = this.game.panelTextColor;
+
 	if(this.state.draggingTower || this.state.hoveringTowerOption) {
 		this.state.setFontFit("$" + this.state.selection.cost, PANEL_TOWER_BOX_TOWER_COST_FONT_SIZE, PANEL_TOWER_BOX_INNER_WIDTH);
 		this.state.context.fillText("$" + this.state.selection.cost, PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_COST_OFFSET_Y);
@@ -51,6 +55,21 @@ Panel.prototype.drawTopBox = function() {
 		this.state.setFontFit("Towers", PANEL_TOWER_BOX_TOWER_TEXT_FONT_SIZE, PANEL_TOWER_BOX_INNER_WIDTH);
 		this.state.context.fillText("Towers", PANEL_TOWER_BOX_MID_X, PANEL_TOWER_BOX_Y + PANEL_TOWER_BOX_TOWER_TEXT_OFFSET_Y);
 	}
+}
+
+//Draws the container and its contexts for the tower options
+Panel.prototype.drawDescriptionBox = function() {
+	this.state.context.fillStyle = this.game.panelBoxColor;
+	this.state.context.fillRect(PANEL_TOWER_DESCRIPTION_BOX_X, PANEL_TOWER_DESCRIPTION_BOX_Y, PANEL_TOWER_DESCRIPTION_BOX_WIDTH, PANEL_TOWER_DESCRIPTION_BOX_HEIGHT);
+	
+	this.state.focusedTower.upgrade.drawFit(this.state.context, PANEL_TOWER_DESCRIPTION_BOX_MID_X, PANEL_TOWER_DESCRIPTION_IMAGE_Y, PANEL_TOWER_DESCRIPTION_IMAGE_SIZE)
+	
+	this.state.context.textAlign = "center";
+	this.state.context.textBaseline = "middle";
+	this.state.context.fillStyle = this.game.panelTextColor;
+	
+	this.state.setFontFit(this.state.focusedTower.type.name, PANEL_TOWER_DESCRIPTION_TITLE_FONT_SIZE, PANEL_TOWER_BOX_INNER_WIDTH);
+	this.state.context.fillText(this.state.focusedTower.type.name, PANEL_TOWER_DESCRIPTION_BOX_MID_X, PANEL_TOWER_DESCRIPTION_BOX_Y + PANEL_TOWER_DESCRIPTION_TITLE_OFFSET_Y);
 }
 
 //Draws the container and its contexts for the tower options

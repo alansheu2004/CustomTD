@@ -14,6 +14,8 @@ function MouseHandler(state) {
 			return;
 		} else if (thisHandler.startPressingButton(thisState.selectionCoors)) {
 			return;
+		} else if (thisHandler.startPressingTower(thisState.selectionCoors)) {
+			return;
 		}
 	}, true);
 
@@ -22,6 +24,8 @@ function MouseHandler(state) {
 		if (thisHandler.dragTower(thisState.selectionCoors)){
 			return;
 		} else if (thisHandler.checkButtonPressed(thisState.selectionCoors)) {
+			return;
+		} else if (thisHandler.checkTowerPressed(thisState.selectionCoors)) {
 			return;
 		} else if (thisHandler.hoverTowerOption(thisState.selectionCoors)) {
 			return;
@@ -36,6 +40,8 @@ function MouseHandler(state) {
 		if (thisHandler.dropTower(thisState.selectionCoors)){
 			return;
 		} else if (thisHandler.releaseButton(thisState.selectionCoors)) {
+			return;
+		} else if (thisHandler.releaseTower(thisState.selectionCoors)) {
 			return;
 		}
 	}, true);
@@ -101,9 +107,23 @@ MouseHandler.prototype.startPressingButton = function(mouse) {
 		if (this.state.buttons[i].active && this.state.buttons[i].inBounds(mouse.x, mouse.y)) {
 			this.state.buttonPressed = true;
 			this.state.selection = this.state.buttons[i];
-
 			this.state.valid = false;
 			return true;
+		}
+	}
+	return false;
+}
+
+//Returns whether started hovering over aplaced tower
+MouseHandler.prototype.startPressingTower = function(mouse) {
+	if (mouse.x <= MAP_WIDTH) {
+		for (var i = 0; i < this.state.towers.length; i++) {
+			if (this.state.towers[i].inBounds(mouse.x, mouse.y)) {
+				this.state.selection = this.state.towers[i];
+				this.state.pressingTower = true;
+				this.state.valid = false;
+				return true;
+			}
 		}
 	}
 	return false;
@@ -133,6 +153,19 @@ MouseHandler.prototype.checkButtonPressed = function(mouse) {
 	if (this.state.buttonPressed) {
 		if (!this.state.selection.inBounds(mouse.x, mouse.y)) {
 			this.state.buttonPressed = false;
+			this.state.valid = false;
+			return true;
+		}
+	} else {
+		return false;
+	}
+}
+
+//Returns whether a tower is current being pressed
+MouseHandler.prototype.checkTowerPressed = function(mouse) {
+	if (this.state.towerPressed) {
+		if (!this.state.selection.inBounds(mouse.x, mouse.y)) {
+			this.state.pressingTower = false;
 			this.state.valid = false;
 			return true;
 		}
@@ -184,6 +217,11 @@ MouseHandler.prototype.stopHovering = function() {
 		this.state.hoveringTowerOption = false;
 		this.state.valid = false;
 	}
+
+	if (this.state.pressingTower) {
+		this.state.pressingTower = false;
+		this.state.valid = false;
+	}
 }
 
 MouseHandler.prototype.dropTower = function(mouse) {
@@ -217,6 +255,18 @@ MouseHandler.prototype.releaseButton = function(mouse) {
 	return false;
 }
 
+MouseHandler.prototype.releaseTower = function(mouse) {
+	if (this.state.pressingTower) {
+		this.state.pressingTower = false;
+		if(this.state.selection.inBounds(mouse.x, mouse.y)) {
+			this.state.focusedTower = this.state.selection;
+			this.state.valid = false;
+			return true;
+		}
+	}
+	return false;
+}
+
 MouseHandler.prototype.setDropValid = function(mouse) {
 	var inMap = mouse.x <= MAP_WIDTH;
 	var inBounds = this.state.map.getCollision(mouse)==false;
@@ -228,7 +278,6 @@ MouseHandler.prototype.setDropValid = function(mouse) {
 		}
 	}
 	this.state.dropValid = inMap && inBounds && !overlappingTowers;
-	console.log(this.state.dropValid);
 }
 
 

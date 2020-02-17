@@ -8,7 +8,7 @@ function init() {
 
 	var DEFAULT_GAME = {
 		"map" : defaultMap, 
-		"health" : 50,
+		"health" : 20,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"enemyWaves" : defaultWaves,
@@ -54,6 +54,7 @@ function CanvasState(canvas, game) {
 	
 	this.draggingTower = false; //Whether in the process of placing a tower
 	this.hoveringTower = false; //Hovering over a placed tower
+	this.pressingTower = false; //Pressing over a placed tower
 	this.hoveringTowerOption = false; //Hovering over a tower option
 	this.selection = null; //The Object that is being dragged or hovered
 	this.selectionNumber = 0; //The Number of the TowerType selected
@@ -63,6 +64,8 @@ function CanvasState(canvas, game) {
 	this.towerDraggedOutOfOptionBox = false; //Has dragging tower left option box?
 	this.buttonPressed = false;
 	this.mouseHandler = new MouseHandler(this);
+	
+	this.focusedTower = null; //The tower that currently has their menu up
 
 	this.gameOver = false;
 	this.gameOverFade = 0; //opacity of the game over screen fading in
@@ -175,8 +178,6 @@ CanvasState.prototype.validate = function() {
 			this.selection.upgrades[0].draw(this.context, this.selectionCoors.x, this.selectionCoors.y);
 		}
 	}
-
-	this.context.fillRect(0,0,10,10);
 	
 	this.valid = true;
 	this.validating = false;
