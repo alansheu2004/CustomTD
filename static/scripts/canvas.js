@@ -28,7 +28,11 @@ function init() {
 		"panelTowerOptionBoxHoverOutlineColor" : "#996633",
 		"panelTowerOptionScrollBarColor" : "#664321",
 		"panelButtonFillColor" : "#804c1b",
-		"panelButtonSymbolColor" : "#ffd630"
+		"panelButtonSymbolColor" : "#ffd630",
+
+		"sellButtonColor": "#cc0000",
+		"sellButtonTextColor": "#ffd630",
+		"sellMultiplier": 0.5
 	}
 
 	currentState = new CanvasState(document.getElementById("mainCanvas"), DEFAULT_GAME);
@@ -66,6 +70,7 @@ function CanvasState(canvas, game) {
 	this.mouseHandler = new MouseHandler(this);
 	
 	this.focusedTower = null; //The tower that currently has their menu up
+	this.focusedTowerNumber = 0;
 
 	this.gameOver = false;
 	this.gameOverFade = 0; //opacity of the game over screen fading in
@@ -284,6 +289,23 @@ CanvasState.prototype.updateTowerStates = function(){
 	for (var i = 0; i<this.towers.length; i++) {
 		this.towers[i].updateState(this.enemies);
 		this.towers[i].updateProjectiles();
+	}
+}
+
+CanvasState.prototype.focusTower = function(tower, id) {
+	this.focusedTower = tower;
+	this.focusedTowerNumber = id;
+	this.panel.sellButton.active = true;
+	this.valid = false;
+}
+
+CanvasState.prototype.sellFocusedTower = function() {
+	if(this.focusedTower != null) {
+		this.towers.splice(this.focusedTowerNumber, 1);
+		this.panel.sellButton.active = false;
+		this.money += Math.ceil(this.focusedTower.baseSellPrice * this.game.sellMultiplier);
+		this.focusedTower = null;
+		this.valid = false;
 	}
 }
 

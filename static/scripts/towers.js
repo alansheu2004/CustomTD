@@ -1,31 +1,30 @@
 var defaultTowerTypes = [
-	new TowerType("Peashooter", 100, 30, true,
+	new TowerType("Peashooter", 30, true,
 					[
 						new TowerUpgrade("BASE", 100, 200,
 							"images/peashooter.svg", 70, 70,
 							[new ProjectileShot(PEA, 700, {type:"single"}, null)])
 					]
 	), 
-	new TowerType("Threepeater", 175, 30, true,
+	new TowerType("Threepeater", 30, true,
 					[
-						new TowerUpgrade("BASE", 200, 160,
+						new TowerUpgrade("BASE", 175, 160,
 							"images/threepeater.svg", 74, 68,
 							[new ProjectileShot(SMALL_PEA, 1000, {type:"spray", number:3, angle: Math.PI/8}, null)])
 					]
 	), 
-	new TowerType("Starfruit", 125, 30, false,
+	new TowerType("Starfruit", 30, false,
 					[
-						new TowerUpgrade("BASE", 150, 160,
+						new TowerUpgrade("BASE", 125, 160,
 							"images/starfruit.svg", 70, 70,
 							[new ProjectileShot(STAR, 650, {type:"radial", number:5}, -Math.PI/2)])
 					]
 	)
 ];
 
-function TowerType(name, cost, footprint, turning,
+function TowerType(name, footprint, turning,
 					upgrades) {
 	this.name = name;
-	this.cost = cost;
 	this.footprint = footprint;
 	this.upgrades = upgrades;
 	this.turning = turning;
@@ -145,6 +144,8 @@ function Tower(state, type, x, y) {
 	this.angle = Math.PI/2;
 	this.cooldowns = this.upgrade.projectileshots.map(function(ps) {return ps.cooldown});
 	this.projectiles = [];
+
+	this.baseSellPrice = this.upgrade.cost;
 }
 
 Tower.prototype.updateState = function(enemies) {

@@ -27,11 +27,11 @@ function MouseHandler(state) {
 			return;
 		} else if (thisHandler.checkTowerPressed(thisState.selectionCoors)) {
 			return;
-		} else if (thisHandler.hoverTowerOption(thisState.selectionCoors)) {
-			return;
 		} else if (thisHandler.hoverTower(thisState.selectionCoors)) {
 			return;
-		} 
+		} else if (thisHandler.hoverTowerOption(thisState.selectionCoors)) {
+			return;
+		}
 		thisHandler.stopHovering();
 	}, true);
 
@@ -43,6 +43,10 @@ function MouseHandler(state) {
 			return;
 		} else if (thisHandler.releaseTower(thisState.selectionCoors)) {
 			return;
+		}
+		if(mouse.x < MAP_WIDTH) {
+			thisState.focusedTower = null;
+			thisState.valid = false;
 		}
 	}, true);
 
@@ -87,7 +91,7 @@ function MouseHandler(state) {
 //Returns whether dragging tower actually started
 MouseHandler.prototype.startDraggingTower = function(mouse) {
 	for (var i = 0; i < this.state.towerTypes.length; i++) {
-		if (this.state.panel.optionContains(i, mouse.x, mouse.y) && this.state.money >= this.state.towerTypes[i].cost) {
+		if (this.state.panel.optionContains(i, mouse.x, mouse.y) && this.state.money >= this.state.towerTypes[i].upgrades[0].cost) {
 			this.state.draggingTower = true;
 			this.state.selectionNumber = i;
 			this.state.selection = this.state.towerTypes[i];
@@ -120,6 +124,7 @@ MouseHandler.prototype.startPressingTower = function(mouse) {
 		for (var i = 0; i < this.state.towers.length; i++) {
 			if (this.state.towers[i].inBounds(mouse.x, mouse.y)) {
 				this.state.selection = this.state.towers[i];
+				this.state.selectionNumber = i;
 				this.state.pressingTower = true;
 				this.state.valid = false;
 				return true;
@@ -191,7 +196,9 @@ MouseHandler.prototype.hoverTower = function(mouse) {
 
 //Returns whether hovering over a tower option
 MouseHandler.prototype.hoverTowerOption = function(mouse) {
-	if (mouse.x > PANEL_X) {
+	if (this.state.focusedTower != null) {
+		return true;
+	} else if (mouse.x > PANEL_X) {
 		for (var i = 0; i < this.state.towerTypes.length; i++) {
 			if(this.state.panel.optionContains(i, mouse.x, mouse.y)) {
 				this.state.hoveringTowerOption = true;
@@ -230,7 +237,7 @@ MouseHandler.prototype.dropTower = function(mouse) {
 		if(this.state.towerDraggedOutOfOptionBox) {
 			if (this.state.dropValid) {
 				this.state.addTower(this.state.selection, mouse.x, mouse.y);
-				this.state.money -= this.state.selection.cost;
+				this.state.money -= this.state.selection.upgrades[0].cost;
 				this.state.hoveringTowerOption = false;
 			}
 		} else {
@@ -259,8 +266,7 @@ MouseHandler.prototype.releaseTower = function(mouse) {
 	if (this.state.pressingTower) {
 		this.state.pressingTower = false;
 		if(this.state.selection.inBounds(mouse.x, mouse.y)) {
-			this.state.focusedTower = this.state.selection;
-			this.state.valid = false;
+			this.state.focusTower(this.state.selection, this.state.selectionNumber);
 			return true;
 		}
 	}
