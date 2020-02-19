@@ -1,10 +1,13 @@
-PEA = new ProjectileType(2, 1600, null, 
+PEA = new ProjectileType(1, 1600, null, 
 						false,
 						"images/pea.png", 30, 30);
-SMALL_PEA = new ProjectileType(1, 2000, null, 
+BULLET_PEA = new ProjectileType(2, 2000, null, 
 						false,
 						"images/pea.png", 20, 20);
-STAR = new ProjectileType(null, 1600, 160, 
+STAR = new ProjectileType(2, 1600, 140, 
+						false,
+						"images/star.png", 36, 36);
+FAR_STAR = new ProjectileType(2, 1600, 160, 
 						false,
 						"images/star.png", 36, 36);
 
@@ -17,25 +20,23 @@ function ProjectileType(pierce, speed, maxRange,
 
 	this.rotating = rotating;
 
-	this.image = image;
+	this.image = new Image();
+	this.image.src = image;
 	this.imgwidth = imgwidth;
 	this.imgheight = imgheight;
 }
 
 ProjectileType.prototype.draw = function(context, x, y, angle) {
-	var image = new Image();
-	image.src = this.image;
-
 	if(this.rotating) {
 		context.translate(x, y);
 		context.rotate(angle-Math.PI/2);
 		
-		context.drawImage(image, -this.imgwidth/2, -this.imgheight/2, this.imgwidth, this.imgheight);
+		context.drawImage(this.image, -this.imgwidth/2, -this.imgheight/2, this.imgwidth, this.imgheight);
 
 		context.rotate(-(angle-Math.PI/2));
 		context.translate(-x, -y);
 	} else {
-		context.drawImage(image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
+		context.drawImage(this.image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
 	}
 }
 

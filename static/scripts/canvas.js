@@ -30,7 +30,7 @@ function init() {
 		"panelButtonFillColor" : "#804c1b",
 		"panelButtonSymbolColor" : "#ffd630",
 
-		"sellButtonColor": "#cc0000",
+		"sellButtonColor": "#992200",
 		"sellButtonTextColor": "#ffd630",
 		"sellMultiplier": 0.5
 	}
@@ -102,8 +102,6 @@ function CanvasState(canvas, game) {
 
 	this.roundNotifyTimer = 0; //Time left until big round notification disappears
 
-	this.time = false;
-
 	this.restartButton = new Button(this, 
 	    function(x, y) { //inbounds
 	        return x>=0 && x<=CANVAS_WIDTH &&
@@ -164,6 +162,7 @@ CanvasState.prototype.update = function() {
 //Redraws all the elements
 CanvasState.prototype.validate = function() {
 	this.validating = true;
+	this.valid = true;
 
 	this.context.filter= "none";
 
@@ -184,7 +183,6 @@ CanvasState.prototype.validate = function() {
 		}
 	}
 	
-	this.valid = true;
 	this.validating = false;
 }
 
@@ -296,17 +294,28 @@ CanvasState.prototype.focusTower = function(tower, id) {
 	this.focusedTower = tower;
 	this.focusedTowerNumber = id;
 	this.panel.sellButton.active = true;
+	var nextUpgrade = this.focusedTower.type.upgrades[this.focusedTower.upgradeNum+1];
+	if(nextUpgrade == undefined || this.money < nextUpgrade.cost) {
+		this.panel.upgradeButton.active = false;
+	} else {
+		this.panel.upgradeButton.active = true;
+	}
 	this.valid = false;
 }
 
 CanvasState.prototype.sellFocusedTower = function() {
 	if(this.focusedTower != null) {
 		this.towers.splice(this.focusedTowerNumber, 1);
-		this.panel.sellButton.active = false;
 		this.money += Math.ceil(this.focusedTower.baseSellPrice * this.game.sellMultiplier);
-		this.focusedTower = null;
-		this.valid = false;
+		this.unfocus();
 	}
+}
+
+CanvasState.prototype.unfocus = function() {
+	this.panel.sellButton.active = false;
+	this.panel.upgradeButton.active = false;
+	this.focusedTower = null;
+	this.valid = false;
 }
 
 //Sorts the enemies array from first in the path to last

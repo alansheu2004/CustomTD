@@ -1,23 +1,34 @@
 var defaultTowerTypes = [
 	new TowerType("Peashooter", 30, true,
 					[
-						new TowerUpgrade("BASE", 100, 200,
+						new TowerUpgrade("BASE", 100, 160,
+							"Shoots good ol' reliable peas",
 							"images/peashooter.svg", 70, 70,
-							[new ProjectileShot(PEA, 700, {type:"single"}, null)])
-					]
-	), 
-	new TowerType("Threepeater", 30, true,
-					[
-						new TowerUpgrade("BASE", 175, 160,
+							[new ProjectileShot(PEA, 700, {type:"single"}, null)]),
+						new TowerUpgrade("Repeater", 125, 160,
+							"Shoots peas twice as fast",
+							"images/repeater.svg", 70, 73,
+							[new ProjectileShot(PEA, 350, {type:"single"}, null)]),
+						new TowerUpgrade("Threepeater", 200, 180,
+							"Shoots 3 peas at a time with bullet speed",
 							"images/threepeater.svg", 74, 68,
-							[new ProjectileShot(SMALL_PEA, 1000, {type:"spray", number:3, angle: Math.PI/8}, null)])
+							[new ProjectileShot(BULLET_PEA, 500, {type:"spray", number:3, angle: Math.PI/8}, null)])
 					]
-	), 
+	),
 	new TowerType("Starfruit", 30, false,
 					[
-						new TowerUpgrade("BASE", 125, 160,
+						new TowerUpgrade("BASE", 100, 140,
+							"Shoots 5 stars in all directions",
 							"images/starfruit.svg", 70, 70,
-							[new ProjectileShot(STAR, 650, {type:"radial", number:5}, -Math.PI/2)])
+							[new ProjectileShot(STAR, 650, {type:"radial", number:5}, -Math.PI/2)]),
+						new TowerUpgrade("Shooting-Star", 100, 160,
+							"Slightly increases range",
+							"images/shootingstar.svg", 70, 70,
+							[new ProjectileShot(FAR_STAR, 650, {type:"radial", number:5}, -Math.PI/2)]),
+						new TowerUpgrade("Superstar", 300, 160,
+							"Increases the number of stars shot to 10",
+							"images/superstar.svg", 70, 70,
+							[new ProjectileShot(FAR_STAR, 650, {type:"radial", number:10}, -Math.PI/2)])
 					]
 	)
 ];
@@ -43,15 +54,18 @@ TowerType.prototype.drawBoundary = function(context, x, y, color, lineWidth, fil
 }
 
 function TowerUpgrade(name, cost, range,
+						description,
 						image, imgwidth, imgheight,
 						projectileshots) {
 	this.name = name;
 	this.cost = cost;
-	this.image = image;
+	this.image = new Image();
+	this.image.src = image;
 	this.imgwidth = imgwidth;
 	this.imgheight = imgheight;
 	this.range = range;
 	this.projectileshots = projectileshots;
+	this.description = description;
 }
 
 /*
@@ -69,30 +83,25 @@ function ProjectileShot(projectiletype, cooldown, dispersion, target) { //Target
 
 //Draws with a set max dimension while maintaining an aspect ratio
 TowerUpgrade.prototype.drawFit = function(context, x, y, max) {
-	var image = new Image();
-	image.src = this.image;
 	if(this.imgwidth >= this.imgheight) {
-		context.drawImage(image, x - max/2, y - (max*this.imgheight/this.imgwidth)/2, max, max*this.imgheight/this.imgwidth);
+		context.drawImage(this.image, x - max/2, y - (max*this.imgheight/this.imgwidth)/2, max, max*this.imgheight/this.imgwidth);
 	} else {
-		context.drawImage(image, x - (max*this.imgwidth/this.imgheight)/2, y - max/2, max*this.imgwidth/this.imgheight, max);
+		context.drawImage(this.image, x - (max*this.imgwidth/this.imgheight)/2, y - max/2, max*this.imgwidth/this.imgheight, max);
 	}
 }
 
 //Draws a tower type with an angle
 TowerUpgrade.prototype.draw = function(context, x, y, angle) {
-	var image = new Image();
-	image.src = this.image;
-
 	if(angle) {
 		context.translate(x, y);
 		context.rotate(angle-Math.PI/2);
 		
-		context.drawImage(image, -this.imgwidth/2, -this.imgheight/2, this.imgwidth, this.imgheight);
+		context.drawImage(this.image, -this.imgwidth/2, -this.imgheight/2, this.imgwidth, this.imgheight);
 
 		context.rotate(-(angle-Math.PI/2));
 		context.translate(-x, -y);
 	} else {
-		context.drawImage(image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
+		context.drawImage(this.image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
 	}
 }
 
@@ -119,13 +128,11 @@ TowerUpgrade.prototype.drawRange = function(context, x, y, valid) {
 
 //Draw the outline of a tower
 TowerUpgrade.prototype.drawOutline = function(context, x, y, angle) {
-	var image = new Image();
-	image.src = this.image;
 	context.filter = "brightness(0) invert(1) blur(2px)";
 	
 	context.translate(x, y);
 	context.rotate(angle-Math.PI/2);
-	context.drawImage(image, -this.imgwidth/2-2, -this.imgheight/2 - 2, this.imgwidth + 4, this.imgheight + 4);
+	context.drawImage(this.image, -this.imgwidth/2-2, -this.imgheight/2 - 2, this.imgwidth + 4, this.imgheight + 4);
 	context.rotate(-(angle-Math.PI/2));
 	context.translate(-x, -y);
 	
@@ -248,4 +255,12 @@ Tower.prototype.cooldown = function() {
 			this.cooldowns[j] -= this.state.interval;
 		}
 	}
+}
+
+Tower.prototype.nextUpgrade = function() {
+	this.upgradeNum += 1;
+	this.upgrade = this.type.upgrades[this.upgradeNum];
+	this.state.money -= this.upgrade.cost;
+	this.baseSellPrice += this.upgrade.cost;
+	this.state.valid = false;
 }

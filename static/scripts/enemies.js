@@ -1,7 +1,7 @@
 var RED = new EnemyType(200, "red", null, 1, 1, 22);
 var BLUE = new EnemyType(266, "skyblue", RED, 1, 2, 24);
 var GREEN = new EnemyType(333, "limegreen", BLUE, 2, 3, 26);
-var YELLOW = new EnemyType(667, "yellow", GREEN, 2, 4, 38);
+var YELLOW = new EnemyType(667, "yellow", GREEN, 2, 4, 28);
 var PINK = new EnemyType(733, "pink", YELLOW, 3, 5, 30);
 
 function EnemyType(speed, color, child, rbe, damage, size) {

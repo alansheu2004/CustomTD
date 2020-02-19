@@ -45,7 +45,7 @@ function MouseHandler(state) {
 			return;
 		}
 		if(mouse.x < MAP_WIDTH) {
-			thisState.focusedTower = null;
+			thisState.unfocus();
 			thisState.valid = false;
 		}
 	}, true);
@@ -197,6 +197,7 @@ MouseHandler.prototype.hoverTower = function(mouse) {
 //Returns whether hovering over a tower option
 MouseHandler.prototype.hoverTowerOption = function(mouse) {
 	if (this.state.focusedTower != null) {
+		this.stopHovering();
 		return true;
 	} else if (mouse.x > PANEL_X) {
 		for (var i = 0; i < this.state.towerTypes.length; i++) {
