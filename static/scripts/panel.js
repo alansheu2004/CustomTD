@@ -18,7 +18,7 @@ function Panel(state) {
 	state.addButton(this.fullscreenButton);
 
 	this.sellButton = new Button(state,
-		function(x, y) {return Math.abs(x-SELL_BUTTON_MID_X) <= SELL_BUTTON_WIDTH/2 && y >= SELL_BUTTON_Y && y<= SELL_BUTTON_Y + SELL_BUTTON_HEIGHT},
+		function(x, y) {return y >= SELL_BUTTON_Y && y<= SELL_BUTTON_Y + SELL_BUTTON_HEIGHT},
 		function(state) {state.sellFocusedTower();},
 		false);
 	state.addButton(this.sellButton);
@@ -41,7 +41,7 @@ Panel.prototype.draw = function() {
 	} else {
 		this.drawDescriptionBox();
 		this.drawSellButton();
-		this.drawUpgradeButton();
+		this.drawUpgrades();
 	}
 
 	this.drawButtons();
@@ -97,14 +97,21 @@ Panel.prototype.drawSellButton = function() {
 	this.state.context.fillText("Sell-$" + this.state.focusedTower.baseSellPrice*this.state.game.sellMultiplier, SELL_BUTTON_MID_X, SELL_BUTTON_Y + SELL_BUTTON_HEIGHT/2);
 }
 
-Panel.prototype.drawUpgradeButton = function() {
+Panel.prototype.drawUpgrades = function() {
+	this.state.context.textAlign = "center";
+	this.state.context.textBaseline = "bottom";
+	this.state.context.fillStyle = this.game.panelTextColor;
+
+	this.state.setFontFit("Upgrades", UPGRADE_TEXT_FONT_SIZE, UPGRADE_TEXT_WIDTH);
+	this.state.context.fillText("Upgrades", UPGRADE_TEXT_MID_X, UPGRADE_TEXT_Y);
+
+
 	var nextUpgrade = this.state.focusedTower.type.upgrades[this.state.focusedTower.upgradeNum+1];
 	if(nextUpgrade == undefined || this.state.money < nextUpgrade.cost) {
 		this.upgradeButton.active = false;
 	} else {
 		this.upgradeButton.active = true;
 	}
-
 	
 
 	if (nextUpgrade == undefined) {

@@ -1,4 +1,4 @@
-PEA = new ProjectileType(1, 1600, null, 
+PEA = new ProjectileType(2, 1600, null, 
 						false,
 						"images/pea.png", 30, 30);
 BULLET_PEA = new ProjectileType(2, 2000, null, 

@@ -4,15 +4,15 @@ var defaultTowerTypes = [
 						new TowerUpgrade("BASE", 100, 160,
 							"Shoots good ol' reliable peas",
 							"images/peashooter.svg", 70, 70,
-							[new ProjectileShot(PEA, 700, {type:"single"}, null)]),
-						new TowerUpgrade("Repeater", 125, 160,
+							[new ProjectileShot(PEA, 1000, {type:"single"}, null)]),
+						new TowerUpgrade("Repeater", 150, 160,
 							"Shoots peas twice as fast",
 							"images/repeater.svg", 70, 73,
-							[new ProjectileShot(PEA, 350, {type:"single"}, null)]),
+							[new ProjectileShot(PEA, 500, {type:"single"}, null)]),
 						new TowerUpgrade("Threepeater", 200, 180,
 							"Shoots 3 peas at a time with bullet speed",
 							"images/threepeater.svg", 74, 68,
-							[new ProjectileShot(BULLET_PEA, 500, {type:"spray", number:3, angle: Math.PI/8}, null)])
+							[new ProjectileShot(BULLET_PEA, 700, {type:"spray", number:3, angle: Math.PI/8}, null)])
 					]
 	),
 	new TowerType("Starfruit", 30, false,
@@ -20,15 +20,15 @@ var defaultTowerTypes = [
 						new TowerUpgrade("BASE", 100, 140,
 							"Shoots 5 stars in all directions",
 							"images/starfruit.svg", 70, 70,
-							[new ProjectileShot(STAR, 650, {type:"radial", number:5}, -Math.PI/2)]),
-						new TowerUpgrade("Shooting-Star", 100, 160,
-							"Slightly increases range",
+							[new ProjectileShot(STAR, 750, {type:"radial", number:5}, -Math.PI/2)]),
+						new TowerUpgrade("Shooting-Star", 125, 160,
+							"Shoots slightly faster and farther",
 							"images/shootingstar.svg", 70, 70,
-							[new ProjectileShot(FAR_STAR, 650, {type:"radial", number:5}, -Math.PI/2)]),
-						new TowerUpgrade("Superstar", 300, 160,
+							[new ProjectileShot(FAR_STAR, 500, {type:"radial", number:5}, -Math.PI/2)]),
+						new TowerUpgrade("Superstar", 250, 160,
 							"Increases the number of stars shot to 10",
 							"images/superstar.svg", 70, 70,
-							[new ProjectileShot(FAR_STAR, 650, {type:"radial", number:10}, -Math.PI/2)])
+							[new ProjectileShot(FAR_STAR, 500, {type:"radial", number:10}, -Math.PI/2)])
 					]
 	)
 ];

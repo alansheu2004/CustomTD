@@ -173,6 +173,7 @@ CanvasState.prototype.validate = function() {
 	if(this.roundNotifyTimer > 0) {
 		this.drawRoundNotification();
 	}
+
 	
 	if(this.gameOver) {
 		this.drawGameOver();
@@ -390,11 +391,12 @@ CanvasState.prototype.setMouse = function(e) {
 CanvasState.prototype.setFontFit = function(text, targetFontSize, maxWidth) { //Returns the font size given that it must fit within maxWidth. If small enough, returns targetFontSize
 	var fontSize = targetFontSize;
 	this.context.font = "small-caps " + fontSize + "px " + this.game.font;
-	while (maxWidth <= this.context.measureText(text).width) {
-		fontSize--;
+	var width = this.context.measureText(text).width;
+	if (width > maxWidth) {
+		fontSize *= maxWidth/width
 		this.context.font = "small-caps " + fontSize + "px " + this.game.font;
 	}
-	return fontSize + "px";
+	
 }
 
 
