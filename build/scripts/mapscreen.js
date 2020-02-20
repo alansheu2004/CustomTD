@@ -71,9 +71,11 @@ MapScreen.prototype.drawTowers = function() {
 	for (let tower of this.state.towers) {
 		if (this.state.hoveringTower) {
 			if (this.state.selection == tower) {
-				this.state.selection.drawRange();
+				this.state.selection.drawRange(true);
 				this.state.selection.drawOutline();
 			}
+		} else if (this.state.focusedTower == tower) {
+			this.state.focusedTower.drawOutline();
 		}
 		tower.draw();
 		tower.drawProjectiles();

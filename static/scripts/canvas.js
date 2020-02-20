@@ -8,7 +8,7 @@ function init() {
 
 	var DEFAULT_GAME = {
 		"map" : defaultMap, 
-		"health" : 50,
+		"health" : 20,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"enemyWaves" : defaultWaves,
@@ -28,7 +28,11 @@ function init() {
 		"panelTowerOptionBoxHoverOutlineColor" : "#996633",
 		"panelTowerOptionScrollBarColor" : "#664321",
 		"panelButtonFillColor" : "#804c1b",
-		"panelButtonSymbolColor" : "#ffd630"
+		"panelButtonSymbolColor" : "#ffd630",
+
+		"sellButtonColor": "#992200",
+		"sellButtonTextColor": "#ffd630",
+		"sellMultiplier": 0.5
 	}
 
 	currentState = new CanvasState(document.getElementById("mainCanvas"), DEFAULT_GAME);
@@ -54,13 +58,19 @@ function CanvasState(canvas, game) {
 	
 	this.draggingTower = false; //Whether in the process of placing a tower
 	this.hoveringTower = false; //Hovering over a placed tower
+	this.pressingTower = false; //Pressing over a placed tower
 	this.hoveringTowerOption = false; //Hovering over a tower option
 	this.selection = null; //The Object that is being dragged or hovered
 	this.selectionNumber = 0; //The Number of the TowerType selected
 	this.mouse = {x: 0, y: 0};
+	this.selectionCoors = {x:0, y:0};
+	this.dropValid = false; //Whether the selected tower can be placed
 	this.towerDraggedOutOfOptionBox = false; //Has dragging tower left option box?
 	this.buttonPressed = false;
 	this.mouseHandler = new MouseHandler(this);
+	
+	this.focusedTower = null; //The tower that currently has their menu up
+	this.focusedTowerNumber = 0;
 
 	this.gameOver = false;
 	this.gameOverFade = 0; //opacity of the game over screen fading in
@@ -92,8 +102,6 @@ function CanvasState(canvas, game) {
 
 	this.roundNotifyTimer = 0; //Time left until big round notification disappears
 
-	this.time = false;
-
 	this.restartButton = new Button(this, 
 	    function(x, y) { //inbounds
 	        return x>=0 && x<=CANVAS_WIDTH &&
@@ -104,6 +112,7 @@ function CanvasState(canvas, game) {
 	    },
 	    false);
 	this.addButton(this.restartButton);
+
 
 	this.interval = 20;
 	
@@ -125,49 +134,22 @@ CanvasState.prototype.addEnemy = function(enemy) {
 //Called every frame; updates all element states and calls validate() if necessary
 CanvasState.prototype.update = function() {
 	if (!(this.gameOverFade >= 1))	 {
-		if(this.time) {
-			console.log(new Date().getMilliseconds());
-			this.updateEnemyPositions();
-			console.log(new Date().getMilliseconds());
-			this.updateEnemyWaves();
-			console.log(new Date().getMilliseconds());
+		this.updateEnemyPositions();
+		this.updateEnemyWaves();
 
-			if (this.gameOver) {
-				this.valid = false;
-				this.gameOverFade += 0.03;
-			} else {
-				this.sortEnemies();
-				console.log(new Date().getMilliseconds());
-				this.updateTowerStates();
-				console.log(new Date().getMilliseconds());
-				if (this.revalidationTimer > 0) {
-					this.valid = false;
-					this.revalidationTimer -= this.interval;
-				}
-				if (this.roundNotifyTimer > 0) {
-					this.valid = false;
-					this.roundNotifyTimer -= this.interval;
-				}
-			}
-			this.time = false;
+		if (this.gameOver) {
+			this.valid = false;
+			this.gameOverFade += 0.03;
 		} else {
-			this.updateEnemyPositions();
-			this.updateEnemyWaves();
-
-			if (this.gameOver) {
+			this.sortEnemies();
+			this.updateTowerStates();
+			if (this.revalidationTimer > 0) {
 				this.valid = false;
-				this.gameOverFade += 0.03;
-			} else {
-				this.sortEnemies();
-				this.updateTowerStates();
-				if (this.revalidationTimer > 0) {
-					this.valid = false;
-					this.revalidationTimer -= this.interval;
-				}
-				if (this.roundNotifyTimer > 0) {
-					this.valid = false;
-					this.roundNotifyTimer -= this.interval;
-				}
+				this.revalidationTimer -= this.interval;
+			}
+			if (this.roundNotifyTimer > 0) {
+				this.valid = false;
+				this.roundNotifyTimer -= this.interval;
 			}
 		}
 	}
@@ -180,6 +162,7 @@ CanvasState.prototype.update = function() {
 //Redraws all the elements
 CanvasState.prototype.validate = function() {
 	this.validating = true;
+	this.valid = true;
 
 	this.context.filter= "none";
 
@@ -190,17 +173,17 @@ CanvasState.prototype.validate = function() {
 	if(this.roundNotifyTimer > 0) {
 		this.drawRoundNotification();
 	}
+
 	
 	if(this.gameOver) {
 		this.drawGameOver();
 	} else {
 		if(this.draggingTower && this.towerDraggedOutOfOptionBox) {
-			this.selection.upgrades[0].drawRange(this.context, this.mouse.x, this.mouse.y);
-			this.selection.upgrades[0].draw(this.context, this.mouse.x, this.mouse.y);
+			this.selection.upgrades[0].drawRange(this.context, this.selectionCoors.x, this.selectionCoors.y, this.dropValid);
+			this.selection.upgrades[0].draw(this.context, this.selectionCoors.x, this.selectionCoors.y);
 		}
 	}
 	
-	this.valid = true;
 	this.validating = false;
 }
 
@@ -308,6 +291,34 @@ CanvasState.prototype.updateTowerStates = function(){
 	}
 }
 
+CanvasState.prototype.focusTower = function(tower, id) {
+	this.focusedTower = tower;
+	this.focusedTowerNumber = id;
+	this.panel.sellButton.active = true;
+	var nextUpgrade = this.focusedTower.type.upgrades[this.focusedTower.upgradeNum+1];
+	if(nextUpgrade == undefined || this.money < nextUpgrade.cost) {
+		this.panel.upgradeButton.active = false;
+	} else {
+		this.panel.upgradeButton.active = true;
+	}
+	this.valid = false;
+}
+
+CanvasState.prototype.sellFocusedTower = function() {
+	if(this.focusedTower != null) {
+		this.towers.splice(this.focusedTowerNumber, 1);
+		this.money += Math.ceil(this.focusedTower.baseSellPrice * this.game.sellMultiplier);
+		this.unfocus();
+	}
+}
+
+CanvasState.prototype.unfocus = function() {
+	this.panel.sellButton.active = false;
+	this.panel.upgradeButton.active = false;
+	this.focusedTower = null;
+	this.valid = false;
+}
+
 //Sorts the enemies array from first in the path to last
 CanvasState.prototype.sortEnemies = function() {
 	this.enemies.sort(function(a, b) {return b.dist - a.dist});
@@ -373,18 +384,19 @@ CanvasState.prototype.setMouse = function(e) {
 	my *= CANVAS_HEIGHT / this.styleHeight;
 
 	this.mouse = {x: mx, y: my};
+	this.selectionCoors = {x:Math.round(this.mouse.x/10)*10, y:Math.round(this.mouse.y/10)*10};
 	return this.mouse;
 }
-
 
 CanvasState.prototype.setFontFit = function(text, targetFontSize, maxWidth) { //Returns the font size given that it must fit within maxWidth. If small enough, returns targetFontSize
 	var fontSize = targetFontSize;
 	this.context.font = "small-caps " + fontSize + "px " + this.game.font;
-	while (maxWidth <= this.context.measureText(text).width) {
-		fontSize--;
+	var width = this.context.measureText(text).width;
+	if (width > maxWidth) {
+		fontSize *= maxWidth/width
 		this.context.font = "small-caps " + fontSize + "px " + this.game.font;
 	}
-	return fontSize + "px";
+	
 }
 
 

@@ -26,3 +26,22 @@ Polygon.prototype.draw = function(context, color, lineWidth, fillOpacity) {
 Polygon.prototype.addPoint = function(x,y) {
     this.points.push({x:x, y:y});
 }
+
+Polygon.prototype.contains = function(point) {
+    // ray-casting algorithm based on
+    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+    var x = point.x, y = point.y;
+
+    var inside = false;
+    for (var i = 0, j = this.points.length - 1; i < this.points.length; j = i++) {
+        var xi = this.points[i].x, yi = this.points[i].y;
+        var xj = this.points[j].x, yj = this.points[j].y;
+
+        var intersect = ((yi > y) != (yj > y))
+            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+}
