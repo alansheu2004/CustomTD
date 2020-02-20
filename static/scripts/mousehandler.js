@@ -90,6 +90,9 @@ function MouseHandler(state) {
 
 //Returns whether dragging tower actually started
 MouseHandler.prototype.startDraggingTower = function(mouse) {
+	if(this.state.focusedTower != null) {
+		return false;
+	}
 	for (var i = 0; i < this.state.towerTypes.length; i++) {
 		if (this.state.panel.optionContains(i, mouse.x, mouse.y) && this.state.money >= this.state.towerTypes[i].upgrades[0].cost) {
 			this.state.draggingTower = true;

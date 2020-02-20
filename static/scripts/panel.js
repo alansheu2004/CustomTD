@@ -18,7 +18,7 @@ function Panel(state) {
 	state.addButton(this.fullscreenButton);
 
 	this.sellButton = new Button(state,
-		function(x, y) {return y >= SELL_BUTTON_Y && y<= SELL_BUTTON_Y + SELL_BUTTON_HEIGHT},
+		function(x, y) {return (x >= SELL_BUTTON_MID_X - SELL_BUTTON_WIDTH/2 && x <= SELL_BUTTON_MID_X + SELL_BUTTON_WIDTH/2) && (y >= SELL_BUTTON_Y && y<= SELL_BUTTON_Y + SELL_BUTTON_HEIGHT);},
 		function(state) {state.sellFocusedTower();},
 		false);
 	state.addButton(this.sellButton);
@@ -130,7 +130,7 @@ Panel.prototype.drawUpgrades = function() {
 		this.state.context.filter = "none"
 	} else {
 		if (this.state.money < nextUpgrade.cost) {
-			this.state.context.filter = "opacity(50%)";
+			this.state.context.filter = "opacity(30%)";
 		}
 
 		this.state.context.fillStyle = this.game.panelBoxColor;
