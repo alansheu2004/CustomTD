@@ -59,11 +59,11 @@ function MouseHandler(state) {
 			return;
 		} else if (thisHandler.startPressingButton(mouse)) {
 			return;
-		} else if (thisHandler.hoverTower(mouse)) {
+		} else if (thisHandler.startPressingTower(thisState.selectionCoors)) {
 			return;
 		} else if (thisHandler.hoverTowerOption(mouse)) {
 			return;
-		}
+		} 
 		thisHandler.stopHovering();
 	}, true);
 
@@ -71,8 +71,10 @@ function MouseHandler(state) {
 		e.preventDefault();
 		var mouse = thisState.setMouse(thisHandler.touchToMouseEvent(e, 'mousemove'));
 		if (thisHandler.dragTower(mouse)){
-			//Do nothing
+			return;
 		} else if (thisHandler.checkButtonPressed(mouse)) {
+			return;
+		} else if (thisHandler.checkTowerPressed(thisState.selectionCoors)) {
 			return;
 		}
 	}, true);
@@ -84,6 +86,12 @@ function MouseHandler(state) {
 			return;
 		} else if (thisHandler.releaseButton(mouse)) {
 			return;
+		} else if (thisHandler.releaseTower(thisState.selectionCoors)) {
+			return;
+		}
+		if(mouse.x < MAP_WIDTH) {
+			thisState.unfocus();
+			thisState.valid = false;
 		}
 	}, true);
 }
