@@ -53,7 +53,7 @@ Map.prototype.getCollision = function(point) {
     var x = point.x;
     var y = point.y;
 
-    return this.collision[y/10][x/10];
+    return this.collision[Math.round(y/10)][Math.round(x/10)];
 }
 
 const defaultMap = new Map("images/map.png",

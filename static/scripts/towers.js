@@ -24,11 +24,11 @@ var defaultTowerTypes = [
 						new TowerUpgrade("Shooting-Star", 125, 160,
 							"Shoots slightly faster and farther",
 							"images/shootingstar.svg", 70, 70,
-							[new ProjectileShot(FAR_STAR, 500, {type:"radial", number:5}, -Math.PI/2)]),
+							[new ProjectileShot(FAR_STAR, 600, {type:"radial", number:5}, -Math.PI/2)]),
 						new TowerUpgrade("Superstar", 250, 160,
 							"Increases the number of stars shot to 10",
 							"images/superstar.svg", 70, 70,
-							[new ProjectileShot(FAR_STAR, 500, {type:"radial", number:10}, -Math.PI/2)])
+							[new ProjectileShot(FAR_STAR, 600, {type:"radial", number:10}, -Math.PI/2)])
 					]
 	)
 ];
