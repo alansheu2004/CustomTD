@@ -1,29 +1,41 @@
-PEA = new ProjectileType(2, 1600, null, 
-						false,
+PEA = new ProjectileType(null, 1, 1600, 500, 
+						false, 15, false,
 						"images/pea.png", 30, 30);
-BULLET_PEA = new ProjectileType(2, 2000, null, 
-						false,
-						"images/pea.png", 20, 20);
-STAR = new ProjectileType(2, 1600, 140, 
-						false,
-						"images/star.png", 36, 36);
-FAR_STAR = new ProjectileType(2, 1600, 160, 
-						false,
-						"images/star.png", 36, 36);
+BULLET_PEA = new ProjectileType(PEA, 1, 2000, 700, 
+						null, 10, null,
+						null, 20, 20);
+STAR = new ProjectileType(null, null, 1600, 140, 
+						false, 20, false,
+						"images/star.png", 40, 40);
+FAR_STAR = new ProjectileType(STAR, null, 1600, 180, 
+						null, null, null,
+						null, null, null);
+SPIKE = new ProjectileType(null, 2, 800, null, 
+						true, 10, 360,
+						"images/spike.png", 15, 30);
+SHARP_SPIKE = new ProjectileType(SPIKE, 3, 1000, null, 
+						null, null, 450,
+						"images/spike.png", null, null);
 
-function ProjectileType(pierce, speed, maxRange,
-						rotating,
+function mod(m,n) {
+	return ((m%n)+n)%n;
+}
+
+function ProjectileType(base, pierce, speed, maxRange,
+						rotating, radius, homing,
 						image, imgwidth, imgheight) {
-	this.pierce = pierce;
-	this.speed = speed; //px per seconds
-	this.maxRange = maxRange;
+	this.pierce = base&&!pierce ? base.pierce : pierce;
+	this.speed = base&&!speed ? base.speed : speed; //px per seconds
+	this.maxRange = base&&!maxRange ? base.maxRange : maxRange;
 
-	this.rotating = rotating;
+	this.rotating = base&&!rotating ? base.rotating : rotating;
+	this.radius = base&&!radius ? base.radius : radius;
+	this.homing = base&&!homing ? base.homing : homing;
 
 	this.image = new Image();
-	this.image.src = image;
-	this.imgwidth = imgwidth;
-	this.imgheight = imgheight;
+	this.image.src = base&&!image ? base.image.src : image;
+	this.imgwidth = base&&!imgwidth ? base.imgwidth : imgwidth;
+	this.imgheight = base&&!imgheight ? base.imgheight : imgheight;
 }
 
 ProjectileType.prototype.draw = function(context, x, y, angle) {
@@ -53,6 +65,19 @@ function Projectile(state, type, x, y, angle) {
 
 //Will return whether this projectiles should be deleted
 Projectile.prototype.update = function() {
+	if(this.type.homing) {
+		if(this.state.enemies.includes(this.targetEnemy)) {
+			let angle = mod(Math.atan2(this.targetEnemy.y-this.y, this.targetEnemy.x-this.x)-this.angle, 2*Math.PI);
+			if(angle <= Math.PI) {
+				this.angle += Math.min(angle, this.type.homing*(Math.PI/180)*this.state.interval/1000);
+			} else {
+				this.angle -= Math.min(2*Math.PI-angle, this.type.homing*(Math.PI/180)*this.state.interval/1000);
+			}
+		} else {
+			this.assignNewTarget();
+		}
+	}
+
 	var dx = this.state.interval*(this.type.speed/1000) * Math.cos(this.angle);
 	var dy = this.state.interval*(this.type.speed/1000) * Math.sin(this.angle);
 	this.x += dx;
@@ -72,7 +97,7 @@ Projectile.prototype.update = function() {
 	for (var i = 0; i < this.state.enemies.length; i++) {
 		var enemy = this.state.enemies[i];
 		if (!this.damagedEnemies.includes(enemy)) {
-			if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= enemy.type.size) {
+			if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= enemy.type.size + this.type.radius) {
 				enemy.damage(i);
 				this.damagedEnemies.push(enemy);
 				
@@ -82,12 +107,28 @@ Projectile.prototype.update = function() {
 						return true;
 					}
 				}
+
+				if(this.type.homing) {
+					this.assignNewTarget();
+				}
 			}
-			
 		}
 	}
 	
 	return false;
+}
+
+Projectile.prototype.assignNewTarget = function() {
+	var shortest = Math.hypot(this.state.enemies[0].y-this.y, this.state.enemies[0].x-this.x);
+	var closestEnemy = this.state.enemies[0];
+	for(let enemy of this.state.enemies) {
+		let dist = Math.hypot(enemy.y-this.y, enemy.x-this.x);
+		if(dist < shortest) {
+			shortest = dist;
+			closestEnemy = enemy;
+		}
+	}
+	this.targetEnemy = closestEnemy;
 }
 
 Projectile.prototype.draw = function() {

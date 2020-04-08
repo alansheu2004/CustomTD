@@ -16,6 +16,7 @@ const MAP_X = 0;
 const MAP_Y = 0;
 const MAP_WIDTH = 960;
 const MAP_HEIGHT = 720;
+const MAP_TOWER_GRAIN = 10;
 
 const MAP_ROUND_FONT_SIZE = 44;
 const MAP_ROUND_NUMBER_FONT_SIZE = 60;

@@ -286,16 +286,23 @@ MouseHandler.prototype.releaseTower = function(mouse) {
 }
 
 MouseHandler.prototype.setDropValid = function(mouse) {
-	var inMap = mouse.x <= MAP_WIDTH;
-	var inBounds = this.state.map.getCollision(mouse)==false;
-	var overlappingTowers = false;
+	if(mouse.x >= MAP_WIDTH) {
+		this.state.dropValid = false;
+		return;
+	} 
+	if(this.state.map.getPolyDist(mouse) < this.state.selection.footprint) {
+		this.state.dropValid = false;
+		return;
+	}
+	
 	for(let tower of this.state.towers) {
 		if(Math.hypot(tower.x - mouse.x, tower.y - mouse.y) < this.state.selection.footprint + tower.type.footprint) {
-			overlappingTowers = true;
-			break;
+			this.state.dropValid = false;
+			return;
 		}
 	}
-	this.state.dropValid = inMap && inBounds && !overlappingTowers;
+
+	this.state.dropValid = true;
 }
 
 

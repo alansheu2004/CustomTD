@@ -1,5 +1,5 @@
 var defaultTowerTypes = [
-	new TowerType("Peashooter", 30, true,
+	new TowerType("Peashooter", 25, true,
 					[
 						new TowerUpgrade("BASE", 100, 160,
 							"Shoots good ol' reliable peas",
@@ -15,7 +15,7 @@ var defaultTowerTypes = [
 							[new ProjectileShot(BULLET_PEA, 700, {type:"spray", number:3, angle: Math.PI/8}, null)])
 					]
 	),
-	new TowerType("Starfruit", 30, false,
+	new TowerType("Starfruit", 25, false,
 					[
 						new TowerUpgrade("BASE", 100, 140,
 							"Shoots 5 stars in all directions",
@@ -29,6 +29,22 @@ var defaultTowerTypes = [
 							"Increases the number of stars shot to 10",
 							"images/superstar.svg", 70, 70,
 							[new ProjectileShot(FAR_STAR, 600, {type:"radial", number:10}, -Math.PI/2)])
+					]
+	),
+	new TowerType("Cattail", 25, true,
+					[
+						new TowerUpgrade("BASE", 150, 150,
+							"Shoots spikes that can home on targets",
+							"images/cattail.svg", 70, 70,
+							[new ProjectileShot(SPIKE, 1000, {type:"single"}, null)]),
+						new TowerUpgrade("Sharp-Shooter", 150, 150,
+							"Shoots faster and sharper spikes",
+							"images/sharpshooter.svg", 70, 70,
+							[new ProjectileShot(SHARP_SPIKE, 1000, {type:"single"}, null)]),
+						new TowerUpgrade("Mechameow", 300, 150,
+							"A mechanized tail rapidly shoots spikes",
+							"images/mechameow.svg", 70, 70,
+							[new ProjectileShot(SHARP_SPIKE, 225, {type:"single"}, null)])
 					]
 	)
 ];
@@ -151,6 +167,7 @@ function Tower(state, type, x, y) {
 	this.angle = Math.PI/2;
 	this.cooldowns = this.upgrade.projectileshots.map(function(ps) {return ps.cooldown});
 	this.projectiles = [];
+	this.targetEnemy = null;
 
 	this.baseSellPrice = this.upgrade.cost;
 }
@@ -162,6 +179,7 @@ Tower.prototype.updateState = function(enemies) {
 		var enemy = enemies[i];
 		if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= this.upgrade.range) {
 			var angle = Math.atan2(enemy.y-this.y, enemy.x-this.x);
+			this.targetEnemy = enemy;
 
 			for(var j = 0; j<this.cooldowns.length; j++) {
 				if (this.cooldowns[j] <= 0) {
@@ -230,7 +248,11 @@ Tower.prototype.drawOutline = function() {
 }
 
 Tower.prototype.addProjectile = function(type, x, y, angle) {
-	this.projectiles.push(new Projectile(this.state, type, x, y, angle));
+	var projectile = new Projectile(this.state, type, x, y, angle);
+	if(type.homing) {
+		projectile.targetEnemy = this.targetEnemy;
+	}
+	this.projectiles.push(projectile);
 }
 
 Tower.prototype.drawProjectiles = function() {

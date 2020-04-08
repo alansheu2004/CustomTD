@@ -93,8 +93,8 @@ Panel.prototype.drawSellButton = function() {
 	this.state.context.textBaseline = "middle";
 	this.state.context.fillStyle = this.game.sellButtonTextColor;
 	
-	this.state.setFontFit("Sell-$" + this.state.focusedTower.baseSellPrice*this.state.game.sellMultiplier, SELL_BUTTON_FONT_SIZE, SELL_BUTTON_INNER_WIDTH);
-	this.state.context.fillText("Sell-$" + this.state.focusedTower.baseSellPrice*this.state.game.sellMultiplier, SELL_BUTTON_MID_X, SELL_BUTTON_Y + SELL_BUTTON_HEIGHT/2);
+	this.state.setFontFit("Sell-$" + Math.ceil(this.state.focusedTower.baseSellPrice*this.state.game.sellMultiplier), SELL_BUTTON_FONT_SIZE, SELL_BUTTON_INNER_WIDTH);
+	this.state.context.fillText("Sell-$" + Math.ceil(this.state.focusedTower.baseSellPrice*this.state.game.sellMultiplier), SELL_BUTTON_MID_X, SELL_BUTTON_Y + SELL_BUTTON_HEIGHT/2);
 }
 
 Panel.prototype.drawUpgrades = function() {

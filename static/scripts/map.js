@@ -6,7 +6,7 @@
 	this.path = path;
 	this.obstacles = obstacles;
 	this.waters = waters;
-    this.collision = this.setCollision(); //2 dimensional boolean array of whether a point is on the bath.boundaries (every 10 points)
+    this.polydist = this.setPolyDist(); //2 dimensional boolean array of whether a point is on the bath.boundaries (every 10 points)
 }
 
 Map.prototype.drawPath = function(context, color, lineWidth) {
@@ -29,31 +29,47 @@ Map.prototype.drawWaterBoundary = function (context, color, lineWidth, fillOpaci
     }
 }
 
-Map.prototype.setCollision = function() {
+Map.prototype.setPolyDist = function() {
     var rows = [];
     for(var i = 0; i <= MAP_HEIGHT/10; i++) {
         var row = []
+
+        outerLoop:
         for(var j = 0; j <= MAP_WIDTH/10; j++) {
-            var inside = false;
-            inside |= this.path.boundary.contains({x: 10*j, y: 10*i});
+            let distance = this.path.boundary.distance({x: 10*j, y: 10*i});
+            if (distance <= 0) {
+                row.push(0);
+                continue;
+            }
+
             for (let obstacle of this.obstacles) {
-                inside |= obstacle.contains({x: 10*j, y: 10*i});
+                distance = Math.min(distance, obstacle.distance({x: 10*j, y: 10*i}));
+                if (distance <= 0) {
+                    row.push(0);
+                    continue outerLoop;
+                }
             }
+
             for (let water of this.waters) {
-                inside |= water.contains({x: 10*j, y: 10*i});
+                distance = Math.min(distance, water.distance({x: 10*j, y: 10*i}));
+                if (distance <= 0) {
+                    row.push(0);
+                    continue outerLoop;
+                }
             }
-            row.push(inside);
+            row.push(distance);
         }
+
         rows.push(row);
     }
     return rows;
 }
 
-Map.prototype.getCollision = function(point) {
+Map.prototype.getPolyDist = function(point) {
     var x = point.x;
     var y = point.y;
 
-    return this.collision[Math.round(y/10)][Math.round(x/10)];
+    return this.polydist[Math.round(y/10)][Math.round(x/10)];
 }
 
 const defaultMap = new Map("images/map.png",
