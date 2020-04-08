@@ -36,7 +36,18 @@ var ROUND5 = new EnemyWave([
     new EnemyBunch(18, PINK, 15, 0.5),
 ]);
 
-var defaultWaves = [ROUND1, ROUND2, ROUND3, ROUND4, ROUND5];
+var ROUND6 = new EnemyWave([
+    new EnemyBunch(0, PINK, 3, 0.5),
+    new EnemyBunch(0, YELLOW, 10, 0.5),
+    new EnemyBunch(3, GREEN, 20, 0.25),
+    new EnemyBunch(5, RED, 30, 0.1),
+    new EnemyBunch(5, PINK, 5, 0.5),
+    new EnemyBunch(7, YELLOW, 12, 0.25),
+    new EnemyBunch(10, BLUE, 30, 0.25),
+    new EnemyBunch(15, PINK, 10, 0.2)
+]);
+
+var defaultWaves = [ROUND1, ROUND2, ROUND3, ROUND4, ROUND5, ROUND6];
 
 function EnemyWave(enemybunches) {
     this.enemybunches = enemybunches;

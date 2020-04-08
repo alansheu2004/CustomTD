@@ -28,7 +28,11 @@ function init() {
 		"panelTowerOptionBoxHoverOutlineColor" : "#996633",
 		"panelTowerOptionScrollBarColor" : "#664321",
 		"panelButtonFillColor" : "#804c1b",
-		"panelButtonSymbolColor" : "#ffd630"
+		"panelButtonSymbolColor" : "#ffd630",
+
+		"sellButtonColor": "#992200",
+		"sellButtonTextColor": "#ffd630",
+		"sellMultiplier": 0.5
 	}
 
 	currentState = new CanvasState(document.getElementById("mainCanvas"), DEFAULT_GAME);
@@ -66,6 +70,7 @@ function CanvasState(canvas, game) {
 	this.mouseHandler = new MouseHandler(this);
 	
 	this.focusedTower = null; //The tower that currently has their menu up
+	this.focusedTowerNumber = 0;
 
 	this.gameOver = false;
 	this.gameOverFade = 0; //opacity of the game over screen fading in
@@ -96,8 +101,6 @@ function CanvasState(canvas, game) {
 	this.enemyCountdown = []; //How many enemies are left in each bunch
 
 	this.roundNotifyTimer = 0; //Time left until big round notification disappears
-
-	this.time = false;
 
 	this.restartButton = new Button(this, 
 	    function(x, y) { //inbounds
@@ -159,6 +162,7 @@ CanvasState.prototype.update = function() {
 //Redraws all the elements
 CanvasState.prototype.validate = function() {
 	this.validating = true;
+	this.valid = true;
 
 	this.context.filter= "none";
 
@@ -169,6 +173,7 @@ CanvasState.prototype.validate = function() {
 	if(this.roundNotifyTimer > 0) {
 		this.drawRoundNotification();
 	}
+
 	
 	if(this.gameOver) {
 		this.drawGameOver();
@@ -179,7 +184,6 @@ CanvasState.prototype.validate = function() {
 		}
 	}
 	
-	this.valid = true;
 	this.validating = false;
 }
 
@@ -287,6 +291,34 @@ CanvasState.prototype.updateTowerStates = function(){
 	}
 }
 
+CanvasState.prototype.focusTower = function(tower, id) {
+	this.focusedTower = tower;
+	this.focusedTowerNumber = id;
+	this.panel.sellButton.active = true;
+	var nextUpgrade = this.focusedTower.type.upgrades[this.focusedTower.upgradeNum+1];
+	if(nextUpgrade == undefined || this.money < nextUpgrade.cost) {
+		this.panel.upgradeButton.active = false;
+	} else {
+		this.panel.upgradeButton.active = true;
+	}
+	this.valid = false;
+}
+
+CanvasState.prototype.sellFocusedTower = function() {
+	if(this.focusedTower != null) {
+		this.towers.splice(this.focusedTowerNumber, 1);
+		this.money += Math.ceil(this.focusedTower.baseSellPrice * this.game.sellMultiplier);
+		this.unfocus();
+	}
+}
+
+CanvasState.prototype.unfocus = function() {
+	this.panel.sellButton.active = false;
+	this.panel.upgradeButton.active = false;
+	this.focusedTower = null;
+	this.valid = false;
+}
+
 //Sorts the enemies array from first in the path to last
 CanvasState.prototype.sortEnemies = function() {
 	this.enemies.sort(function(a, b) {return b.dist - a.dist});
@@ -359,11 +391,12 @@ CanvasState.prototype.setMouse = function(e) {
 CanvasState.prototype.setFontFit = function(text, targetFontSize, maxWidth) { //Returns the font size given that it must fit within maxWidth. If small enough, returns targetFontSize
 	var fontSize = targetFontSize;
 	this.context.font = "small-caps " + fontSize + "px " + this.game.font;
-	while (maxWidth <= this.context.measureText(text).width) {
-		fontSize--;
+	var width = this.context.measureText(text).width;
+	if (width > maxWidth) {
+		fontSize *= maxWidth/width
 		this.context.font = "small-caps " + fontSize + "px " + this.game.font;
 	}
-	return fontSize + "px";
+	
 }
 
 
