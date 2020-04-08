@@ -290,7 +290,7 @@ MouseHandler.prototype.setDropValid = function(mouse) {
 		this.state.dropValid = false;
 		return;
 	} 
-	if(this.state.map.getPolyDist(mouse) < this.state.selection.footprint) {
+	if((this.state.selection.water ? this.state.map.getWaterPolyDist(mouse) : this.state.map.getPolyDist(mouse)) < this.state.selection.footprint) {
 		this.state.dropValid = false;
 		return;
 	}

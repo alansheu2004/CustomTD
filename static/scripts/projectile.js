@@ -11,11 +11,11 @@ FAR_STAR = new ProjectileType(STAR, null, 1600, 180,
 						null, null, null,
 						null, null, null);
 SPIKE = new ProjectileType(null, 2, 800, null, 
-						true, 10, 360,
+						true, 10, 450,
 						"images/spike.png", 15, 30);
 SHARP_SPIKE = new ProjectileType(SPIKE, 3, 1000, null, 
-						null, null, 450,
-						"images/spike.png", null, null);
+						null, null, 600,
+						null, null, null);
 
 function mod(m,n) {
 	return ((m%n)+n)%n;
@@ -66,15 +66,14 @@ function Projectile(state, type, x, y, angle) {
 //Will return whether this projectiles should be deleted
 Projectile.prototype.update = function() {
 	if(this.type.homing) {
-		if(this.state.enemies.includes(this.targetEnemy)) {
+		this.assignNewTarget();
+		if(this.targetEnemy && this.state.enemies.includes(this.targetEnemy)) {
 			let angle = mod(Math.atan2(this.targetEnemy.y-this.y, this.targetEnemy.x-this.x)-this.angle, 2*Math.PI);
 			if(angle <= Math.PI) {
 				this.angle += Math.min(angle, this.type.homing*(Math.PI/180)*this.state.interval/1000);
 			} else {
 				this.angle -= Math.min(2*Math.PI-angle, this.type.homing*(Math.PI/180)*this.state.interval/1000);
 			}
-		} else {
-			this.assignNewTarget();
 		}
 	}
 
@@ -119,16 +118,22 @@ Projectile.prototype.update = function() {
 }
 
 Projectile.prototype.assignNewTarget = function() {
-	var shortest = Math.hypot(this.state.enemies[0].y-this.y, this.state.enemies[0].x-this.x);
-	var closestEnemy = this.state.enemies[0];
+	var shortest = Infinity;
+	var closestEnemy;
 	for(let enemy of this.state.enemies) {
-		let dist = Math.hypot(enemy.y-this.y, enemy.x-this.x);
-		if(dist < shortest) {
-			shortest = dist;
-			closestEnemy = enemy;
+		if (!this.damagedEnemies.includes(enemy)) {
+			let dist = Math.hypot(enemy.y-this.y, enemy.x-this.x);
+			if(dist < shortest) {
+				shortest = dist;
+				closestEnemy = enemy;
+			}
 		}
 	}
-	this.targetEnemy = closestEnemy;
+	if(closestEnemy) {
+		this.targetEnemy = closestEnemy;
+	} else {
+		this.targetEnemy = null;
+	}
 }
 
 Projectile.prototype.draw = function() {

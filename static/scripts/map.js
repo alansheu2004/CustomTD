@@ -7,6 +7,7 @@
 	this.obstacles = obstacles;
 	this.waters = waters;
     this.polydist = this.setPolyDist(); //2 dimensional boolean array of whether a point is on the bath.boundaries (every 10 points)
+    this.waterpolydist = this.setWaterPolyDist();
 }
 
 Map.prototype.drawPath = function(context, color, lineWidth) {
@@ -71,6 +72,55 @@ Map.prototype.getPolyDist = function(point) {
 
     return this.polydist[Math.round(y/10)][Math.round(x/10)];
 }
+
+Map.prototype.setWaterPolyDist = function() {
+    var rows = [];
+    for(var i = 0; i <= MAP_HEIGHT/10; i++) {
+        var row = []
+
+        outerLoop:
+        for(var j = 0; j <= MAP_WIDTH/10; j++) {
+            let inwater = false;
+            for (let water of this.waters) {
+                if (water.contains({x:10*j, y:10*i})) {
+                    inwater = true;
+                    break;
+                }
+            }
+            if(!inwater) {
+                row.push(0);
+                continue;
+            }
+
+            let distance = this.path.boundary.distance({x: 10*j, y: 10*i});
+            if (distance <= 0) {
+                row.push(0);
+                continue;
+            }
+
+            for (let obstacle of this.obstacles) {
+                distance = Math.min(distance, obstacle.distance({x: 10*j, y: 10*i}));
+                if (distance <= 0) {
+                    row.push(0);
+                    continue outerLoop;
+                }
+            }
+
+            row.push(distance);
+        }
+
+        rows.push(row);
+    }
+    return rows;
+}
+
+Map.prototype.getWaterPolyDist = function(point) {
+    var x = point.x;
+    var y = point.y;
+
+    return this.waterpolydist[Math.round(y/10)][Math.round(x/10)];
+}
+
 
 const defaultMap = new Map("images/map.png",
 	defaultPath,

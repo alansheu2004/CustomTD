@@ -1,5 +1,5 @@
 var defaultTowerTypes = [
-	new TowerType("Peashooter", 25, true,
+	new TowerType("Peashooter", 25, true, false,
 					[
 						new TowerUpgrade("BASE", 100, 160,
 							"Shoots good ol' reliable peas",
@@ -15,7 +15,7 @@ var defaultTowerTypes = [
 							[new ProjectileShot(BULLET_PEA, 700, {type:"spray", number:3, angle: Math.PI/8}, null)])
 					]
 	),
-	new TowerType("Starfruit", 25, false,
+	new TowerType("Starfruit", 25, false, false,
 					[
 						new TowerUpgrade("BASE", 100, 140,
 							"Shoots 5 stars in all directions",
@@ -31,7 +31,7 @@ var defaultTowerTypes = [
 							[new ProjectileShot(FAR_STAR, 600, {type:"radial", number:10}, -Math.PI/2)])
 					]
 	),
-	new TowerType("Cattail", 25, true,
+	new TowerType("Cattail", 25, true, true,
 					[
 						new TowerUpgrade("BASE", 150, 150,
 							"Shoots spikes that can home on targets",
@@ -49,12 +49,13 @@ var defaultTowerTypes = [
 	)
 ];
 
-function TowerType(name, footprint, turning,
+function TowerType(name, footprint, turning, water,
 					upgrades) {
 	this.name = name;
 	this.footprint = footprint;
 	this.upgrades = upgrades;
 	this.turning = turning;
+	this.water = water;
 }
 
 TowerType.prototype.drawBoundary = function(context, x, y, color, lineWidth, fillOpacity) {
