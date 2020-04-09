@@ -1,16 +1,30 @@
-var RED = new EnemyType(150, "red", null, 1, 1, 22);
-var BLUE = new EnemyType(200, "skyblue", RED, 2, 2, 24);
-var GREEN = new EnemyType(300, "limegreen", BLUE, 3, 3, 26);
-var YELLOW = new EnemyType(500, "yellow", GREEN, 4, 4, 28);
-var PINK = new EnemyType(600, "pink", YELLOW, 5, 5, 30);
+var RED = new EnemyType(150, null, 1, 1, 22,
+	"images/red.svg", 36, 48);
+var BLUE = new EnemyType(200, RED, 1, 2, 23,
+	"images/blue.svg", 38, 51);
+var GREEN = new EnemyType(300, BLUE, 2, 3, 24,
+	"images/green.svg", 40, 54);
+var YELLOW = new EnemyType(500, GREEN, 2, 4, 26,
+	"images/yellow.svg", 42, 57);
+var PINK = new EnemyType(600, YELLOW, 3, 5, 28,
+	"images/pink.svg", 44, 60);
 
-function EnemyType(speed, color, child, rbe, damage, size) {
+function EnemyType(speed, child, rbe, damage, size,
+					image, imgwidth, imgheight) {
 	this.speed = speed; // px per sec
-	this.color = color;
 	this.child = child;
 	this.rbe = rbe;
 	this.damage = damage;
 	this.size = size;
+
+	this.image = new Image();
+	this.image.src = image;
+	this.imgwidth = imgwidth;
+	this.imgheight = imgheight;
+}
+
+EnemyType.prototype.draw = function(context, x, y) {
+	context.drawImage(this.image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
 }
 
 function Enemy(state, type) {
@@ -23,10 +37,7 @@ function Enemy(state, type) {
 }
 
 Enemy.prototype.draw = function() {
-	this.state.context.beginPath();
-	this.state.context.arc(this.x, this.y, this.type.size, 0, 2*Math.PI);
-	this.state.context.fillStyle = this.type.color;
-	this.state.context.fill();
+	this.type.draw(this.state.context, this.x, this.y);
 }
 
 //Advances the distance of enemy traveled based on speed

@@ -14,7 +14,7 @@ SPIKE = new ProjectileType(null, 2, 800, null,
 						true, 10, 450,
 						"images/spike.png", 15, 30);
 SHARP_SPIKE = new ProjectileType(SPIKE, 3, 1000, null, 
-						null, null, 600,
+						null, null, 630,
 						null, null, null);
 
 function mod(m,n) {
@@ -24,18 +24,28 @@ function mod(m,n) {
 function ProjectileType(base, pierce, speed, maxRange,
 						rotating, radius, homing,
 						image, imgwidth, imgheight) {
-	this.pierce = base&&!pierce ? base.pierce : pierce;
-	this.speed = base&&!speed ? base.speed : speed; //px per seconds
-	this.maxRange = base&&!maxRange ? base.maxRange : maxRange;
+	this.pierce = pierce;
+	this.speed = speed; //px per seconds
+	this.maxRange = maxRange;
 
-	this.rotating = base&&!rotating ? base.rotating : rotating;
-	this.radius = base&&!radius ? base.radius : radius;
-	this.homing = base&&!homing ? base.homing : homing;
+	this.rotating = rotating;
+	this.radius = radius;
+	this.homing = homing;
 
 	this.image = new Image();
-	this.image.src = base&&!image ? base.image.src : image;
-	this.imgwidth = base&&!imgwidth ? base.imgwidth : imgwidth;
-	this.imgheight = base&&!imgheight ? base.imgheight : imgheight;
+	this.image.src = image;
+	this.imgwidth = imgwidth;
+	this.imgheight = imgheight;
+
+	if(base) {
+		for(let key of Object.keys(this)) {
+			if(this[key] == null) {
+				this[key] = base[key];
+			} else if(key == "image") {
+				this[key].src = base[key].src;
+			}
+		}
+	}
 }
 
 ProjectileType.prototype.draw = function(context, x, y, angle) {

@@ -130,7 +130,7 @@ Panel.prototype.drawUpgrades = function() {
 		this.state.context.filter = "none"
 	} else {
 		if (this.state.money < nextUpgrade.cost) {
-			this.state.context.filter = "opacity(30%)";
+			this.state.context.filter = "opacity(50%)";
 		}
 
 		this.state.context.fillStyle = this.game.panelBoxColor;
@@ -149,6 +149,7 @@ Panel.prototype.drawUpgrades = function() {
 		this.state.context.fillText(nextUpgrade.name, UPGRADE_BUTTON_TEXT_X, UPGRADE_BUTTON_NAME_Y);
 	
 		this.state.context.filter = "none";
+
 	}
 	
 }

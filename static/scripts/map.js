@@ -32,19 +32,19 @@ Map.prototype.drawWaterBoundary = function (context, color, lineWidth, fillOpaci
 
 Map.prototype.setPolyDist = function() {
     var rows = [];
-    for(var i = 0; i <= MAP_HEIGHT/10; i++) {
+    for(var i = 0; i <= MAP_HEIGHT/MAP_TOWER_GRAIN; i++) {
         var row = []
 
         outerLoop:
-        for(var j = 0; j <= MAP_WIDTH/10; j++) {
-            let distance = this.path.boundary.distance({x: 10*j, y: 10*i});
+        for(var j = 0; j <= MAP_WIDTH/MAP_TOWER_GRAIN; j++) {
+            let distance = this.path.boundary.distance({x: MAP_TOWER_GRAIN*j, y: MAP_TOWER_GRAIN*i});
             if (distance <= 0) {
                 row.push(0);
                 continue;
             }
 
             for (let obstacle of this.obstacles) {
-                distance = Math.min(distance, obstacle.distance({x: 10*j, y: 10*i}));
+                distance = Math.min(distance, obstacle.distance({x: MAP_TOWER_GRAIN*j, y: MAP_TOWER_GRAIN*i}));
                 if (distance <= 0) {
                     row.push(0);
                     continue outerLoop;
@@ -52,7 +52,7 @@ Map.prototype.setPolyDist = function() {
             }
 
             for (let water of this.waters) {
-                distance = Math.min(distance, water.distance({x: 10*j, y: 10*i}));
+                distance = Math.min(distance, water.distance({x: MAP_TOWER_GRAIN*j, y: MAP_TOWER_GRAIN*i}));
                 if (distance <= 0) {
                     row.push(0);
                     continue outerLoop;
@@ -70,19 +70,19 @@ Map.prototype.getPolyDist = function(point) {
     var x = point.x;
     var y = point.y;
 
-    return this.polydist[Math.round(y/10)][Math.round(x/10)];
+    return this.polydist[Math.round(y/MAP_TOWER_GRAIN)][Math.round(x/MAP_TOWER_GRAIN)];
 }
 
 Map.prototype.setWaterPolyDist = function() {
     var rows = [];
-    for(var i = 0; i <= MAP_HEIGHT/10; i++) {
+    for(var i = 0; i <= MAP_HEIGHT/MAP_TOWER_GRAIN; i++) {
         var row = []
 
         outerLoop:
-        for(var j = 0; j <= MAP_WIDTH/10; j++) {
+        for(var j = 0; j <= MAP_WIDTH/MAP_TOWER_GRAIN; j++) {
             let inwater = false;
             for (let water of this.waters) {
-                if (water.contains({x:10*j, y:10*i})) {
+                if (water.contains({x:MAP_TOWER_GRAIN*j, y:MAP_TOWER_GRAIN*i})) {
                     inwater = true;
                     break;
                 }
@@ -92,14 +92,14 @@ Map.prototype.setWaterPolyDist = function() {
                 continue;
             }
 
-            let distance = this.path.boundary.distance({x: 10*j, y: 10*i});
+            let distance = this.path.boundary.distance({x: MAP_TOWER_GRAIN*j, y: MAP_TOWER_GRAIN*i});
             if (distance <= 0) {
                 row.push(0);
                 continue;
             }
 
             for (let obstacle of this.obstacles) {
-                distance = Math.min(distance, obstacle.distance({x: 10*j, y: 10*i}));
+                distance = Math.min(distance, obstacle.distance({x: MAP_TOWER_GRAIN*j, y: MAP_TOWER_GRAIN*i}));
                 if (distance <= 0) {
                     row.push(0);
                     continue outerLoop;
@@ -118,7 +118,7 @@ Map.prototype.getWaterPolyDist = function(point) {
     var x = point.x;
     var y = point.y;
 
-    return this.waterpolydist[Math.round(y/10)][Math.round(x/10)];
+    return this.waterpolydist[Math.round(y/MAP_TOWER_GRAIN)][Math.round(x/MAP_TOWER_GRAIN)];
 }
 
 
