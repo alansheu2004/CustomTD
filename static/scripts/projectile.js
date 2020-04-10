@@ -1,36 +1,41 @@
-PEA = new ProjectileType(null, 1, 1600, 500, 
-						false, 15, false,
+PEA = new ProjectileType(null, 2, 1600, 500, 1,
+						false, 15, false, [],
 						"images/pea.png", 30, 30);
-BULLET_PEA = new ProjectileType(PEA, 1, 2000, 700, 
-						null, 10, null,
-						null, 20, 20);
-STAR = new ProjectileType(null, null, 1600, 140, 
-						false, 20, false,
+BULLET_PEA = new ProjectileType(PEA, 3, 2000, 700, INHERIT,
+						INHERIT, 10, INHERIT, INHERIT,
+						INHERIT, 20, 20);
+STAR = new ProjectileType(null, Infinity, 1600, 140, 1,
+						false, 20, false, [],
 						"images/star.png", 40, 40);
-FAR_STAR = new ProjectileType(STAR, null, 1600, 180, 
-						null, null, null,
-						null, null, null);
-SPIKE = new ProjectileType(null, 2, 800, null, 
-						true, 10, 450,
+FAR_STAR = new ProjectileType(STAR, INHERIT, 1600, 180,  INHERIT,
+						INHERIT, INHERIT, INHERIT, INHERIT,
+						INHERIT, INHERIT, INHERIT);
+SPIKE = new ProjectileType(null, 2, 800, null, 1,
+						true, 10, 450, [],
 						"images/spike.png", 15, 30);
-SHARP_SPIKE = new ProjectileType(SPIKE, 3, 1000, null, 
-						null, null, 630,
-						null, null, null);
+SHARP_SPIKE = new ProjectileType(SPIKE, 3, 1000, INHERIT, INHERIT,
+						INHERIT, INHERIT, 630, INHERIT,
+						INHERIT, INHERIT, INHERIT);
+ICICLE = new ProjectileType(null, Infinity, 1800, 140, 1,
+						true, 15, false, [{"type":FREEZE,"time":3}],
+						"images/icicle.svg", 25, 50);
 
 function mod(m,n) {
 	return ((m%n)+n)%n;
 }
 
-function ProjectileType(base, pierce, speed, maxRange,
-						rotating, radius, homing,
+function ProjectileType(base, pierce, speed, maxRange, damage,
+						rotating, radius, homing, effects,
 						image, imgwidth, imgheight) {
 	this.pierce = pierce;
 	this.speed = speed; //px per seconds
 	this.maxRange = maxRange;
+	this.damage = damage;
 
 	this.rotating = rotating;
 	this.radius = radius;
 	this.homing = homing;
+	this.effects = effects; // {type, time}
 
 	this.image = new Image();
 	this.image.src = image;
@@ -39,7 +44,7 @@ function ProjectileType(base, pierce, speed, maxRange,
 
 	if(base) {
 		for(let key of Object.keys(this)) {
-			if(this[key] == null) {
+			if(this[key] == INHERIT) {
 				this[key] = base[key];
 			} else if(key == "image") {
 				this[key].src = base[key].src;
@@ -60,6 +65,20 @@ ProjectileType.prototype.draw = function(context, x, y, angle) {
 	} else {
 		context.drawImage(this.image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
 	}
+}
+
+/*
+	Dispersion can be:
+	{type:"single"} A single projectile
+	{type:"spray", number, angle} Sprays multiple projectiles with angle between them
+	{type:"radial", number} Evenly shoots multiple projectiles in all directions
+*/
+function ProjectileAttack(projectiletype, cooldown, dispersion, target) { //Targets a specific angle, default if null
+	this.type = "projectile";
+	this.projectiletype = projectiletype;
+	this.cooldown = cooldown;
+	this.dispersion = dispersion;
+	this.target = target;
 }
 
 function Projectile(state, type, x, y, angle) {
@@ -107,14 +126,15 @@ Projectile.prototype.update = function() {
 		var enemy = this.state.enemies[i];
 		if (!this.damagedEnemies.includes(enemy)) {
 			if (Math.hypot(enemy.x - this.x, enemy.y - this.y) <= enemy.type.size + this.type.radius) {
-				enemy.damage(i);
+				enemy.damage(i, this.type.damage);
+				for (let effect of this.type.effects) {
+					enemy.addEffect(effect.type, effect.time*1000);
+				}
 				this.damagedEnemies.push(enemy);
 				
-				if(this.pierceLeft != null) {
-					this.pierceLeft--;
-					if (this.pierceLeft <= 0) {
-						return true;
-					}
+				this.pierceLeft--;
+				if (this.pierceLeft <= 0) {
+					return true;
 				}
 
 				if(this.type.homing) {
