@@ -30,7 +30,7 @@ LEAFY_CABBAGE = new ProjectileType(CABBAGE, INHERIT, 500, INHERIT, INHERIT,
 						INHERIT, 50, 50);
 MELON = new ProjectileType(LEAFY_CABBAGE, INHERIT, 400, INHERIT, INHERIT,
 						INHERIT, 30, INHERIT, INHERIT, [new PulseAttack(MELON_EXPLOSION, null, 2*Math.PI, null), new ProjectileAttack(LEAF, 750, {type:"radial", number:12}, -Math.PI/2)],
-						"images/melon.png", 50, 80);
+						"images/melon.png", 60, 60);
 
 function mod(m,n) {
 	return ((m%n)+n)%n;

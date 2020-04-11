@@ -37,14 +37,14 @@ var defaultTowerTypes = [
 							"Blasts the area with cold air, temportarily immobilizing foes",
 							"images/iceshroom.svg", 80, 70,
 							[new PulseAttack(FREEZE_PULSE, 2000, 2*Math.PI, null)]),
-						new TowerUpgrade("Deep Freeze", 150, 120,
+						new TowerUpgrade("Deep Freeze", 175, 120,
 							"Leaves enemies slow after thawing",
 							"images/deepfreeze.svg", 80, 70,
 							[new PulseAttack(DEEP_FREEZE_PULSE, 2000, 2*Math.PI, null)]),
 						new TowerUpgrade("Icicle Spikes", 250, 120,
 							"Sends out ice shard that completely freeze and damage enemies",
 							"images/iciclespikes.svg", 80, 70,
-							[new PulseAttack(DEEP_FREEZE_PULSE, 2000, 2*Math.PI, null), new ProjectileAttack(ICICLE, 4000, {type:"radial", number:4}, Math.PI/4)])
+							[new PulseAttack(DEEP_FREEZE_PULSE, 2000, 2*Math.PI, null), new ProjectileAttack(ICICLE, 4000, {type:"radial", number:6}, Math.PI/2)])
 					]
 	),
 	new TowerType("Cattail", 25, true, true,
@@ -65,11 +65,11 @@ var defaultTowerTypes = [
 	),
 	new TowerType("Cabbage-pult", 30, true, false,
 					[
-						new TowerUpgrade("BASE", 175, 180,
+						new TowerUpgrade("BASE", 200, 180,
 							"Shoots cabbages that explode on contact",
 							"images/cabbagepult.svg", 70, 80,
 							[new ProjectileAttack(CABBAGE, 1500, {type:"single"}, null)]),
-						new TowerUpgrade("Leaf Tornado", 225, 200,
+						new TowerUpgrade("Leaf Tornado", 250, 200,
 							"Leaves erupt from the cabbage, slightly flustering foes",
 							"images/leaftornado.svg", 70, 80,
 							[new ProjectileAttack(LEAFY_CABBAGE, 1500, {type:"single"}, null)]),
