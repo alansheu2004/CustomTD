@@ -11,3 +11,6 @@ function Effect(base, speedMultiplier) {
 }
 
 const FREEZE = new Effect(null, 0);
+const COLD = new Effect(null, 0.5);
+
+const FLUSTERED = new Effect(null, 0.75);

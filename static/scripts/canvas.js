@@ -114,7 +114,7 @@ function CanvasState(canvas, game) {
 	this.addButton(this.restartButton);
 
 
-	this.interval = 20;
+	this.interval = 40;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
 }

@@ -34,9 +34,17 @@ var defaultTowerTypes = [
 	new TowerType("Iceshroom", 30, false, false,
 					[
 						new TowerUpgrade("BASE", 75, 120,
-							"Blasts the area with cold air, temportarily freezing foes",
+							"Blasts the area with cold air, temportarily immobilizing foes",
 							"images/iceshroom.svg", 80, 70,
-							[new PusleAttack(FREEZE_PULSE, 2500, 2*Math.PI, null)])
+							[new PulseAttack(FREEZE_PULSE, 2000, 2*Math.PI, null)]),
+						new TowerUpgrade("Deep Freeze", 150, 120,
+							"Leaves enemies slow after thawing",
+							"images/deepfreeze.svg", 80, 70,
+							[new PulseAttack(DEEP_FREEZE_PULSE, 2000, 2*Math.PI, null)]),
+						new TowerUpgrade("Icicle Spikes", 250, 120,
+							"Sends out ice shard that completely freeze and damage enemies",
+							"images/iciclespikes.svg", 80, 70,
+							[new PulseAttack(DEEP_FREEZE_PULSE, 2000, 2*Math.PI, null), new ProjectileAttack(ICICLE, 4000, {type:"radial", number:4}, Math.PI/4)])
 					]
 	),
 	new TowerType("Cattail", 25, true, true,
@@ -52,7 +60,23 @@ var defaultTowerTypes = [
 						new TowerUpgrade("Mechameow", 300, 150,
 							"A mechanized tail rapidly shoots spikes",
 							"images/mechameow.svg", 70, 70,
-							[new ProjectileAttack(SHARP_SPIKE, 225, {type:"single"}, null)])
+							[new ProjectileAttack(SHARP_SPIKE, 333, {type:"single"}, null)])
+					]
+	),
+	new TowerType("Cabbage-pult", 30, true, false,
+					[
+						new TowerUpgrade("BASE", 175, 180,
+							"Shoots cabbages that explode on contact",
+							"images/cabbagepult.svg", 70, 80,
+							[new ProjectileAttack(CABBAGE, 1500, {type:"single"}, null)]),
+						new TowerUpgrade("Leaf Tornado", 225, 200,
+							"Leaves erupt from the cabbage, slightly flustering foes",
+							"images/leaftornado.svg", 70, 80,
+							[new ProjectileAttack(LEAFY_CABBAGE, 1500, {type:"single"}, null)]),
+						new TowerUpgrade("Melon-pult", 300, 200,
+							"Shoots melons ... for some reason ... that do double damage and big explosions",
+							"images/melonpult.svg", 70, 92,
+							[new ProjectileAttack(MELON, 1750, {type:"single"}, null)])
 					]
 	)
 ];
@@ -198,36 +222,40 @@ Tower.prototype.attack = function(enemy) {
 			} else {
 				targetAngle = this.upgrade.attacks[j].target;
 			}
-			
-			switch(this.upgrade.attacks[j].type) {
-				case "projectile":
-					switch(this.upgrade.attacks[j].dispersion.type) {
-						case "single":
-							this.addProjectile(this.upgrade.attacks[j].projectiletype, this.x, this.y, targetAngle);
-							break;
-						case "spray":
-							for(var k=0; k<this.upgrade.attacks[j].dispersion.number; k++) {
-								this.addProjectile(this.upgrade.attacks[j].projectiletype, this.x, this.y, 
-									targetAngle - (this.upgrade.attacks[j].dispersion.number/2 - 0.5 - k)*this.upgrade.attacks[j].dispersion.angle);
-							}
-							break;
-						case "radial":
-							for(var k=0; k<this.upgrade.attacks[j].dispersion.number; k++) {
-								this.addProjectile(this.upgrade.attacks[j].projectiletype, this.x, this.y, targetAngle + k*(2*Math.PI/this.upgrade.attacks[j].dispersion.number));
-							}
-							break;
-						
-					}
-					break;
-				case "pulse":
-					this.addPulse(this.upgrade.attacks[j].pulsetype, this.x, this.y, targetAngle, this.upgrade.attacks[j].angleWidth);
-					break;
-			}
+
+			this.addAttack(this.upgrade.attacks[j], targetAngle);
 
 		}
 	}
 
 	this.state.valid = false;
+}
+
+Tower.prototype.addAttack = function(attack, targetAngle, x, y) { //x, y optional defaults to tower position
+	switch(attack.type) {
+		case "projectile":
+			switch(attack.dispersion.type) {
+				case "single":
+					this.addProjectile(attack.projectiletype, x||this.x, y||this.y, targetAngle);
+					break;
+				case "spray":
+					for(var k=0; k<attack.dispersion.number; k++) {
+						this.addProjectile(attack.projectiletype, x||this.x, y||this.y, 
+							targetAngle - (attack.dispersion.number/2 - 0.5 - k)*attack.dispersion.angle);
+					}
+					break;
+				case "radial":
+					for(var k=0; k<attack.dispersion.number; k++) {
+						this.addProjectile(attack.projectiletype, x||this.x, y||this.y, targetAngle + k*(2*Math.PI/attack.dispersion.number));
+					}
+					break;
+				
+			}
+			break;
+		case "pulse":
+			this.addPulse(attack.pulsetype, x||this.x, y||this.y, targetAngle, attack.angleWidth);
+			break;
+	}
 }
 
 Tower.prototype.draw = function() {
@@ -255,7 +283,7 @@ Tower.prototype.drawOutline = function() {
 }
 
 Tower.prototype.addProjectile = function(type, x, y, angle) {
-	var projectile = new Projectile(this.state, type, x, y, angle);
+	var projectile = new Projectile(this.state, type, this, x, y, angle);
 	if(type.homing) {
 		projectile.targetEnemy = this.targetEnemy;
 	}
@@ -263,7 +291,7 @@ Tower.prototype.addProjectile = function(type, x, y, angle) {
 }
 
 Tower.prototype.addPulse = function(type, x, y, angle, angleWidth) {
-	var pulse = new Pulse(this.state, type, x, y, angle, angleWidth);
+	var pulse = new Pulse(this.state, type, this, x, y, angle, angleWidth);
 	this.attacks.push(pulse);
 }
 
@@ -297,5 +325,6 @@ Tower.prototype.nextUpgrade = function() {
 	this.upgrade = this.type.upgrades[this.upgradeNum];
 	this.state.money -= this.upgrade.cost;
 	this.baseSellPrice += this.upgrade.cost;
+	this.cooldowns = this.upgrade.attacks.map(function(ps) {return ps.cooldown});
 	this.state.valid = false;
 }

@@ -7,21 +7,21 @@ var ROUND2 = new EnemyWave([
     new EnemyBunch(0, RED, 6, 0.4),
     new EnemyBunch(3, RED, 6, 0.4),
     new EnemyBunch(6, RED, 6, 0.4),
-    new EnemyBunch(10, RED, 16, 0.5),
-    new EnemyBunch(20, BLUE, 1, 0)
+    new EnemyBunch(10, BLUE, 16, 1),
+    new EnemyBunch(20, GREEN, 1, 0)
 ]);
 
 var ROUND3 = new EnemyWave([
     new EnemyBunch(0, RED, 30, 0.5),
     new EnemyBunch(0, BLUE, 15, 1),
     new EnemyBunch(16, BLUE, 10, 0.3),
-    new EnemyBunch(17, GREEN, 1, 0),
+    new EnemyBunch(17, GREEN, 10, 0.5),
 ]);
 
 var ROUND4 = new EnemyWave([
     new EnemyBunch(0, BLUE, 50, 0.5),
     new EnemyBunch(5, GREEN, 10, 1),
-    new EnemyBunch(15, GREEN, 16, 0.5),
+    new EnemyBunch(15, RED, 50, 0.2),
     new EnemyBunch(25, GREEN, 20, 0.3),
     new EnemyBunch(30, YELLOW, 3, 1),
 ]);

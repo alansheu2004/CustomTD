@@ -1,12 +1,12 @@
-var RED = new EnemyType(150, null, 1, 1, 22, 1,
+var RED = new EnemyType(100, null, 1, 1, 22, 1,
 	"images/red.svg", 36, 48);
-var BLUE = new EnemyType(200, RED, 1, 2, 23, 1,
+var BLUE = new EnemyType(133, RED, 1, 2, 23, 1,
 	"images/blue.svg", 38, 51);
-var GREEN = new EnemyType(300, BLUE, 2, 3, 24, 1,
+var GREEN = new EnemyType(200, BLUE, 2, 3, 24, 1,
 	"images/green.svg", 40, 54);
-var YELLOW = new EnemyType(500, GREEN, 2, 4, 26, 1,
+var YELLOW = new EnemyType(400, GREEN, 2, 4, 26, 1,
 	"images/yellow.svg", 42, 57);
-var PINK = new EnemyType(600, YELLOW, 3, 5, 28, 1,
+var PINK = new EnemyType(500, YELLOW, 3, 5, 28, 1,
 	"images/pink.svg", 44, 60);
 
 function EnemyType(speed, child, rbe, damage, size, health,
