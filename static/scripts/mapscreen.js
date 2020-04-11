@@ -80,7 +80,7 @@ MapScreen.prototype.drawTowers = function() {
 		}
 		
 		tower.draw();
-		tower.drawProjectiles();
+		tower.drawAttacks();
 	}
 }
 
