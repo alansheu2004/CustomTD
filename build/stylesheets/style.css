@@ -15,17 +15,20 @@ html, body {
 }
 
 body {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
 	align-items: center;
 	background-color: #ffe9d4;
 }
 
+p, h3 {
+	text-align: center;
+}
+
 canvas#mainCanvas {
+	display: block;
 	height: 80%;
 	width: calc(80vh * 16 / 9);
 	border: 1vw ridge #663300;
+	margin: 20px auto;
 }
 
 @media (max-aspect-ratio: 16/9) {

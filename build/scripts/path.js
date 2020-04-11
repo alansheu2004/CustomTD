@@ -126,7 +126,7 @@ Path.prototype.getBoundary = function(context, color, lineWidth, fillOpacity) {
     	)
     }
 
-    for(var i = this.points.length-1; i>=0; i--) {
+    for(var i = this.points.length-2; i>=1; i--) {
     	var angle = (angles[i]+angles[i-1])/2 + Math.PI/2;
     	var mag = (1/Math.sin(angle - angles[i-1])) * this.width/2;
     	poly.addPoint(
