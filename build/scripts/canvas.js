@@ -114,7 +114,7 @@ function CanvasState(canvas, game) {
 	this.addButton(this.restartButton);
 
 
-	this.interval = 20;
+	this.interval = 40;
 	
 	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
 }
@@ -287,7 +287,7 @@ CanvasState.prototype.showBoundaries = function(show) {
 CanvasState.prototype.updateTowerStates = function(){
 	for (var i = 0; i<this.towers.length; i++) {
 		this.towers[i].updateState(this.enemies);
-		this.towers[i].updateProjectiles();
+		this.towers[i].updateAttacks();
 	}
 }
 
