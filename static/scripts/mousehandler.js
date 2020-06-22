@@ -151,7 +151,7 @@ MouseHandler.prototype.dragTower = function(mouse) {
 		if(!this.state.towerDraggedOutOfOptionBox) {
 			if(!this.state.panel.optionContains(this.state.selectionNumber, mouse.x, mouse.y)) {
 				this.state.towerDraggedOutOfOptionBox = true;
-				this.state.towerCanvas.valid = false;
+				this.state.panelCanvas.valid = false;
 				this.state.dragCanvas.valid = false;
 			}
 		} else {
@@ -260,7 +260,10 @@ MouseHandler.prototype.dropTower = function(mouse) {
 		}
 		this.state.dragCanvas.valid = false;
 		this.state.towerCanvas.valid = false;
+		this.state.labelCanvas.valid = false;
+		this.state.panelCanvas.valid = false;
 		this.state.draggingTower = false;
+
 		return true;
 	}
 	return false;

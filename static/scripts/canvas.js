@@ -89,7 +89,7 @@ function GameState(canvasDiv, game) {
 	
 	this.calibrateMeasures(this.backgroundCanvas);
 	if (document.defaultView && document.defaultView.getComputedStyle) {
-		window.addEventListener('resize', function() {thisState.calibrateMeasures(thisState.canvas)});
+		window.addEventListener('resize', function() {thisState.calibrateMeasures(thisState.backgroundCanvas)});
 	}
 	
 	this.valid = false; //Needs to be redrawn?
@@ -132,7 +132,7 @@ function GameState(canvasDiv, game) {
 	this.towerTypes = game.towerTypes;
 	this.towers = [];
 	this.path = game.path;
-	this.showingBoundaries= false;
+	this.showingBoundaries = true;
 
 	this.enemies = [];
 	this.enemywaves = game.enemyWaves;
@@ -236,7 +236,6 @@ GameState.prototype.validate = function() {
 		this.labelCanvas.valid = true;
 	}
 
-	//this.drawRoundNumber();
 	if(this.roundNotifyTimer > 0) {
 		this.drawRoundNotification();
 	}

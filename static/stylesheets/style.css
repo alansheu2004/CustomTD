@@ -27,7 +27,7 @@ div#canvasDiv {
 	display: block;
 	height: 80%;
 	width: calc(80vh * 16 / 9);
-	border: 1vw ridge #663300;
+	border: 0vw ridge #663300;
 	margin: 20px auto;
 	position: relative;
 }
