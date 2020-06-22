@@ -186,5 +186,5 @@ Projectile.prototype.assignNewTarget = function() {
 }
 
 Projectile.prototype.draw = function() {
-	this.type.draw(this.state.context, this.x, this.y, this.angle);
+	this.type.draw(this.state.attackContext, this.x, this.y, this.angle);
 }

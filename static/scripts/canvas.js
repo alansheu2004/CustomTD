@@ -35,19 +35,59 @@ function init() {
 		"sellMultiplier": 0.5
 	}
 
-	currentState = new CanvasState(document.getElementById("mainCanvas"), DEFAULT_GAME);
+	currentState = new GameState(document.getElementById("canvasDiv"), DEFAULT_GAME);
 }
 
 //Defines the Canvas, game, and all its properties
-function CanvasState(canvas, game) {
-	this.canvas = canvas;
-	this.canvas.width = CANVAS_WIDTH;
-	this.canvas.height = CANVAS_HEIGHT;
-	this.context = canvas.getContext("2d");
+function GameState(canvasDiv, game) {
+	this.canvasDiv = canvasDiv;
+
+	this.backgroundCanvas = document.getElementById("backgroundCanvas");
+	this.backgroundCanvas.width = CANVAS_WIDTH;
+	this.backgroundCanvas.height = CANVAS_HEIGHT;
+	this.backgroundCanvas.valid = false;
+	this.backgroundContext = backgroundCanvas.getContext("2d");
+
+	this.enemyCanvas = document.getElementById("enemyCanvas");
+	this.enemyCanvas.width = CANVAS_WIDTH;
+	this.enemyCanvas.height = CANVAS_HEIGHT;
+	this.enemyCanvas.valid = false;
+	this.enemyContext = enemyCanvas.getContext("2d");
+
+	this.attackCanvas = document.getElementById("attackCanvas");
+	this.attackCanvas.width = CANVAS_WIDTH;
+	this.attackCanvas.height = CANVAS_HEIGHT;
+	this.attackCanvas.valid = false;
+	this.attackContext = attackCanvas.getContext("2d");
+
+	this.towerCanvas = document.getElementById("towerCanvas");
+	this.towerCanvas.width = CANVAS_WIDTH;
+	this.towerCanvas.height = CANVAS_HEIGHT;
+	this.towerCanvas.valid = false;
+	this.towerContext = towerCanvas.getContext("2d");
+
+	this.panelCanvas = document.getElementById("panelCanvas");
+	this.panelCanvas.width = CANVAS_WIDTH;
+	this.panelCanvas.height = CANVAS_HEIGHT;
+	this.panelCanvas.valid = false;
+	this.panelContext = panelCanvas.getContext("2d");
+
+	this.labelCanvas = document.getElementById("labelCanvas");
+	this.labelCanvas.width = CANVAS_WIDTH;
+	this.labelCanvas.height = CANVAS_HEIGHT;
+	this.labelCanvas.valid = false;
+	this.labelContext = labelCanvas.getContext("2d");
+
+	this.dragCanvas = document.getElementById("dragCanvas");
+	this.dragCanvas.width = CANVAS_WIDTH;
+	this.dragCanvas.height = CANVAS_HEIGHT;
+	this.dragCanvas.valid = false;
+	this.dragContext = dragCanvas.getContext("2d");
+
 	var thisState = this; //To be referenced by anonymous inner classes
 	this.game = game;
 	
-	this.calibrateMeasures(this.canvas);
+	this.calibrateMeasures(this.backgroundCanvas);
 	if (document.defaultView && document.defaultView.getComputedStyle) {
 		window.addEventListener('resize', function() {thisState.calibrateMeasures(thisState.canvas)});
 	}
@@ -116,23 +156,25 @@ function CanvasState(canvas, game) {
 
 	this.interval = 40;
 	
-	this.loop = window.setInterval(function() { thisState.update(); }, thisState.interval);
+	this.loop = window.setInterval(function() {
+		thisState.update();
+	}, thisState.interval);
 }
 
 //Adds a new tower
-CanvasState.prototype.addTower = function(towerType, x, y) {
+GameState.prototype.addTower = function(towerType, x, y) {
 	this.towers.push(new Tower(this, towerType, x, y));
-	this.valid = false;
+	this.towerCanvas.valid = false;
 }
 
 //Adds a new enemy
-CanvasState.prototype.addEnemy = function(enemy) {
+GameState.prototype.addEnemy = function(enemy) {
 	this.enemies.push(enemy);
-	this.valid = false;
+	this.enemyCanvas.valid = false;
 }
 
 //Called every frame; updates all element states and calls validate() if necessary
-CanvasState.prototype.update = function() {
+GameState.prototype.update = function() {
 	if (!(this.gameOverFade >= 1))	 {
 		this.updateEnemyPositions();
 		this.updateEnemyWaves();
@@ -154,20 +196,45 @@ CanvasState.prototype.update = function() {
 		}
 	}
 	
-	if(!this.valid && !this.validating) {
+	if(!this.validating) {
 		this.validate();
 	}
 }
 
 //Redraws all the elements
-CanvasState.prototype.validate = function() {
+GameState.prototype.validate = function() {
 	this.validating = true;
-	this.valid = true;
 
-	this.context.filter= "none";
-
-	this.mapscreen.draw();
-	this.panel.draw();
+	if(!this.backgroundCanvas.valid) {
+		this.clear(this.backgroundCanvas);
+		this.mapscreen.drawBackground();
+		this.backgroundCanvas.valid = true;
+	}
+	if(!this.enemyCanvas.valid) {
+		this.clear(this.enemyCanvas);
+		this.mapscreen.drawEnemies();
+		this.enemyCanvas.valid = true;
+	}
+	if(!this.attackCanvas.valid) {
+		this.clear(this.attackCanvas);
+		this.mapscreen.drawAttacks();
+		this.attackCanvas.valid = true;
+	}
+	if(!this.towerCanvas.valid) {
+		this.clear(this.towerCanvas);
+		this.mapscreen.drawTowers();
+		this.towerCanvas.valid = true;
+	}
+	if(!this.panelCanvas.valid) {
+		this.clear(this.panelCanvas);
+		this.panel.draw();
+		this.panelCanvas.valid = true;
+	}
+	if(!this.labelCanvas.valid) {
+		this.clear(this.labelCanvas);
+		this.mapscreen.drawLabels();
+		this.labelCanvas.valid = true;
+	}
 
 	//this.drawRoundNumber();
 	if(this.roundNotifyTimer > 0) {
@@ -178,17 +245,27 @@ CanvasState.prototype.validate = function() {
 	if(this.gameOver) {
 		this.drawGameOver();
 	} else {
-		if(this.draggingTower && this.towerDraggedOutOfOptionBox) {
-			this.selection.upgrades[0].drawRange(this.context, this.selectionCoors.x, this.selectionCoors.y, this.dropValid);
-			this.selection.upgrades[0].draw(this.context, this.selectionCoors.x, this.selectionCoors.y);
+		if(!this.dragCanvas.valid) {
+			this.clear(dragCanvas);
+			if(this.draggingTower && this.towerDraggedOutOfOptionBox) {
+				this.selection.upgrades[0].drawRange(this.dragContext, this.selectionCoors.x, this.selectionCoors.y, this.dropValid);
+				this.selection.upgrades[0].draw(this.dragContext, this.selectionCoors.x, this.selectionCoors.y);
+				this.dragCanvas.valid = true;
+			}
 		}
-	}
+	} 
 	
 	this.validating = false;
 }
 
+GameState.prototype.clear = function(canvas) {
+	var context = canvas.getContext("2d");
+	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+	context.filter = "none";
+}
+
 //Advances the position of each enemy
-CanvasState.prototype.updateEnemyPositions = function() {
+GameState.prototype.updateEnemyPositions = function() {
 	
 	if (this.enemies.length > 0) {
 		for (var i = 0; i<this.enemies.length; i++) {
@@ -205,11 +282,11 @@ CanvasState.prototype.updateEnemyPositions = function() {
 			}
 			this.enemies[i].updatePosition();
 		}
-		this.valid = false;
+		this.enemyCanvas.valid = false;
 	}
 }
 
-CanvasState.prototype.updateEnemyWaves = function() {
+GameState.prototype.updateEnemyWaves = function() {
 	if(this.inRound) {
 		for(var i=0; i<this.bunchTimer.length; i++) {
 			if(this.enemyCountdown[i] > 0) {
@@ -240,14 +317,15 @@ CanvasState.prototype.updateEnemyWaves = function() {
 			this.money += 50; //CHANGE THIS LATER
 			this.panel.playButton.active = true;
 		}
-		this.valid = false;
+		this.labelCanvas.valid = false;
+		this.panelCanvas.valid = false;
 		this.inRound = false;
 	}
 	
 }
 
 //Disactivates the update loop and displays a game over screen
-CanvasState.prototype.drawGameOver = function() {
+GameState.prototype.drawGameOver = function() {
 	this.context.globalAlpha = this.gameOverFade;
 	this.context.fillStyle = this.game.gameOverBackgroundColor;
 	this.context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -274,24 +352,24 @@ CanvasState.prototype.drawGameOver = function() {
 	}
 }
 
-CanvasState.prototype.showBoundaries = function(show) {
+GameState.prototype.showBoundaries = function(show) {
 	if (show) {
 		this.showingBoundaries = true;
 	} else {
 		this.showingBoundaries= false;
 	}
-	this.valid = false;
+	this.labelCanvas.valid = false;
 }
 
 //Updates the towers based on enemies
-CanvasState.prototype.updateTowerStates = function(){
+GameState.prototype.updateTowerStates = function(){
 	for (var i = 0; i<this.towers.length; i++) {
 		this.towers[i].updateState(this.enemies);
 		this.towers[i].updateAttacks();
 	}
 }
 
-CanvasState.prototype.focusTower = function(tower, id) {
+GameState.prototype.focusTower = function(tower, id) {
 	this.focusedTower = tower;
 	this.focusedTowerNumber = id;
 	this.panel.sellButton.active = true;
@@ -301,54 +379,58 @@ CanvasState.prototype.focusTower = function(tower, id) {
 	} else {
 		this.panel.upgradeButton.active = true;
 	}
-	this.valid = false;
+
+	this.panelCanvas.valid = false;
+	this.towerCanvas.valid = false;
 }
 
-CanvasState.prototype.sellFocusedTower = function() {
+GameState.prototype.sellFocusedTower = function() {
 	if(this.focusedTower != null) {
 		this.towers.splice(this.focusedTowerNumber, 1);
 		this.money += Math.ceil(this.focusedTower.baseSellPrice * this.game.sellMultiplier);
 		this.unfocus();
 	}
+	this.labelCanvas.valid = false;
 }
 
-CanvasState.prototype.unfocus = function() {
+GameState.prototype.unfocus = function() {
 	this.panel.sellButton.active = false;
 	this.panel.upgradeButton.active = false;
 	this.focusedTower = null;
-	this.valid = false;
+	this.panelCanvas.valid = false;
+	this.towerCanvas.valid = false;
 }
 
 //Sorts the enemies array from first in the path to last
-CanvasState.prototype.sortEnemies = function() {
+GameState.prototype.sortEnemies = function() {
 	this.enemies.sort(function(a, b) {return b.dist - a.dist});
 }
 
-CanvasState.prototype.drawRoundNotification = function() {
+GameState.prototype.drawRoundNotification = function() {
 	if(this.round != 0) {
-		this.context.textAlign = "center";
-		this.context.fillStyle = this.game.mapScreenTextColor;
-		this.context.strokeStyle = this.game.mapScreenTextStrokeColor;
+		this.labelContext.textAlign = "center";
+		this.labelContext.fillStyle = this.game.mapScreenTextColor;
+		this.labelContext.strokeStyle = this.game.mapScreenTextStrokeColor;
 
-		this.context.textBaseline = "bottom";
-		this.context.lineWidth = ROUND_NOTIFICATION_TEXT_FONT_SIZE/15;
-		this.context.font = "small-caps " + ROUND_NOTIFICATION_TEXT_FONT_SIZE + "px " + this.game.font;
-		this.context.fillText("Round", ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_TEXT_Y);
-		this.context.strokeText("Round", ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_TEXT_Y);
+		this.labelContext.textBaseline = "bottom";
+		this.labelContext.lineWidth = ROUND_NOTIFICATION_TEXT_FONT_SIZE/15;
+		this.labelContext.font = "small-caps " + ROUND_NOTIFICATION_TEXT_FONT_SIZE + "px " + this.game.font;
+		this.labelContext.fillText("Round", ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_TEXT_Y);
+		this.labelContext.strokeText("Round", ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_TEXT_Y);
 
-		this.context.textBaseline = "hanging";
-		this.context.lineWidth = ROUND_NOTIFICATION_NUMBER_FONT_SIZE/15;
-		this.context.font = "small-caps " + ROUND_NOTIFICATION_NUMBER_FONT_SIZE + "px " + this.game.font;
-		this.context.fillText(this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
-		this.context.strokeText(this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
+		this.labelContext.textBaseline = "hanging";
+		this.labelContext.lineWidth = ROUND_NOTIFICATION_NUMBER_FONT_SIZE/15;
+		this.labelContext.font = "small-caps " + ROUND_NOTIFICATION_NUMBER_FONT_SIZE + "px " + this.game.font;
+		this.labelContext.fillText(this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
+		this.labelContext.strokeText(this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
 	}
 }
 
-CanvasState.prototype.addButton = function(button) {
+GameState.prototype.addButton = function(button) {
 	this.buttons.push(button);
 }
 
-CanvasState.prototype.nextRound = function() {
+GameState.prototype.nextRound = function() {
 	this.round++;
 	this.inRound = true;
 	this.roundNotifyTimer = 2000;
@@ -358,13 +440,13 @@ CanvasState.prototype.nextRound = function() {
 	this.bunchTimer = this.currentWave.enemybunches.map(function(bunch) {return bunch.time * 1000 + 1000});
 	this.enemyCountdown = this.currentWave.enemybunches.map(function(bunch) {return bunch.number});
 
-	this.valid = false;
+	this.labelCanvas.valid = false;
 }
 
 //Returns the mouse coordinates relative to the canvas
-CanvasState.prototype.setMouse = function(e) {
+GameState.prototype.setMouse = function(e) {
 
-	var element = this.canvas, offsetX = 0, offsetY = 0, mx, my;
+	var element = this.canvasDiv, offsetX = 0, offsetY = 0, mx, my;
 
 	if (element.offsetParent !== undefined) {
 		do {
@@ -388,20 +470,20 @@ CanvasState.prototype.setMouse = function(e) {
 	return this.mouse;
 }
 
-CanvasState.prototype.setFontFit = function(text, targetFontSize, maxWidth) { //Returns the font size given that it must fit within maxWidth. If small enough, returns targetFontSize
+GameState.prototype.setFontFit = function(context, text, targetFontSize, maxWidth) { //Returns the font size given that it must fit within maxWidth. If small enough, returns targetFontSize
 	var fontSize = targetFontSize;
-	this.context.font = "small-caps " + fontSize + "px " + this.game.font;
-	var width = this.context.measureText(text).width;
+	context.font = "small-caps " + fontSize + "px " + this.game.font;
+	var width = context.measureText(text).width;
 	if (width > maxWidth) {
-		fontSize *= maxWidth/width
-		this.context.font = "small-caps " + fontSize + "px " + this.game.font;
+		fontSize *= maxWidth/width;
+		context.font = "small-caps " + fontSize + "px " + this.game.font;
 	}
 	
 }
 
 
 //Calculates accurate dimensions for the canvas
-CanvasState.prototype.calibrateMeasures = function(canvas) {
+GameState.prototype.calibrateMeasures = function(canvas) {
 	this.stylePaddingLeft = parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingLeft'], 10)      || 0;
 	this.stylePaddingTop  = parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingTop'], 10)       || 0;
 	this.styleBorderLeft  = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderLeftWidth'], 10)  || 0;
@@ -414,20 +496,21 @@ CanvasState.prototype.calibrateMeasures = function(canvas) {
 	this.htmlLeft = html.offsetLeft;
 }
 
-CanvasState.prototype.toggleFullscreen = function() {
+GameState.prototype.toggleFullscreen = function() {
 	var thisState = this;
 	if(document.fullscreenElement==null) {
-		this.canvas.requestFullscreen().then(function() {thisState.valid = false;});
+		this.canvasDiv.requestFullscreen().then(function() {thisState.valid = false;});
 	} else {
 		document.exitFullscreen().then(function() {thisState.valid = false;});;
 	}
 }
 
 window.onload = function() {
-	try {
+	init();
+	try {		
 		
-		init();
 	} catch (e) {
 		alert("There's an error in the code:\n\n" + e.message + "\n\nPlease notify me1234q@gmail.com about this and wait approximately a month for a reply because that's how often he checks his email.")
+		console.trace();
 	}
 }

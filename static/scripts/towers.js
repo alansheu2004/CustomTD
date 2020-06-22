@@ -228,7 +228,8 @@ Tower.prototype.attack = function(enemy) {
 		}
 	}
 
-	this.state.valid = false;
+	this.state.attackCanvas.valid = false;
+	this.state.towerCanvas.valid = false;
 }
 
 Tower.prototype.addAttack = function(attack, targetAngle, x, y) { //x, y optional defaults to tower position
@@ -256,10 +257,12 @@ Tower.prototype.addAttack = function(attack, targetAngle, x, y) { //x, y optiona
 			this.addPulse(attack.pulsetype, x||this.x, y||this.y, targetAngle, attack.angleWidth);
 			break;
 	}
+
+	this.state.attackCanvas.valid = false;
 }
 
 Tower.prototype.draw = function() {
-	this.upgrade.draw(this.state.context, this.x, this.y, this.angle);
+	this.upgrade.draw(this.state.towerContext, this.x, this.y, this.angle);
 }
 
 Tower.prototype.inBounds = function(mx, my) {
@@ -271,15 +274,15 @@ Tower.prototype.inBounds = function(mx, my) {
 }
 
 Tower.prototype.drawRange = function(valid) {
-	this.upgrade.drawRange(this.state.context, this.x, this.y, valid);
+	this.upgrade.drawRange(this.state.towerContext, this.x, this.y, valid);
 }
 
 Tower.prototype.drawBoundary = function(color, lineWidth, fillOpacity) {
-	this.type.drawBoundary(this.state.context, this.x, this.y, color, lineWidth, fillOpacity);
+	this.type.drawBoundary(this.state.labelContext, this.x, this.y, color, lineWidth, fillOpacity);
 }
 
 Tower.prototype.drawOutline = function() {
-	this.upgrade.drawOutline(this.state.context, this.x, this.y, this.angle);
+	this.upgrade.drawOutline(this.state.towerContext, this.x, this.y, this.angle);
 }
 
 Tower.prototype.addProjectile = function(type, x, y, angle) {
@@ -298,7 +301,7 @@ Tower.prototype.addPulse = function(type, x, y, angle, angleWidth) {
 
 Tower.prototype.drawAttacks = function() {
 	for (let attack of this.attacks) {
-		attack.draw(this.state.context);
+		attack.draw(this.state.attackContext);
 	}
 }
 
@@ -308,7 +311,7 @@ Tower.prototype.updateAttacks = function() {
 			this.attacks.splice(i, 1);
 			i--;
 		}
-		this.state.valid = false;
+		this.state.attackCanvas.valid = false;
 	}
 }
 
