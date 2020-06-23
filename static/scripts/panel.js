@@ -8,25 +8,25 @@ function Panel(state) {
 	this.playButton = new Button(state, 
 		function(x, y) {return Math.hypot(x-PLAY_BUTTON_X, y-PLAY_BUTTON_Y) <= PLAY_BUTTON_R;},
 		function(state) {state.nextRound();},
-		true);
+		true, [state.labelCanvas, state.panelCanvas]);
 	state.addButton(this.playButton);
 
 	this.fullscreenButton = new Button(state, 
 		function(x, y) {return Math.hypot(x-FULLSCREEN_BUTTON_X, y-FULLSCREEN_BUTTON_Y) <= FULLSCREEN_BUTTON_R;},
 		function(state) {state.toggleFullscreen();},
-		true);
+		true, [state.panelCanvas]);
 	state.addButton(this.fullscreenButton);
 
 	this.sellButton = new Button(state,
 		function(x, y) {return (x >= SELL_BUTTON_MID_X - SELL_BUTTON_WIDTH/2 && x <= SELL_BUTTON_MID_X + SELL_BUTTON_WIDTH/2) && (y >= SELL_BUTTON_Y && y<= SELL_BUTTON_Y + SELL_BUTTON_HEIGHT);},
 		function(state) {state.sellFocusedTower();},
-		false);
+		false, [state.panelCanvas, state.towerCanvas, state.labelCanvas]);
 	state.addButton(this.sellButton);
 
 	this.upgradeButton = new Button(state,
 		function(x, y) {return Math.abs(x-UPGRADE_BUTTON_MID_X) <= UPGRADE_BUTTON_WIDTH/2 && y >= UPGRADE_BUTTON_Y && y<= UPGRADE_BUTTON_Y + UPGRADE_BUTTON_HEIGHT},
 		function(state) {state.focusedTower.nextUpgrade()},
-		false);
+		false, [state.panelCanvas, state.towerCanvas, state.labelCanvas]);
 	state.addButton(this.upgradeButton);
 }
 
@@ -134,7 +134,7 @@ Panel.prototype.drawUpgrades = function() {
 		}
 
 		this.state.panelContext.fillStyle = this.game.panelBoxColor;
-		this.state.panelContext.fillRect(UPGRADE_BUTTON_MID_X - UPGRADE_BUTTON_WIDTH/2, UPGRADE_BUTTON_Y, UPGRADE_BUTTON_WIDTH, UPGRADE_BUTTON_HEIGHT);
+		this.state.panelContext.fillRect(UPGRADE_BUTTON_X, UPGRADE_BUTTON_Y, UPGRADE_BUTTON_WIDTH, UPGRADE_BUTTON_HEIGHT);
 
 		this.state.panelContext.textAlign = "left";
 		this.state.panelContext.textBaseline = "middle";
@@ -142,11 +142,11 @@ Panel.prototype.drawUpgrades = function() {
 
 		nextUpgrade.drawFit(this.state.panelContext, UPGRADE_BUTTON_ICON_X, UPGRADE_BUTTON_ICON_Y, UPGRADE_BUTTON_ICON_MAX);
 
-		this.state.setFontFit(this.state.panelContext, "$" + nextUpgrade.cost, UPGRADE_BUTTON_COST_FONT_SIZE, UPGRADE_BUTTON_TEXT_WIDTH);
-		this.state.panelContext.fillText("$" + nextUpgrade.cost, UPGRADE_BUTTON_TEXT_X, UPGRADE_BUTTON_COST_Y);
+		this.state.setFontFit(this.state.panelContext, "$" + nextUpgrade.cost, UPGRADE_BUTTON_COST_FONT_SIZE, UPGRADE_BUTTON_COST_WIDTH);
+		this.state.panelContext.fillText("$" + nextUpgrade.cost, UPGRADE_BUTTON_COST_X, UPGRADE_BUTTON_COST_Y);
 
-		this.state.setFontFit(this.state.panelContext, nextUpgrade.name, UPGRADE_BUTTON_NAME_FONT_SIZE, UPGRADE_BUTTON_TEXT_WIDTH);
-		this.state.panelContext.fillText(nextUpgrade.name, UPGRADE_BUTTON_TEXT_X, UPGRADE_BUTTON_NAME_Y);
+		this.state.setFontFit(this.state.panelContext, nextUpgrade.name, UPGRADE_BUTTON_NAME_FONT_SIZE, UPGRADE_BUTTON_NAME_WIDTH);
+		this.state.panelContext.fillText(nextUpgrade.name, UPGRADE_BUTTON_NAME_X, UPGRADE_BUTTON_NAME_Y);
 	
 		this.state.panelContext.filter = "none";
 

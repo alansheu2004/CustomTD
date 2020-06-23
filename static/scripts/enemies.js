@@ -82,6 +82,7 @@ Enemy.prototype.damage = function(id, damage) {
 			this.damage(id, damageLeft);
 		}
 
+		this.state.labelCanvas.valid = false;
 		this.state.enemyCanvas.valid = false;
 	}
 	

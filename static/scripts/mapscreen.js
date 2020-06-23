@@ -11,7 +11,7 @@ function MapScreen(state, map) {
 	        state.health = Infinity; 
 	        state.labelCanvas.valid = false;
 	    },
-	    true);
+	    true, []);
 	this.state.addButton(this.healthButton);
 
     this.moneyButton = new Button(this, 
@@ -23,7 +23,7 @@ function MapScreen(state, map) {
 	        state.money = Infinity;
 	        state.labelCanvas.valid = false;
 	    },
-	    true);
+	    true, [state.panelCanvas]);
 	this.state.addButton(this.moneyButton);
 
 	this.map = map;

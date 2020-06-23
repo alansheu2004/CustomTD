@@ -170,9 +170,6 @@ MouseHandler.prototype.checkButtonPressed = function(mouse) {
 	if (this.state.buttonPressed) {
 		if (!this.state.selection.inBounds(mouse.x, mouse.y)) {
 			this.state.buttonPressed = false;
-			if (this.state.selection.validationCanvas) {
-				this.state.selection.validationCanvas.valid = false;
-			}
 			return true;
 		}
 	} else {
@@ -274,8 +271,8 @@ MouseHandler.prototype.releaseButton = function(mouse) {
 		this.state.buttonPressed = false;
 		if(this.state.selection.inBounds(mouse.x, mouse.y)) {
 			this.state.selection.action(this.state);
-			if (this.state.selection.validationCanvas) {
-				this.state.selection.validationCanvas.valid = false;
+			for (let canvas of this.state.selection.validationCanvas) {
+				canvas.valid = false;
 			}
 			return true;
 		}

@@ -156,7 +156,7 @@ function GameState(canvasDiv, game) {
 	    function(state) { //action
 	        state.restartButton.active = false; window.clearInterval(state.loop); init();
 	    },
-	    false);
+	    false, []);
 	this.addButton(this.restartButton);
 
 
@@ -211,32 +211,32 @@ GameState.prototype.update = function() {
 GameState.prototype.validate = function() {
 	this.validating = true;
 
-	if(!this.backgroundCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.backgroundCanvas.valid) {
 		this.clear(this.backgroundCanvas);
 		this.mapscreen.drawBackground();
 		this.backgroundCanvas.valid = true;
 	}
-	if(!this.enemyCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.enemyCanvas.valid) {
 		this.clear(this.enemyCanvas);
 		this.mapscreen.drawEnemies();
 		this.enemyCanvas.valid = true;
 	}
-	if(!this.attackCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.attackCanvas.valid) {
 		this.clear(this.attackCanvas);
 		this.mapscreen.drawAttacks();
 		this.attackCanvas.valid = true;
 	}
-	if(!this.towerCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.towerCanvas.valid) {
 		this.clear(this.towerCanvas);
 		this.mapscreen.drawTowers();
 		this.towerCanvas.valid = true;
 	}
-	if(!this.panelCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.panelCanvas.valid) {
 		this.clear(this.panelCanvas);
 		this.panel.draw();
 		this.panelCanvas.valid = true;
 	}
-	if(!this.labelCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.labelCanvas.valid) {
 		this.clear(this.labelCanvas);
 		this.mapscreen.drawLabels();
 		if(this.roundNotifyTimer > 0) {
