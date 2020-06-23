@@ -8,7 +8,7 @@ function init() {
 
 	var DEFAULT_GAME = {
 		"map" : defaultMap, 
-		"health" : 20,
+		"health" : 1,
 		"money" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"enemyWaves" : defaultWaves,
@@ -83,6 +83,12 @@ function GameState(canvasDiv, game) {
 	this.dragCanvas.height = CANVAS_HEIGHT;
 	this.dragCanvas.valid = false;
 	this.dragContext = dragCanvas.getContext("2d");
+
+	this.splashCanvas = document.getElementById("splashCanvas");
+	this.splashCanvas.width = CANVAS_WIDTH;
+	this.splashCanvas.height = CANVAS_HEIGHT;
+	this.splashCanvas.valid = false;
+	this.splashContext = splashCanvas.getContext("2d");
 
 	var thisState = this; //To be referenced by anonymous inner classes
 	this.game = game;
@@ -175,12 +181,12 @@ GameState.prototype.addEnemy = function(enemy) {
 
 //Called every frame; updates all element states and calls validate() if necessary
 GameState.prototype.update = function() {
-	if (!(this.gameOverFade >= 1))	 {
+	if (this.gameOverFade < 1)	 {
 		this.updateEnemyPositions();
 		this.updateEnemyWaves();
 
 		if (this.gameOver) {
-			this.valid = false;
+			this.splashCanvas.valid = false;
 			this.gameOverFade += 0.03;
 		} else {
 			this.sortEnemies();
@@ -190,7 +196,7 @@ GameState.prototype.update = function() {
 				this.revalidationTimer -= this.interval;
 			}
 			if (this.roundNotifyTimer > 0) {
-				this.valid = false;
+				this.labelCanvas.valid = false;
 				this.roundNotifyTimer -= this.interval;
 			}
 		}
@@ -233,15 +239,15 @@ GameState.prototype.validate = function() {
 	if(!this.labelCanvas.valid) {
 		this.clear(this.labelCanvas);
 		this.mapscreen.drawLabels();
+		if(this.roundNotifyTimer > 0) {
+			this.drawRoundNotification();
+		}
 		this.labelCanvas.valid = true;
-	}
-
-	if(this.roundNotifyTimer > 0) {
-		this.drawRoundNotification();
 	}
 
 	
 	if(this.gameOver) {
+		this.clear(this.splashCanvas);
 		this.drawGameOver();
 	} else {
 		if(!this.dragCanvas.valid) {
@@ -325,29 +331,29 @@ GameState.prototype.updateEnemyWaves = function() {
 
 //Disactivates the update loop and displays a game over screen
 GameState.prototype.drawGameOver = function() {
-	this.context.globalAlpha = this.gameOverFade;
-	this.context.fillStyle = this.game.gameOverBackgroundColor;
-	this.context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+	this.splashContext.globalAlpha = this.gameOverFade;
+	this.splashContext.fillStyle = this.game.gameOverBackgroundColor;
+	this.splashContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	
-	this.context.font = "small-caps " + GAME_OVER_TEXT_FONT_SIZE + "px " + this.game.font;
-	this.context.textAlign = "center";
-	this.context.textBaseline = "alphabetic";
-	this.context.fillStyle =  this.game.gameOverTextColor;
-	this.context.strokeStyle =  this.game.gameOverTextStrokeColor;
-	this.context.lineWidth = GAME_OVER_TEXT_FONT_SIZE/20;
-	this.context.fillText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
+	this.splashContext.font = "small-caps " + GAME_OVER_TEXT_FONT_SIZE + "px " + this.game.font;
+	this.splashContext.textAlign = "center";
+	this.splashContext.textBaseline = "alphabetic";
+	this.splashContext.fillStyle =  this.game.gameOverTextColor;
+	this.splashContext.strokeStyle =  this.game.gameOverTextStrokeColor;
+	this.splashContext.lineWidth = GAME_OVER_TEXT_FONT_SIZE/20;
+	this.splashContext.fillText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
 	//this.context.strokeText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
 	
-	this.context.globalAlpha = 1;
+	this.splashContext.globalAlpha = 1;
 
 	if (this.gameOverFade >= 1) {
 		this.restartButton.active = true;
 
-		this.setFontFit("Click Anywhere to Restart", RESTART_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
-		this.context.textAlign = "center";
-		this.context.baseLine = "hanging";
-		this.context.fillStyle = this.game.gameOverTextColor;
-		this.context.fillText("Click Anywhere to Restart", CANVAS_WIDTH/2, RESTART_TEXT_CENTER_Y);
+		this.setFontFit(this.splashContext, "Click Anywhere to Restart", RESTART_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
+		this.splashContext.textAlign = "center";
+		this.splashContext.baseLine = "hanging";
+		this.splashContext.fillStyle = this.game.gameOverTextColor;
+		this.splashContext.fillText("Click Anywhere to Restart", CANVAS_WIDTH/2, RESTART_TEXT_CENTER_Y);
 	}
 }
 
