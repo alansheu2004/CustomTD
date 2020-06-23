@@ -23,19 +23,28 @@ p, h3 {
 	text-align: center;
 }
 
-canvas#mainCanvas {
+div#canvasDiv {
 	display: block;
 	height: 80%;
 	width: calc(80vh * 16 / 9);
-	border: 1vw ridge #663300;
+	border: 0vw ridge #663300;
 	margin: 20px auto;
+	position: relative;
 }
 
 @media (max-aspect-ratio: 16/9) {
-	canvas#mainCanvas {
+	div#canvasDiv {
 		width: 80%;
 		height: calc(80vw * 9 / 16);
 	}
+}
+
+div#canvasDiv canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
 }
 
 @keyframes fadeIn {

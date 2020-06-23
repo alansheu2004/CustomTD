@@ -41,7 +41,7 @@ function Enemy(state, type) {
 }
 
 Enemy.prototype.draw = function() {
-	this.type.draw(this.state.context, this.x, this.y);
+	this.type.draw(this.state.enemyContext, this.x, this.y);
 }
 
 //Advances the distance of enemy traveled based on speed
@@ -81,6 +81,8 @@ Enemy.prototype.damage = function(id, damage) {
 			this.health = this.type.health;
 			this.damage(id, damageLeft);
 		}
+
+		this.state.enemyCanvas.valid = false;
 	}
 	
 }
