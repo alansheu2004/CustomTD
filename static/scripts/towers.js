@@ -164,15 +164,29 @@ TowerUpgrade.prototype.drawRange = function(context, x, y, valid) {
 
 //Draw the outline of a tower
 TowerUpgrade.prototype.drawOutline = function(context, x, y, angle) {
-	context.filter = "brightness(0) invert(1) blur(2px)";
-	
-	context.translate(x, y);
-	context.rotate(angle-Math.PI/2);
-	context.drawImage(this.image, -this.imgwidth/2-2, -this.imgheight/2 - 2, this.imgwidth + 4, this.imgheight + 4);
-	context.rotate(-(angle-Math.PI/2));
-	context.translate(-x, -y);
-	
-	context.filter = "none";
+	// var dArr = [-1,-1, 0,-1, 1,-1, -1,0, 1,0, -1,1, 0,1, 1,1], // offset array
+ //      s = 2,  // thickness scale
+ //      i = 0,  // iterator
+ //      x = 5,  // final position
+ //      y = 5;
+
+	// context.translate(x, y);
+	// context.rotate(angle-Math.PI/2);
+  
+	// // draw images at offsets from the array scaled by s
+	// for(; i < dArr.length; i += 2) {
+	// 	context.drawImage(this.image, -this.imgwidth/2 + dArr[i]*s, -this.imgheight/2 + dArr[i+1]*s, this.imgwidth, this.imgheight);
+	// }
+
+	// // fill with color
+	// context.globalCompositeOperation = "source-in";
+	// context.fillStyle = "white";
+	// context.fillRect(-CANVAS_WIDTH, -CANVAS_HEIGHT, 2*CANVAS_WIDTH, 2*CANVAS_HEIGHT);
+	// context.globalCompositeOperation = "source-over";
+
+	// context.rotate(-(angle-Math.PI/2));
+	// context.translate(-x, -y);
+
 }
 
 function Tower(state, type, x, y) {
