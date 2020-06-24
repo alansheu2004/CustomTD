@@ -26,7 +26,7 @@ var defaultTowerTypes = [
 							"images/shootingstar.svg", 70, 70,
 							[new ProjectileAttack(FAR_STAR, 600, {type:"radial", number:5}, -Math.PI/2)]),
 						new TowerUpgrade("Superstar", 250, 160,
-							"Increases the number of stars shot to 10",
+							"Doubles the number of stars shot",
 							"images/superstar.svg", 70, 70,
 							[new ProjectileAttack(FAR_STAR, 600, {type:"radial", number:10}, -Math.PI/2)])
 					]
@@ -34,7 +34,7 @@ var defaultTowerTypes = [
 	new TowerType("Iceshroom", 30, false, false,
 					[
 						new TowerUpgrade("BASE", 75, 120,
-							"Blasts the area with cold air, temportarily immobilizing foes",
+							"Blasts cold air that temporarily freezes nearby bloons",
 							"images/iceshroom.svg", 80, 70,
 							[new PulseAttack(FREEZE_PULSE, 2000, 2*Math.PI, null)]),
 						new TowerUpgrade("Deep Freeze", 175, 120,
@@ -42,7 +42,7 @@ var defaultTowerTypes = [
 							"images/deepfreeze.svg", 80, 70,
 							[new PulseAttack(DEEP_FREEZE_PULSE, 2000, 2*Math.PI, null)]),
 						new TowerUpgrade("Icicle Spikes", 250, 120,
-							"Sends out ice shard that completely freeze and damage enemies",
+							"Shoots ice shards that freeze and damage enemies",
 							"images/iciclespikes.svg", 80, 70,
 							[new PulseAttack(DEEP_FREEZE_PULSE, 2000, 2*Math.PI, null), new ProjectileAttack(ICICLE, 4000, {type:"radial", number:6}, Math.PI/2)])
 					]
@@ -74,7 +74,7 @@ var defaultTowerTypes = [
 							"images/leaftornado.svg", 70, 80,
 							[new ProjectileAttack(LEAFY_CABBAGE, 1500, {type:"single"}, null)]),
 						new TowerUpgrade("Melon-pult", 300, 200,
-							"Shoots melons ... for some reason ... that do double damage and big explosions",
+							"Shoots melons (for some reason) that do double damage and big explosions",
 							"images/melonpult.svg", 70, 92,
 							[new ProjectileAttack(MELON, 1750, {type:"single"}, null)])
 					]

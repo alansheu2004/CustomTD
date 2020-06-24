@@ -15,7 +15,9 @@ html, body {
 }
 
 body {
+	display: flex;
 	align-items: center;
+	justify-content: center;
 	background-color: #ffe9d4;
 }
 
@@ -27,7 +29,6 @@ div#canvasDiv {
 	display: block;
 	height: 80%;
 	width: calc(80vh * 16 / 9);
-	border: 0vw ridge #663300;
 	margin: 20px auto;
 	position: relative;
 }

@@ -169,8 +169,10 @@ function GameState(canvasDiv, game) {
 
 //Adds a new tower
 GameState.prototype.addTower = function(towerType, x, y) {
-	this.towers.push(new Tower(this, towerType, x, y));
+	var newTower = new Tower(this, towerType, x, y);
+	this.towers.push(newTower);
 	this.towerCanvas.valid = false;
+	return newTower;
 }
 
 //Adds a new enemy
@@ -401,7 +403,9 @@ GameState.prototype.sellFocusedTower = function() {
 GameState.prototype.unfocus = function() {
 	this.panel.sellButton.active = false;
 	this.panel.upgradeButton.active = false;
+	this.panel.upgradeInfoButton.active = false;
 	this.focusedTower = null;
+	this.panel.showingUpgradeInfo = false;
 	this.panelCanvas.valid = false;
 	this.towerCanvas.valid = false;
 }

@@ -248,9 +248,11 @@ MouseHandler.prototype.dropTower = function(mouse) {
 
 		if(this.state.towerDraggedOutOfOptionBox) {
 			if (this.state.dropValid) {
-				this.state.addTower(this.state.selection, mouse.x, mouse.y);
+				var newTower = this.state.addTower(this.state.selection, mouse.x, mouse.y);
 				this.state.money -= this.state.selection.upgrades[0].cost;
 				this.state.hoveringTowerOption = false;
+
+				this.state.focusTower(newTower, this.state.towers.length-1);
 			}
 		} else {
 			this.state.hoveringTowerOption = true;

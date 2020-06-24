@@ -1,6 +1,8 @@
 function Panel(state) {
 	this.state = state;
 	this.game = state.game;
+
+	this.showingUpgradeInfo = false;
 	
 
 	var thisPanel = this;
@@ -24,10 +26,16 @@ function Panel(state) {
 	state.addButton(this.sellButton);
 
 	this.upgradeButton = new Button(state,
-		function(x, y) {return Math.abs(x-UPGRADE_BUTTON_MID_X) <= UPGRADE_BUTTON_WIDTH/2 && y >= UPGRADE_BUTTON_Y && y<= UPGRADE_BUTTON_Y + UPGRADE_BUTTON_HEIGHT},
-		function(state) {state.focusedTower.nextUpgrade()},
+		function(x, y) {return x >= UPGRADE_BUTTON_X && x >= UPGRADE_BUTTON_Y && x <= UPGRADE_BUTTON_X+UPGRADE_BUTTON_WIDTH && y <= UPGRADE_BUTTON_Y+UPGRADE_BUTTON_HEIGHT},
+		function(state) {state.focusedTower.nextUpgrade();thisPanel.showUpgradeInfo(false);},
 		false, [state.panelCanvas, state.towerCanvas, state.labelCanvas]);
 	state.addButton(this.upgradeButton);
+
+	this.upgradeInfoButton = new Button(state,
+		function(x, y) {return Math.hypot(x-UPGRADE_INFO_BUTTON_MID_X, y-UPGRADE_INFO_BUTTON_MID_Y) <= UPGRADE_INFO_BUTTON_R},
+		function(state) {thisPanel.showUpgradeInfo(!thisPanel.showingUpgradeInfo)},
+		false, [state.panelCanvas]);
+	state.addButton(this.upgradeInfoButton);
 }
 
 //Draws the panel
@@ -97,6 +105,11 @@ Panel.prototype.drawSellButton = function() {
 	this.state.panelContext.fillText("Sell-$" + Math.ceil(this.state.focusedTower.baseSellPrice*this.state.game.sellMultiplier), SELL_BUTTON_MID_X, SELL_BUTTON_Y + SELL_BUTTON_HEIGHT/2);
 }
 
+Panel.prototype.showUpgradeInfo = function(bool) {
+	this.showingUpgradeInfo = bool;
+	this.state.panelCanvas.valid = false;
+}
+
 Panel.prototype.drawUpgrades = function() {
 	this.state.panelContext.textAlign = "center";
 	this.state.panelContext.textBaseline = "bottom";
@@ -107,10 +120,17 @@ Panel.prototype.drawUpgrades = function() {
 
 
 	var nextUpgrade = this.state.focusedTower.type.upgrades[this.state.focusedTower.upgradeNum+1];
-	if(nextUpgrade == undefined || this.state.money < nextUpgrade.cost) {
+	if(nextUpgrade == undefined) {
 		this.upgradeButton.active = false;
+		this.upgradeInfoButton.active = false;
 	} else {
-		this.upgradeButton.active = true;
+		if(this.state.money < nextUpgrade.cost) {
+			this.upgradeButton.active = false;
+		} else {
+			this.upgradeButton.active = true;
+		}
+
+		this.upgradeInfoButton.active = true;
 	}
 	
 
@@ -118,21 +138,36 @@ Panel.prototype.drawUpgrades = function() {
 		this.state.panelContext.filter = "opacity(50%)";
 
 		this.state.panelContext.fillStyle = this.game.panelBoxColor;
-		this.state.panelContext.fillRect(UPGRADE_BUTTON_MID_X - UPGRADE_BUTTON_WIDTH/2, UPGRADE_BUTTON_Y, UPGRADE_BUTTON_WIDTH, UPGRADE_BUTTON_HEIGHT);
+		this.state.panelContext.fillRect(UPGRADE_BUTTON_X, UPGRADE_BUTTON_Y, UPGRADE_BUTTON_WIDTH, UPGRADE_BUTTON_HEIGHT);
 
 		this.state.panelContext.textAlign = "center";
 		this.state.panelContext.textBaseline = "middle";
 		this.state.panelContext.fillStyle = this.game.panelTextColor;
 
 		this.state.setFontFit(this.state.panelContext, "No Upgrades", UPGRADE_BUTTON_NONE_FONT_SIZE, UPGRADE_BUTTON_NONE_WIDTH);
-		this.state.panelContext.fillText("No Upgrades", UPGRADE_BUTTON_MID_X, UPGRADE_BUTTON_NONE_Y);
+		this.state.panelContext.fillText("No Upgrades", UPGRADE_BUTTON_X+UPGRADE_BUTTON_WIDTH/2, UPGRADE_BUTTON_NONE_Y);
 
 		this.state.panelContext.filter = "none"
 	} else {
+		//Info button
+		this.state.panelContext.fillStyle = this.game.sellButtonColor;
+		this.state.panelContext.beginPath();
+		this.state.panelContext.arc(UPGRADE_INFO_BUTTON_MID_X, UPGRADE_INFO_BUTTON_MID_Y, UPGRADE_INFO_BUTTON_R, 0, 2*Math.PI);
+		this.state.panelContext.fill();
+
+		//Info button text
+		this.state.panelContext.font = "normal " + UPGRADE_INFO_FONT_SIZE + "px " + this.game.font;
+		this.state.panelContext.textAlign = "center";
+		this.state.panelContext.textBaseline = "middle";
+		this.state.panelContext.fillStyle = this.game.sellButtonTextColor;
+		this.state.panelContext.fillText("i", UPGRADE_INFO_BUTTON_MID_X, UPGRADE_INFO_BUTTON_MID_Y);
+
+		//Can't afford
 		if (this.state.money < nextUpgrade.cost) {
 			this.state.panelContext.filter = "opacity(50%)";
 		}
 
+		//Upgrade bbutton
 		this.state.panelContext.fillStyle = this.game.panelBoxColor;
 		this.state.panelContext.fillRect(UPGRADE_BUTTON_X, UPGRADE_BUTTON_Y, UPGRADE_BUTTON_WIDTH, UPGRADE_BUTTON_HEIGHT);
 
@@ -140,18 +175,48 @@ Panel.prototype.drawUpgrades = function() {
 		this.state.panelContext.textBaseline = "middle";
 		this.state.panelContext.fillStyle = this.game.panelTextColor;
 
+		//Icon
 		nextUpgrade.drawFit(this.state.panelContext, UPGRADE_BUTTON_ICON_X, UPGRADE_BUTTON_ICON_Y, UPGRADE_BUTTON_ICON_MAX);
 
+		//Cost
 		this.state.setFontFit(this.state.panelContext, "$" + nextUpgrade.cost, UPGRADE_BUTTON_COST_FONT_SIZE, UPGRADE_BUTTON_COST_WIDTH);
 		this.state.panelContext.fillText("$" + nextUpgrade.cost, UPGRADE_BUTTON_COST_X, UPGRADE_BUTTON_COST_Y);
 
+		//Name
 		this.state.setFontFit(this.state.panelContext, nextUpgrade.name, UPGRADE_BUTTON_NAME_FONT_SIZE, UPGRADE_BUTTON_NAME_WIDTH);
 		this.state.panelContext.fillText(nextUpgrade.name, UPGRADE_BUTTON_NAME_X, UPGRADE_BUTTON_NAME_Y);
 	
 		this.state.panelContext.filter = "none";
 
+		if(this.showingUpgradeInfo) {
+			this.drawUpgradeInfo(nextUpgrade);
+		}
 	}
+}
+
+Panel.prototype.drawUpgradeInfo = function(upgrade) {
+	var lines = [];
+	var words = upgrade.description.split(" ");
+	var currentLine = "";
+	this.state.panelContext.font = "small-caps " + UPGRADE_INFO_FONT_SIZE + "px " + this.game.font;
+	while(words.length > 0) {
+		while(words.length > 0 && this.state.panelContext.measureText(currentLine + " " + words[0]).width <= UPGRADE_INFO_WIDTH-2*UPGRADE_INFO_PADDING) {
+			currentLine += " " + words.shift();
+		}
+
+		lines.push(currentLine);
+		currentLine = "";
+	}
+
+	this.state.panelContext.fillStyle = this.game.panelBaseColor;
+	this.state.panelContext.fillRect(PANEL_X-UPGRADE_INFO_WIDTH, UPGRADE_BUTTON_Y, UPGRADE_INFO_WIDTH, 2*UPGRADE_INFO_PADDING+lines.length*UPGRADE_INFO_LINE_HEIGHT);
 	
+	this.state.panelContext.fillStyle = this.game.panelTextColor;
+	this.state.panelContext.textBaseline = "hanging";
+	this.state.panelContext.textAlign ="left";
+	for (var i=0; i<lines.length; i++) {
+		this.state.panelContext.fillText(lines[i], PANEL_X-UPGRADE_INFO_WIDTH+UPGRADE_INFO_PADDING, UPGRADE_BUTTON_Y+UPGRADE_INFO_PADDING+i*UPGRADE_INFO_LINE_HEIGHT);
+	}
 }
 
 //Draws the container and its contexts for the tower options
