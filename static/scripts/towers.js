@@ -36,15 +36,15 @@ var defaultTowerTypes = [
 						new TowerUpgrade("BASE", 155, 120,
 							"Blasts cold air that temporarily freezes nearby bloons",
 							"images/iceshroom.svg", 80, 70,
-							[new PulseAttack(FREEZE_PULSE, 2000, 2*Math.PI, null)]),
+							[new PulseAttack(FREEZE_PULSE, 3000, 2*Math.PI, null)]),
 						new TowerUpgrade("Deep Freeze", 200, 120,
 							"Leaves enemies slow after thawing",
 							"images/deepfreeze.svg", 80, 70,
-							[new PulseAttack(DEEP_FREEZE_PULSE, 2000, 2*Math.PI, null)]),
+							[new PulseAttack(DEEP_FREEZE_PULSE, 3000, 2*Math.PI, null)]),
 						new TowerUpgrade("Icicle Spikes", 300, 120,
 							"Shoots ice shards that freeze and damage enemies",
 							"images/iciclespikes.svg", 80, 70,
-							[new PulseAttack(DEEP_FREEZE_PULSE, 2000, 2*Math.PI, null), new ProjectileAttack(ICICLE, 4000, {type:"radial", number:6}, Math.PI/2)])
+							[new PulseAttack(DEEP_FREEZE_PULSE, 3000, 2*Math.PI, null), new ProjectileAttack(ICICLE, 6000, {type:"radial", number:6}, Math.PI/2)])
 					]
 	),
 	new TowerType("Cattail", 25, true, true,

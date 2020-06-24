@@ -23,12 +23,18 @@ function EnemyType(speed, child, rewardMoney, damage, size, health,
 	this.imgwidth = imgwidth;
 	this.imgheight = imgheight;
 
-	this.canvas = new
-	var context = this.canvas.getContext("2d");
+	var thisEnemy = this;
+
+	this.image.onload = function() {
+		thisEnemy.canvas = document.createElement("canvas");
+		thisEnemy.canvas.width = thisEnemy.imgwidth;
+		thisEnemy.canvas.height = thisEnemy.imgheight;
+		thisEnemy.canvas.getContext("2d").drawImage(thisEnemy.image, 0, 0, thisEnemy.imgwidth, thisEnemy.imgheight);
+	}
 }
 
 EnemyType.prototype.draw = function(context, x, y) {
-	context.drawImage(this.image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
+	context.drawImage(this.canvas, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
 }
 
 function Enemy(state, type) {
