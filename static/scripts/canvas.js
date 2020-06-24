@@ -8,8 +8,9 @@ function init() {
 
 	var DEFAULT_GAME = {
 		"map" : defaultMap, 
-		"health" : 1,
-		"money" : 200,
+		"health" : 20,
+		"money" : 500,
+		"roundlyIncome" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"enemyWaves" : defaultWaves,
 		"font" : "Oeztype",
@@ -321,7 +322,7 @@ GameState.prototype.updateEnemyWaves = function() {
 			this.gameOverText = "You Won!";
 			this.gameOver = true;
 		} else {
-			this.money += 50; //CHANGE THIS LATER
+			this.money += this.game.roundlyIncome; //CHANGE THIS LATER
 			this.panel.playButton.active = true;
 		}
 		this.labelCanvas.valid = false;
