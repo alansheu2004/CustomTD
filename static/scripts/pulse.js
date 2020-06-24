@@ -1,5 +1,5 @@
-const FREEZE_PULSE = new PulseType(null, 0.5, 120, 0, [{"type":FREEZE, "time":0.5}], [], "#66ccff");
-const DEEP_FREEZE_PULSE = new PulseType(null, 0.5, 120, 0, [{"type":FREEZE, "time":0.5}, {"type":COLD, "time":1.5}], [], "#66ccff");
+const FREEZE_PULSE = new PulseType(null, 0.5, 120, 0, [{"type":FREEZE, "time":1}], [], "#66ccff");
+const DEEP_FREEZE_PULSE = new PulseType(null, 0.5, 120, 0, [{"type":FREEZE, "time":1}, {"type":COLD, "time":1.5}], [], "#66ccff");
 
 const CABBAGE_EXPLOSION = new PulseType(null, 0.25, 60, 1, [], [], "#42a653");
 const MELON_EXPLOSION = new PulseType(CABBAGE_EXPLOSION, INHERIT, INHERIT, 2, [], [], INHERIT);

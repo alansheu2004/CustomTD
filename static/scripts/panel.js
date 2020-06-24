@@ -167,7 +167,7 @@ Panel.prototype.drawUpgrades = function() {
 			this.state.panelContext.filter = "opacity(50%)";
 		}
 
-		//Upgrade bbutton
+		//Upgrade button
 		this.state.panelContext.fillStyle = this.game.panelBoxColor;
 		this.state.panelContext.fillRect(UPGRADE_BUTTON_X, UPGRADE_BUTTON_Y, UPGRADE_BUTTON_WIDTH, UPGRADE_BUTTON_HEIGHT);
 

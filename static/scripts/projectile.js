@@ -65,6 +65,15 @@ function ProjectileType(base, pierce, speed, maxRange, damage,
 			}
 		}
 	}
+
+	var thisProjectile = this;
+
+	this.canvas = document.createElement("canvas");
+	this.canvas.width = thisProjectile.imgwidth;
+	this.canvas.height = thisProjectile.imgheight;
+	this.image.onload = function() {
+		thisProjectile.canvas.getContext("2d").drawImage(thisProjectile.image, 0, 0, thisProjectile.imgwidth, thisProjectile.imgheight);
+	}
 }
 
 ProjectileType.prototype.draw = function(context, x, y, angle) {

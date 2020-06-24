@@ -1,12 +1,12 @@
-var RED = new EnemyType(100, null, 3, 1, 22, 1,
+var RED = new EnemyType(100, null, 1, 1, 22, 1,
 	"images/red.svg", 36, 48);
-var BLUE = new EnemyType(133, RED, 4, 2, 23, 1,
+var BLUE = new EnemyType(133, RED, 2, 2, 23, 1,
 	"images/blue.svg", 38, 51);
-var GREEN = new EnemyType(200, BLUE, 5, 3, 24, 1,
+var GREEN = new EnemyType(200, BLUE, 2, 3, 24, 1,
 	"images/green.svg", 40, 54);
-var YELLOW = new EnemyType(400, GREEN, 6, 4, 26, 1,
+var YELLOW = new EnemyType(400, GREEN, 3, 4, 26, 1,
 	"images/yellow.svg", 42, 57);
-var PINK = new EnemyType(500, YELLOW, 8, 5, 28, 1,
+var PINK = new EnemyType(500, YELLOW, 5, 5, 28, 1,
 	"images/pink.svg", 44, 60);
 
 function EnemyType(speed, child, rewardMoney, damage, size, health,
@@ -25,10 +25,10 @@ function EnemyType(speed, child, rewardMoney, damage, size, health,
 
 	var thisEnemy = this;
 
+	this.canvas = document.createElement("canvas");
+	this.canvas.width = thisEnemy.imgwidth;
+	this.canvas.height = thisEnemy.imgheight;
 	this.image.onload = function() {
-		thisEnemy.canvas = document.createElement("canvas");
-		thisEnemy.canvas.width = thisEnemy.imgwidth;
-		thisEnemy.canvas.height = thisEnemy.imgheight;
 		thisEnemy.canvas.getContext("2d").drawImage(thisEnemy.image, 0, 0, thisEnemy.imgwidth, thisEnemy.imgheight);
 	}
 }

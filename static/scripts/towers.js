@@ -44,7 +44,7 @@ var defaultTowerTypes = [
 						new TowerUpgrade("Icicle Spikes", 300, 120,
 							"Shoots ice shards that freeze and damage enemies",
 							"images/iciclespikes.svg", 80, 70,
-							[new PulseAttack(DEEP_FREEZE_PULSE, 3000, 2*Math.PI, null), new ProjectileAttack(ICICLE, 6000, {type:"radial", number:6}, Math.PI/2)])
+							[new PulseAttack(DEEP_FREEZE_PULSE, 2500, 2*Math.PI, null), new ProjectileAttack(ICICLE, 5000, {type:"radial", number:6}, Math.PI/2)])
 					]
 	),
 	new TowerType("Cattail", 25, true, true,
@@ -115,6 +115,15 @@ function TowerUpgrade(name, cost, range,
 	this.range = range;
 	this.attacks = attacks;
 	this.description = description;
+
+	var thisTower = this;
+
+	this.canvas = document.createElement("canvas");
+	this.canvas.width = thisTower.imgwidth;
+	this.canvas.height = thisTower.imgheight;
+	this.image.onload = function() {
+		thisTower.canvas.getContext("2d").drawImage(thisTower.image, 0, 0, thisTower.imgwidth, thisTower.imgheight);
+	}
 }
 
 //Draws with a set max dimension while maintaining an aspect ratio
@@ -132,12 +141,12 @@ TowerUpgrade.prototype.draw = function(context, x, y, angle) {
 		context.translate(x, y);
 		context.rotate(angle-Math.PI/2);
 		
-		context.drawImage(this.image, -this.imgwidth/2, -this.imgheight/2, this.imgwidth, this.imgheight);
+		context.drawImage(this.canvas, -this.imgwidth/2, -this.imgheight/2, this.imgwidth, this.imgheight);
 
 		context.rotate(-(angle-Math.PI/2));
 		context.translate(-x, -y);
 	} else {
-		context.drawImage(this.image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
+		context.drawImage(this.canvas, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
 	}
 }
 

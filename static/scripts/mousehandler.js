@@ -252,7 +252,7 @@ MouseHandler.prototype.dropTower = function(mouse) {
 				this.state.money -= this.state.selection.upgrades[0].cost;
 				this.state.hoveringTowerOption = false;
 
-				this.state.focusTower(newTower, this.state.towers.length-1);
+				this.state.focusTower(newTower, this.state.towers.indexOf(newTower));
 			}
 		} else {
 			this.state.hoveringTowerOption = true;

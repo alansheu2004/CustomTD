@@ -171,7 +171,16 @@ function GameState(canvasDiv, game) {
 //Adds a new tower
 GameState.prototype.addTower = function(towerType, x, y) {
 	var newTower = new Tower(this, towerType, x, y);
-	this.towers.push(newTower);
+	if(this.towers.length == 0 || newTower.y < this.towers[0].y) {
+		this.towers.unshift(newTower);
+	} else {
+		for(var i = 0; i < this.towers.length; i++) {
+			if(newTower.y > this.towers[i].y) {
+				this.towers.splice(i, 0, newTower);
+				break;
+			}
+		}
+	}
 	this.towerCanvas.valid = false;
 	return newTower;
 }
@@ -476,7 +485,7 @@ GameState.prototype.setMouse = function(e) {
 	my *= CANVAS_HEIGHT / this.styleHeight;
 
 	this.mouse = {x: mx, y: my};
-	this.selectionCoors = {x:Math.round(this.mouse.x/10)*10, y:Math.round(this.mouse.y/10)*10};
+	this.selectionCoors = {x:Math.round(this.mouse.x/MAP_TOWER_GRAIN)*MAP_TOWER_GRAIN, y:Math.round(this.mouse.y/MAP_TOWER_GRAIN)*MAP_TOWER_GRAIN};
 	return this.mouse;
 }
 
