@@ -9,26 +9,10 @@ var defaultTowerTypes = [
 							"Shoots peas twice as fast",
 							"images/repeater.svg", 70, 73,
 							[new ProjectileAttack(PEA, 600, {type:"single"}, null)]),
-						[
-							new TowerUpgrade("Threepeater", 350, 180,
-								"Shoots 3 peas at a time with bullet speed",
-								"images/threepeater.svg", 74, 68,
-								[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)]),
-							new TowerUpgrade("Threepeater", 350, 180,
-								"Shoots 3 spookie spikes",
-								"images/icicle.svg", 74, 68,
-								[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)])
-						],
-						[
-							new TowerUpgrade("Threepeater", 350, 180,
-								"Shoots 3 peas at a time with bullet speed",
-								"images/leaf.png", 74, 68,
-								[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)]),
-							new TowerUpgrade("Threepeater", 350, 180,
-								"Shoots 3 spookie spikes",
-								"images/map.png", 74, 68,
-								[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)])
-						]
+						new TowerUpgrade("Threepeater", 350, 180,
+							"Shoots 3 peas at a time with bullet speed",
+							"images/threepeater.svg", 74, 68,
+							[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)])
 					]
 	),
 	new TowerType("Starfruit", 25, false, false,

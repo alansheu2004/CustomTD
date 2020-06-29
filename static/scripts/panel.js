@@ -153,34 +153,44 @@ Panel.prototype.drawUpgrades = function() {
 			this.drawUpgrade(nextUpgrade[1], UPGRADE_2_OFFSET_Y);
 
 		} else if(upgradeBranch === 0) {
-			if(this.state.money < nextUpgrade[0].cost) {
-				this.upgradeButton0.active = false;
-			} else {
-				this.upgradeButton0.active = true;
-			}
-			this.upgradeInfoButton0.active = true;
-			this.drawUpgrade(nextUpgrade[0], 0)
+			if(nextUpgrade[0] != undefined) {
+				if(this.state.money < nextUpgrade[0].cost) {
+					this.upgradeButton0.active = false;
+				} else {
+					this.upgradeButton0.active = true;
+				}
+				this.upgradeInfoButton0.active = true;
+				this.drawUpgrade(nextUpgrade[0], 0)
 
-			this.upgradeButton1.active = false;
-			this.upgradeInfoButton1.active = false;
-			this.drawLockedUpgrade(UPGRADE_2_OFFSET_Y);
-		} else if(upgradeBranch === 1) {
-			this.upgradeButton0.active = false;
-			this.upgradeInfoButton0.active = false;
-			this.drawLockedUpgrade(0);
-
-			if(this.state.money < nextUpgrade[1].cost) {
 				this.upgradeButton1.active = false;
+				this.upgradeInfoButton1.active = false;
+				this.drawLockedUpgrade(UPGRADE_2_OFFSET_Y);
 			} else {
-				this.upgradeButton1.active = true;
+				this.drawNoUpgrades();
 			}
-			this.upgradeInfoButton1.active = true;
-			this.drawUpgrade(nextUpgrade[1], UPGRADE_2_OFFSET_Y)
+		} else if(upgradeBranch === 1) {
+			if(nextUpgrade[1] != undefined) {
+				this.upgradeButton0.active = false;
+				this.upgradeInfoButton0.active = false;
+				this.drawLockedUpgrade(0);
+
+				if(this.state.money < nextUpgrade[1].cost) {
+					this.upgradeButton1.active = false;
+				} else {
+					this.upgradeButton1.active = true;
+				}
+				this.upgradeInfoButton1.active = true;
+				this.drawUpgrade(nextUpgrade[1], UPGRADE_2_OFFSET_Y)
+			} else {
+				this.drawNoUpgrades();
+			}
 		}
 	} else {
 		if(nextUpgrade == undefined) {
 			this.upgradeButton0.active = false;
 			this.upgradeInfoButton0.active = false;
+
+			this.drawNoUpgrades();
 		} else {
 			if(this.state.money < nextUpgrade.cost) {
 				this.upgradeButton0.active = false;
@@ -253,6 +263,16 @@ Panel.prototype.drawLockedUpgrade = function(offset) {
 	this.state.panelContext.fillText("Locked", UPGRADE_BUTTON_X+UPGRADE_BUTTON_WIDTH/2, UPGRADE_BUTTON_Y+UPGRADE_BUTTON_HEIGHT/2+offset);
 
 	this.state.panelContext.filter = "none"
+}
+
+Panel.prototype.drawNoUpgrades = function() {
+	this.state.panelContext.textAlign = "center";
+	this.state.panelContext.textBaseline = "hanging";
+	this.state.panelContext.fillStyle = this.game.panelTextColor;
+
+	this.state.setFontFit(this.state.panelContext, "No Upgrades", NO_UPGRADES_FONT_SIZE, NO_UPGRADES_TEXT_WIDTH);
+	this.state.panelContext.fillText("No Upgrades", PANEL_X+PANEL_WIDTH/2, NO_UPGRADES_Y);
+	this.state.panelContext.fillText("Available", PANEL_X+PANEL_WIDTH/2, NO_UPGRADES_Y+NO_UPGRADES_LINE_HEIGHT);
 }
 
 Panel.prototype.drawUpgradeInfo = function(upgrade) {
