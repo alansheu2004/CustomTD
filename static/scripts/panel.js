@@ -3,7 +3,7 @@ function Panel(state) {
 	this.game = state.game;
 
 	this.showingUpgradeInfo = false;
-	
+	this.upgradeInfoNum = 0;
 
 	var thisPanel = this;
 
@@ -117,8 +117,9 @@ Panel.prototype.drawSellButton = function() {
 	this.state.panelContext.fillText("Sell-$" + Math.ceil(this.state.focusedTower.baseSellPrice*this.state.game.sellMultiplier), SELL_BUTTON_MID_X, SELL_BUTTON_Y + SELL_BUTTON_HEIGHT/2);
 }
 
-Panel.prototype.showUpgradeInfo = function(bool) {
+Panel.prototype.showUpgradeInfo = function(bool, num) {
 	this.showingUpgradeInfo = bool;
+	this.upgradeInfoNum = num;
 	this.state.panelCanvas.valid = false;
 }
 
@@ -149,7 +150,7 @@ Panel.prototype.drawUpgrades = function() {
 			} else {
 				this.upgradeButton1.active = true;
 			}
-			this.upgradeInfoButton0.active = true;
+			this.upgradeInfoButton1.active = true;
 			this.drawUpgrade(nextUpgrade[1], UPGRADE_2_OFFSET_Y);
 
 		} else if(upgradeBranch === 0) {
@@ -185,6 +186,10 @@ Panel.prototype.drawUpgrades = function() {
 				this.drawNoUpgrades();
 			}
 		}
+
+		if(this.showingUpgradeInfo) {
+			this.drawUpgradeInfo(nextUpgrade[this.upgradeInfoNum], this.upgradeInfoNum*UPGRADE_2_OFFSET_Y);
+		}
 	} else {
 		if(nextUpgrade == undefined) {
 			this.upgradeButton0.active = false;
@@ -199,7 +204,14 @@ Panel.prototype.drawUpgrades = function() {
 			}
 
 			this.upgradeInfoButton0.active = true;
-			this.drawUpgrade(nextUpgrade, 0)
+			this.drawUpgrade(nextUpgrade, 0);
+
+			if(this.showingUpgradeInfo) {
+				this.drawUpgradeInfo(nextUpgrade, 0);
+			}
+		}
+		if(this.showingUpgradeInfo) {
+			this.drawUpgradeInfo(nextUpgrade, 0);
 		}
 	}
 }
@@ -243,10 +255,6 @@ Panel.prototype.drawUpgrade = function(upgrade, offset) {
 	this.state.panelContext.fillText(upgrade.name, UPGRADE_BUTTON_NAME_X, UPGRADE_BUTTON_NAME_Y+offset);
 
 	this.state.panelContext.filter = "none";
-
-	if(this.showingUpgradeInfo) {
-		this.drawUpgradeInfo(upgrade);
-	}
 }
 
 Panel.prototype.drawLockedUpgrade = function(offset) {
@@ -275,7 +283,7 @@ Panel.prototype.drawNoUpgrades = function() {
 	this.state.panelContext.fillText("Available", PANEL_X+PANEL_WIDTH/2, NO_UPGRADES_Y+NO_UPGRADES_LINE_HEIGHT);
 }
 
-Panel.prototype.drawUpgradeInfo = function(upgrade) {
+Panel.prototype.drawUpgradeInfo = function(upgrade, offset) {
 	var lines = [];
 	var words = upgrade.description.split(" ");
 	var currentLine = "";
@@ -290,13 +298,13 @@ Panel.prototype.drawUpgradeInfo = function(upgrade) {
 	}
 
 	this.state.panelContext.fillStyle = this.game.panelBaseColor;
-	this.state.panelContext.fillRect(PANEL_X-UPGRADE_INFO_WIDTH, UPGRADE_BUTTON_Y, UPGRADE_INFO_WIDTH, 2*UPGRADE_INFO_PADDING+lines.length*UPGRADE_INFO_LINE_HEIGHT);
+	this.state.panelContext.fillRect(PANEL_X-UPGRADE_INFO_WIDTH, UPGRADE_BUTTON_Y+offset, UPGRADE_INFO_WIDTH, 2*UPGRADE_INFO_PADDING+lines.length*UPGRADE_INFO_LINE_HEIGHT);
 	
 	this.state.panelContext.fillStyle = this.game.panelTextColor;
 	this.state.panelContext.textBaseline = "hanging";
 	this.state.panelContext.textAlign ="left";
 	for (var i=0; i<lines.length; i++) {
-		this.state.panelContext.fillText(lines[i], PANEL_X-UPGRADE_INFO_WIDTH+UPGRADE_INFO_PADDING, UPGRADE_BUTTON_Y+UPGRADE_INFO_PADDING+i*UPGRADE_INFO_LINE_HEIGHT);
+		this.state.panelContext.fillText(lines[i], PANEL_X-UPGRADE_INFO_WIDTH+UPGRADE_INFO_PADDING, UPGRADE_BUTTON_Y+UPGRADE_INFO_PADDING+i*UPGRADE_INFO_LINE_HEIGHT+offset);
 	}
 }
 
