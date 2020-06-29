@@ -158,7 +158,6 @@ MouseHandler.prototype.dragTower = function(mouse) {
 			this.setDropValid(mouse);
 			this.state.dragCanvas.valid = false;
 		}
-		console.log();
 		return true;
 	} else {
 		return false;

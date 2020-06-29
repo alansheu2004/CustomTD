@@ -9,15 +9,31 @@ var defaultTowerTypes = [
 							"Shoots peas twice as fast",
 							"images/repeater.svg", 70, 73,
 							[new ProjectileAttack(PEA, 600, {type:"single"}, null)]),
-						new TowerUpgrade("Threepeater", 350, 180,
-							"Shoots 3 peas at a time with bullet speed",
-							"images/threepeater.svg", 74, 68,
-							[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)])
+						[
+							new TowerUpgrade("Threepeater", 350, 180,
+								"Shoots 3 peas at a time with bullet speed",
+								"images/threepeater.svg", 74, 68,
+								[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)]),
+							new TowerUpgrade("Threepeater", 350, 180,
+								"Shoots 3 spookie spikes",
+								"images/icicle.svg", 74, 68,
+								[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)])
+						],
+						[
+							new TowerUpgrade("Threepeater", 350, 180,
+								"Shoots 3 peas at a time with bullet speed",
+								"images/leaf.png", 74, 68,
+								[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)]),
+							new TowerUpgrade("Threepeater", 350, 180,
+								"Shoots 3 spookie spikes",
+								"images/map.png", 74, 68,
+								[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)])
+						]
 					]
 	),
 	new TowerType("Starfruit", 25, false, false,
 					[
-						new TowerUpgrade("BASE", 240, 140,
+						new TowerUpgrade("BASE", 250, 140,
 							"Shoots 5 stars in all directions",
 							"images/starfruit.svg", 70, 70,
 							[new ProjectileAttack(STAR, 1250, {type:"radial", number:5}, -Math.PI/2)]),
@@ -205,7 +221,11 @@ function Tower(state, type, x, y) {
 	this.y = y;
 	
 	this.upgradeNum = 0;
+	this.upgradeBranch = null;
 	this.upgrade = this.type.upgrades[this.upgradeNum];
+	if(this.upgradeBranch != null) {
+		this.upgrade = this.upgrade[this.upgradeNum];
+	}
 
 	this.angle = Math.PI/2;
 	this.cooldowns = this.upgrade.attacks.map(function(ps) {return ps.cooldown});
@@ -346,9 +366,16 @@ Tower.prototype.cooldown = function() {
 	}
 }
 
-Tower.prototype.nextUpgrade = function() {
+Tower.prototype.nextUpgrade = function(branch) {
 	this.upgradeNum += 1;
-	this.upgrade = this.type.upgrades[this.upgradeNum];
+	if(Array.isArray(this.type.upgrades[this.upgradeNum]) && this.upgradeBranch == null) {
+		this.upgradeBranch = branch;
+	} 
+	if(this.upgradeBranch == null) {
+		this.upgrade = this.type.upgrades[this.upgradeNum];	
+	} else {
+		this.upgrade = this.type.upgrades[this.upgradeNum][this.upgradeBranch];
+	}
 	this.state.money -= this.upgrade.cost;
 	this.baseSellPrice += this.upgrade.cost;
 	this.cooldowns = this.upgrade.attacks.map(function(ps) {return ps.cooldown});

@@ -33,7 +33,7 @@ function init() {
 
 		"sellButtonColor": "#992200",
 		"sellButtonTextColor": "#ffd630",
-		"sellMultiplier": 0.5
+		"sellMultiplier": 0.75
 	}
 
 	currentState = new GameState(document.getElementById("canvasDiv"), DEFAULT_GAME);
@@ -390,12 +390,6 @@ GameState.prototype.focusTower = function(tower, id) {
 	this.focusedTower = tower;
 	this.focusedTowerNumber = id;
 	this.panel.sellButton.active = true;
-	var nextUpgrade = this.focusedTower.type.upgrades[this.focusedTower.upgradeNum+1];
-	if(nextUpgrade == undefined || this.money < nextUpgrade.cost) {
-		this.panel.upgradeButton.active = false;
-	} else {
-		this.panel.upgradeButton.active = true;
-	}
 
 	this.panelCanvas.valid = false;
 	this.towerCanvas.valid = false;
@@ -412,8 +406,10 @@ GameState.prototype.sellFocusedTower = function() {
 
 GameState.prototype.unfocus = function() {
 	this.panel.sellButton.active = false;
-	this.panel.upgradeButton.active = false;
-	this.panel.upgradeInfoButton.active = false;
+	this.panel.upgradeButton0.active = false;
+	this.panel.upgradeButton1.active = false;
+	this.panel.upgradeInfoButton0.active = false;
+	this.panel.upgradeInfoButton1.active = false;
 	this.focusedTower = null;
 	this.panel.showingUpgradeInfo = false;
 	this.panelCanvas.valid = false;
