@@ -461,7 +461,7 @@ GameState.prototype.nextRound = function() {
 //Returns the mouse coordinates relative to the canvas
 GameState.prototype.setMouse = function(e) {
 
-	var element = this.canvasDiv, offsetX = 0, offsetY = 0, mx, my;
+	var element = this.backgroundCanvas, offsetX = 0, offsetY = 0, mx, my;
 
 	if (element.offsetParent !== undefined) {
 		do {
@@ -514,9 +514,9 @@ GameState.prototype.calibrateMeasures = function(canvas) {
 GameState.prototype.toggleFullscreen = function() {
 	var thisState = this;
 	if(document.fullscreenElement==null) {
-		this.canvasDiv.requestFullscreen().then(function() {thisState.valid = false;});
+		this.canvasDiv.requestFullscreen().then(function() {thisState.panelCanvas.valid = false;});
 	} else {
-		document.exitFullscreen().then(function() {thisState.valid = false;});;
+		document.exitFullscreen().then(function() {thisState.panelCanvas.valid = false;});;
 	}
 }
 
