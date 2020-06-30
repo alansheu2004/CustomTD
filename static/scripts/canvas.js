@@ -8,8 +8,9 @@ function init() {
 
 	var DEFAULT_GAME = {
 		"map" : defaultMap, 
-		"health" : 1,
-		"money" : 200,
+		"health" : 20,
+		"money" : 500,
+		"roundlyIncome" : 200,
 		"towerTypes" : defaultTowerTypes,
 		"enemyWaves" : defaultWaves,
 		"font" : "Oeztype",
@@ -32,7 +33,7 @@ function init() {
 
 		"sellButtonColor": "#992200",
 		"sellButtonTextColor": "#ffd630",
-		"sellMultiplier": 0.5
+		"sellMultiplier": 0.75
 	}
 
 	currentState = new GameState(document.getElementById("canvasDiv"), DEFAULT_GAME);
@@ -156,7 +157,7 @@ function GameState(canvasDiv, game) {
 	    function(state) { //action
 	        state.restartButton.active = false; window.clearInterval(state.loop); init();
 	    },
-	    false);
+	    false, []);
 	this.addButton(this.restartButton);
 
 
@@ -169,8 +170,19 @@ function GameState(canvasDiv, game) {
 
 //Adds a new tower
 GameState.prototype.addTower = function(towerType, x, y) {
-	this.towers.push(new Tower(this, towerType, x, y));
+	var newTower = new Tower(this, towerType, x, y);
+	if(this.towers.length == 0 || newTower.y < this.towers[0].y) {
+		this.towers.unshift(newTower);
+	} else {
+		for(var i = 0; i < this.towers.length; i++) {
+			if(newTower.y > this.towers[i].y) {
+				this.towers.splice(i, 0, newTower);
+				break;
+			}
+		}
+	}
 	this.towerCanvas.valid = false;
+	return newTower;
 }
 
 //Adds a new enemy
@@ -211,32 +223,32 @@ GameState.prototype.update = function() {
 GameState.prototype.validate = function() {
 	this.validating = true;
 
-	if(!this.backgroundCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.backgroundCanvas.valid) {
 		this.clear(this.backgroundCanvas);
 		this.mapscreen.drawBackground();
 		this.backgroundCanvas.valid = true;
 	}
-	if(!this.enemyCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.enemyCanvas.valid) {
 		this.clear(this.enemyCanvas);
 		this.mapscreen.drawEnemies();
 		this.enemyCanvas.valid = true;
 	}
-	if(!this.attackCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.attackCanvas.valid) {
 		this.clear(this.attackCanvas);
 		this.mapscreen.drawAttacks();
 		this.attackCanvas.valid = true;
 	}
-	if(!this.towerCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.towerCanvas.valid) {
 		this.clear(this.towerCanvas);
 		this.mapscreen.drawTowers();
 		this.towerCanvas.valid = true;
 	}
-	if(!this.panelCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.panelCanvas.valid) {
 		this.clear(this.panelCanvas);
 		this.panel.draw();
 		this.panelCanvas.valid = true;
 	}
-	if(!this.labelCanvas.valid) {
+	if(this.revalidationTimer>0 || !this.labelCanvas.valid) {
 		this.clear(this.labelCanvas);
 		this.mapscreen.drawLabels();
 		if(this.roundNotifyTimer > 0) {
@@ -319,7 +331,7 @@ GameState.prototype.updateEnemyWaves = function() {
 			this.gameOverText = "You Won!";
 			this.gameOver = true;
 		} else {
-			this.money += 50; //CHANGE THIS LATER
+			this.money += this.game.roundlyIncome; //CHANGE THIS LATER
 			this.panel.playButton.active = true;
 		}
 		this.labelCanvas.valid = false;
@@ -378,12 +390,6 @@ GameState.prototype.focusTower = function(tower, id) {
 	this.focusedTower = tower;
 	this.focusedTowerNumber = id;
 	this.panel.sellButton.active = true;
-	var nextUpgrade = this.focusedTower.type.upgrades[this.focusedTower.upgradeNum+1];
-	if(nextUpgrade == undefined || this.money < nextUpgrade.cost) {
-		this.panel.upgradeButton.active = false;
-	} else {
-		this.panel.upgradeButton.active = true;
-	}
 
 	this.panelCanvas.valid = false;
 	this.towerCanvas.valid = false;
@@ -400,8 +406,12 @@ GameState.prototype.sellFocusedTower = function() {
 
 GameState.prototype.unfocus = function() {
 	this.panel.sellButton.active = false;
-	this.panel.upgradeButton.active = false;
+	this.panel.upgradeButton0.active = false;
+	this.panel.upgradeButton1.active = false;
+	this.panel.upgradeInfoButton0.active = false;
+	this.panel.upgradeInfoButton1.active = false;
 	this.focusedTower = null;
+	this.panel.showingUpgradeInfo = false;
 	this.panelCanvas.valid = false;
 	this.towerCanvas.valid = false;
 }
@@ -451,7 +461,7 @@ GameState.prototype.nextRound = function() {
 //Returns the mouse coordinates relative to the canvas
 GameState.prototype.setMouse = function(e) {
 
-	var element = this.canvasDiv, offsetX = 0, offsetY = 0, mx, my;
+	var element = this.backgroundCanvas, offsetX = 0, offsetY = 0, mx, my;
 
 	if (element.offsetParent !== undefined) {
 		do {
@@ -471,7 +481,7 @@ GameState.prototype.setMouse = function(e) {
 	my *= CANVAS_HEIGHT / this.styleHeight;
 
 	this.mouse = {x: mx, y: my};
-	this.selectionCoors = {x:Math.round(this.mouse.x/10)*10, y:Math.round(this.mouse.y/10)*10};
+	this.selectionCoors = {x:Math.round(this.mouse.x/MAP_TOWER_GRAIN)*MAP_TOWER_GRAIN, y:Math.round(this.mouse.y/MAP_TOWER_GRAIN)*MAP_TOWER_GRAIN};
 	return this.mouse;
 }
 
@@ -504,9 +514,9 @@ GameState.prototype.calibrateMeasures = function(canvas) {
 GameState.prototype.toggleFullscreen = function() {
 	var thisState = this;
 	if(document.fullscreenElement==null) {
-		this.canvasDiv.requestFullscreen().then(function() {thisState.valid = false;});
+		this.canvasDiv.requestFullscreen().then(function() {thisState.panelCanvas.valid = false;});
 	} else {
-		document.exitFullscreen().then(function() {thisState.valid = false;});;
+		document.exitFullscreen().then(function() {thisState.panelCanvas.valid = false;});;
 	}
 }
 

@@ -1,19 +1,19 @@
 var RED = new EnemyType(100, null, 1, 1, 22, 1,
 	"images/red.svg", 36, 48);
-var BLUE = new EnemyType(133, RED, 1, 2, 23, 1,
+var BLUE = new EnemyType(133, RED, 2, 2, 23, 1,
 	"images/blue.svg", 38, 51);
 var GREEN = new EnemyType(200, BLUE, 2, 3, 24, 1,
 	"images/green.svg", 40, 54);
-var YELLOW = new EnemyType(400, GREEN, 2, 4, 26, 1,
+var YELLOW = new EnemyType(400, GREEN, 3, 4, 26, 1,
 	"images/yellow.svg", 42, 57);
-var PINK = new EnemyType(500, YELLOW, 3, 5, 28, 1,
+var PINK = new EnemyType(500, YELLOW, 5, 5, 28, 1,
 	"images/pink.svg", 44, 60);
 
-function EnemyType(speed, child, rbe, damage, size, health,
+function EnemyType(speed, child, rewardMoney, damage, size, health,
 					image, imgwidth, imgheight) {
 	this.speed = speed; // px per sec
 	this.child = child;
-	this.rbe = rbe;
+	this.rewardMoney = rewardMoney;
 	this.damage = damage; //if passed through map
 	this.size = size;
 	this.health = health;
@@ -22,10 +22,19 @@ function EnemyType(speed, child, rbe, damage, size, health,
 	this.image.src = image;
 	this.imgwidth = imgwidth;
 	this.imgheight = imgheight;
+
+	var thisEnemy = this;
+
+	this.canvas = document.createElement("canvas");
+	this.canvas.width = thisEnemy.imgwidth;
+	this.canvas.height = thisEnemy.imgheight;
+	this.image.onload = function() {
+		thisEnemy.canvas.getContext("2d").drawImage(thisEnemy.image, 0, 0, thisEnemy.imgwidth, thisEnemy.imgheight);
+	}
 }
 
 EnemyType.prototype.draw = function(context, x, y) {
-	context.drawImage(this.image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
+	context.drawImage(this.canvas, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
 }
 
 function Enemy(state, type) {
@@ -69,7 +78,7 @@ Enemy.prototype.updatePosition = function() {
 }
 
 Enemy.prototype.damage = function(id, damage) {
-	this.state.money += this.type.rbe;
+	this.state.money += this.type.rewardMoney;
 	this.health -= damage;
 
 	if(this.health <= 0) {
@@ -82,7 +91,9 @@ Enemy.prototype.damage = function(id, damage) {
 			this.damage(id, damageLeft);
 		}
 
+		this.state.labelCanvas.valid = false;
 		this.state.enemyCanvas.valid = false;
+		this.state.panelCanvas.valid = false;
 	}
 	
 }

@@ -15,7 +15,9 @@ html, body {
 }
 
 body {
+	display: flex;
 	align-items: center;
+	justify-content: center;
 	background-color: #ffe9d4;
 }
 
@@ -27,16 +29,8 @@ div#canvasDiv {
 	display: block;
 	height: 80%;
 	width: calc(80vh * 16 / 9);
-	border: 0vw ridge #663300;
 	margin: 20px auto;
 	position: relative;
-}
-
-@media (max-aspect-ratio: 16/9) {
-	div#canvasDiv {
-		width: 80%;
-		height: calc(80vw * 9 / 16);
-	}
 }
 
 div#canvasDiv canvas {
@@ -46,6 +40,28 @@ div#canvasDiv canvas {
 	height: 100%;
 	width: 100%;
 }
+
+div#canvasDiv:fullscreen canvas {
+	top: 0;
+	left: calc(50% - (100vh * 16 / 9) / 2);
+	height: 100%;
+	width: calc(100vh * 16 / 9);
+}
+
+@media (max-aspect-ratio: 16/9) {
+	div#canvasDiv {
+		width: 80%;
+		height: calc(80vw * 9 / 16);
+	}
+
+	div#canvasDiv:fullscreen canvas {
+		left: 0;
+		top: calc(50% - (100vw * 9 / 16) / 2);
+		width: 100%;
+		height: calc(100vw * 9 / 16);
+	}
+}
+
 
 @keyframes fadeIn {
   from {opacity: 0;}

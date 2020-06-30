@@ -2,6 +2,26 @@ function MapScreen(state, map) {
     this.state = state;
     this.game = state.game;
 
+    var thisMapScreen = this;
+
+    var healthImage = new Image();
+	healthImage.src = "images/heart.png";
+	this.healthCanvas = document.createElement("canvas");
+	this.healthCanvas.width = MAP_RESOURCE_ICON_WIDTH;
+	this.healthCanvas.height = MAP_RESOURCE_ICON_HEIGHT;
+	healthImage.onload = function() {
+		thisMapScreen.healthCanvas.getContext("2d").drawImage(healthImage, 0, 0, MAP_RESOURCE_ICON_WIDTH, MAP_RESOURCE_ICON_HEIGHT);
+	}
+
+	var moneyImage = new Image();
+	moneyImage.src = "images/money.png";
+	this.moneyCanvas = document.createElement("canvas");
+	this.moneyCanvas.width = MAP_RESOURCE_ICON_WIDTH;
+	this.moneyCanvas.height = MAP_RESOURCE_ICON_HEIGHT;
+	moneyImage.onload = function() {
+		thisMapScreen.moneyCanvas.getContext("2d").drawImage(moneyImage, 0, 0, MAP_RESOURCE_ICON_WIDTH, MAP_RESOURCE_ICON_HEIGHT);
+	}	
+
     this.healthButton = new Button(this, 
 	    function(x, y) { //inbounds
 	        return x>=MAP_RESOURCE_ICON_CENTER_X-0.5*MAP_RESOURCE_ICON_WIDTH && x<=MAP_RESOURCE_ICON_CENTER_X+0.5*MAP_RESOURCE_ICON_WIDTH &&
@@ -11,7 +31,7 @@ function MapScreen(state, map) {
 	        state.health = Infinity; 
 	        state.labelCanvas.valid = false;
 	    },
-	    true);
+	    true, []);
 	this.state.addButton(this.healthButton);
 
     this.moneyButton = new Button(this, 
@@ -23,7 +43,7 @@ function MapScreen(state, map) {
 	        state.money = Infinity;
 	        state.labelCanvas.valid = false;
 	    },
-	    true);
+	    true, [state.panelCanvas]);
 	this.state.addButton(this.moneyButton);
 
 	this.map = map;
@@ -106,14 +126,8 @@ MapScreen.prototype.drawLabels = function() {
 		this.state.labelContext.fillText(this.state.round, roundNumberOffsetX, MAP_ROUND_OFFSET_Y);
 	}
 	
-
-	var healthImage = new Image();
-	healthImage.src = "images/heart.png";
-	this.state.labelContext.drawImage(healthImage, MAP_RESOURCE_ICON_CENTER_X - MAP_RESOURCE_ICON_WIDTH/2, MAP_HEALTH_CENTER_Y - MAP_RESOURCE_ICON_WIDTH/2, MAP_RESOURCE_ICON_WIDTH, MAP_RESOURCE_ICON_HEIGHT);
-	
-	var moneyImage = new Image();
-	moneyImage.src = "images/money.png";
-	this.state.labelContext.drawImage(moneyImage, MAP_RESOURCE_ICON_CENTER_X - MAP_RESOURCE_ICON_WIDTH/2, MAP_MONEY_CENTER_Y - MAP_RESOURCE_ICON_HEIGHT/2, MAP_RESOURCE_ICON_WIDTH, MAP_RESOURCE_ICON_HEIGHT);
+	this.state.labelContext.drawImage(this.healthCanvas, MAP_RESOURCE_ICON_CENTER_X - MAP_RESOURCE_ICON_WIDTH/2, MAP_HEALTH_CENTER_Y - MAP_RESOURCE_ICON_WIDTH/2, MAP_RESOURCE_ICON_WIDTH, MAP_RESOURCE_ICON_HEIGHT);
+	this.state.labelContext.drawImage(this.moneyCanvas, MAP_RESOURCE_ICON_CENTER_X - MAP_RESOURCE_ICON_WIDTH/2, MAP_MONEY_CENTER_Y - MAP_RESOURCE_ICON_HEIGHT/2, MAP_RESOURCE_ICON_WIDTH, MAP_RESOURCE_ICON_HEIGHT);
 	
 	this.state.labelContext.font = "small-caps " + MAP_RESOURCE_TEXT_FONT_SIZE + "px " + this.game.font;
 	this.state.labelContext.textAlign = "start";

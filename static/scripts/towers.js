@@ -1,82 +1,112 @@
 var defaultTowerTypes = [
 	new TowerType("Peashooter", 25, true, false,
 					[
-						new TowerUpgrade("BASE", 120, 160,
+						new TowerUpgrade("BASE", 200, 160,
 							"Shoots good ol' reliable peas",
 							"images/peashooter.svg", 70, 70,
-							[new ProjectileAttack(PEA, 1000, {type:"single"}, null)]),
-						new TowerUpgrade("Repeater", 150, 160,
+							[new ProjectileAttack(PEA, 1200, {type:"single"}, null)]),
+						new TowerUpgrade("Repeater", 220, 160,
 							"Shoots peas twice as fast",
 							"images/repeater.svg", 70, 73,
-							[new ProjectileAttack(PEA, 500, {type:"single"}, null)]),
-						new TowerUpgrade("Threepeater", 200, 180,
-							"Shoots 3 peas at a time with bullet speed",
-							"images/threepeater.svg", 74, 68,
-							[new ProjectileAttack(BULLET_PEA, 700, {type:"spray", number:3, angle: Math.PI/8}, null)])
+							[new ProjectileAttack(PEA, 600, {type:"single"}, null)]),
+						[
+							new TowerUpgrade("Threepeater", 350, 180,
+								"Shoots 3 peas at a time with bullet speed",
+								"images/threepeater.svg", 74, 68,
+								[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)]),
+							new TowerUpgrade("Snow Pea", 360, 160,
+								"Shoots snow peas that slow foes",
+								"images/snowpeashooter.svg", 70, 73,
+								[new ProjectileAttack(SNOW_PEA, 600, {type:"single"}, null)])
+						]
 					]
 	),
 	new TowerType("Starfruit", 25, false, false,
 					[
-						new TowerUpgrade("BASE", 100, 140,
+						new TowerUpgrade("BASE", 250, 140,
 							"Shoots 5 stars in all directions",
 							"images/starfruit.svg", 70, 70,
-							[new ProjectileAttack(STAR, 750, {type:"radial", number:5}, -Math.PI/2)]),
-						new TowerUpgrade("Shooting-Star", 125, 160,
+							[new ProjectileAttack(STAR, 1250, {type:"radial", number:5}, -Math.PI/2)]),
+						new TowerUpgrade("Shooting-Star", 175, 160,
 							"Shoots slightly faster and farther",
 							"images/shootingstar.svg", 70, 70,
-							[new ProjectileAttack(FAR_STAR, 600, {type:"radial", number:5}, -Math.PI/2)]),
-						new TowerUpgrade("Superstar", 250, 160,
-							"Increases the number of stars shot to 10",
-							"images/superstar.svg", 70, 70,
-							[new ProjectileAttack(FAR_STAR, 600, {type:"radial", number:10}, -Math.PI/2)])
+							[new ProjectileAttack(FAR_STAR, 1000, {type:"radial", number:5}, -Math.PI/2)]),
+						[
+							new TowerUpgrade("Superstar", 540, 160,
+								"Doubles the number of stars shot",
+								"images/superstar.svg", 70, 70,
+								[new ProjectileAttack(FAR_STAR, 1000, {type:"radial", number:10}, -Math.PI/2)]),
+							new TowerUpgrade("Gravistar", 490, 180,
+								"Shoots a giant single homing star",
+								"images/gravistar.svg", 70, 70,
+								[new ProjectileAttack(HOMING_STAR, 2000, {type:"single"}, null)])
+						]
 					]
 	),
 	new TowerType("Iceshroom", 30, false, false,
 					[
-						new TowerUpgrade("BASE", 75, 120,
-							"Blasts the area with cold air, temportarily immobilizing foes",
+						new TowerUpgrade("BASE", 180, 120,
+							"Blasts cold air that temporarily freezes nearby bloons",
 							"images/iceshroom.svg", 80, 70,
-							[new PulseAttack(FREEZE_PULSE, 2000, 2*Math.PI, null)]),
-						new TowerUpgrade("Deep Freeze", 175, 120,
+							[new PulseAttack(FREEZE_PULSE, 3000, 2*Math.PI, null)]),
+						new TowerUpgrade("Deep Freeze", 200, 120,
 							"Leaves enemies slow after thawing",
 							"images/deepfreeze.svg", 80, 70,
-							[new PulseAttack(DEEP_FREEZE_PULSE, 2000, 2*Math.PI, null)]),
-						new TowerUpgrade("Icicle Spikes", 250, 120,
-							"Sends out ice shard that completely freeze and damage enemies",
-							"images/iciclespikes.svg", 80, 70,
-							[new PulseAttack(DEEP_FREEZE_PULSE, 2000, 2*Math.PI, null), new ProjectileAttack(ICICLE, 4000, {type:"radial", number:6}, Math.PI/2)])
+							[new PulseAttack(DEEP_FREEZE_PULSE, 3000, 2*Math.PI, null)]),
+						[
+							new TowerUpgrade("Icicle Spikes", 340, 120,
+								"Shoots ice shards that freeze and damage enemies",
+								"images/iciclespikes.svg", 80, 70,
+								[new PulseAttack(DEEP_FREEZE_PULSE, 2500, 2*Math.PI, null), new ProjectileAttack(ICICLE, 5000, {type:"radial", number:6}, Math.PI/2)]),
+							new TowerUpgrade("Climate Change", 300, 180,
+								"The range increses greatly",
+								"images/climatechange.svg", 80, 70,
+								[new PulseAttack(FAR_FREEZE_PULSE, 3000, 2*Math.PI, null)]),
+						]
 					]
 	),
 	new TowerType("Cattail", 25, true, true,
 					[
-						new TowerUpgrade("BASE", 150, 150,
+						new TowerUpgrade("BASE", 440, 150,
 							"Shoots spikes that can home on targets",
 							"images/cattail.svg", 70, 70,
 							[new ProjectileAttack(SPIKE, 1000, {type:"single"}, null)]),
-						new TowerUpgrade("Sharp-Shooter", 150, 150,
+						new TowerUpgrade("Sharp-Shooter", 350, 150,
 							"Shoots faster and sharper spikes",
 							"images/sharpshooter.svg", 70, 70,
 							[new ProjectileAttack(SHARP_SPIKE, 1000, {type:"single"}, null)]),
-						new TowerUpgrade("Mechameow", 300, 150,
-							"A mechanized tail rapidly shoots spikes",
-							"images/mechameow.svg", 70, 70,
-							[new ProjectileAttack(SHARP_SPIKE, 333, {type:"single"}, null)])
+						[
+							new TowerUpgrade("Mechameow", 400, 150,
+								"A mechanized tail rapidly shoots spikes",
+								"images/mechameow.svg", 70, 70,
+								[new ProjectileAttack(SHARP_SPIKE, 333, {type:"single"}, null)]),
+							new TowerUpgrade("Spike Balls", 500, 150,
+								"Shoots spike balls that explode into multiple spikes",
+								"images/spikeballs.svg", 70, 70,
+								[new ProjectileAttack(SPIKE_BALL, 1000, {type:"single"}, null)])
+						]
 					]
 	),
 	new TowerType("Cabbage-pult", 30, true, false,
 					[
-						new TowerUpgrade("BASE", 200, 180,
+						new TowerUpgrade("BASE", 500, 180,
 							"Shoots cabbages that explode on contact",
 							"images/cabbagepult.svg", 70, 80,
 							[new ProjectileAttack(CABBAGE, 1500, {type:"single"}, null)]),
-						new TowerUpgrade("Leaf Tornado", 250, 200,
-							"Leaves erupt from the cabbage, slightly flustering foes",
-							"images/leaftornado.svg", 70, 80,
-							[new ProjectileAttack(LEAFY_CABBAGE, 1500, {type:"single"}, null)]),
-						new TowerUpgrade("Melon-pult", 300, 200,
-							"Shoots melons ... for some reason ... that do double damage and big explosions",
-							"images/melonpult.svg", 70, 92,
-							[new ProjectileAttack(MELON, 1750, {type:"single"}, null)])
+						new TowerUpgrade("Thiccness", 180, 200,
+							"Cabbage explosions are slightly bigger",
+							"images/thiccness.svg", 70, 80,
+							[new ProjectileAttack(THICC_CABBAGE, 1500, {type:"single"}, null)]),
+						[
+							new TowerUpgrade("Leaf Tornado", 420, 200,
+								"Leaves erupt from the cabbage, slightly flustering foes",
+								"images/leaftornado.svg", 70, 80,
+								[new ProjectileAttack(LEAFY_CABBAGE, 1500, {type:"single"}, null)]),
+							new TowerUpgrade("Melon-pult", 560, 200,
+								"Shoots melons (for some reason) that do double damage and big explosions",
+								"images/melonpult.svg", 70, 92,
+								[new ProjectileAttack(MELON, 1750, {type:"single"}, null)])
+						]
 					]
 	)
 ];
@@ -115,6 +145,15 @@ function TowerUpgrade(name, cost, range,
 	this.range = range;
 	this.attacks = attacks;
 	this.description = description;
+
+	var thisTower = this;
+
+	this.canvas = document.createElement("canvas");
+	this.canvas.width = thisTower.imgwidth;
+	this.canvas.height = thisTower.imgheight;
+	this.image.onload = function() {
+		thisTower.canvas.getContext("2d").drawImage(thisTower.image, 0, 0, thisTower.imgwidth, thisTower.imgheight);
+	}
 }
 
 //Draws with a set max dimension while maintaining an aspect ratio
@@ -132,12 +171,12 @@ TowerUpgrade.prototype.draw = function(context, x, y, angle) {
 		context.translate(x, y);
 		context.rotate(angle-Math.PI/2);
 		
-		context.drawImage(this.image, -this.imgwidth/2, -this.imgheight/2, this.imgwidth, this.imgheight);
+		context.drawImage(this.canvas, -this.imgwidth/2, -this.imgheight/2, this.imgwidth, this.imgheight);
 
 		context.rotate(-(angle-Math.PI/2));
 		context.translate(-x, -y);
 	} else {
-		context.drawImage(this.image, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
+		context.drawImage(this.canvas, x - this.imgwidth/2, y - this.imgheight/2, this.imgwidth, this.imgheight);
 	}
 }
 
@@ -196,7 +235,11 @@ function Tower(state, type, x, y) {
 	this.y = y;
 	
 	this.upgradeNum = 0;
+	this.upgradeBranch = null;
 	this.upgrade = this.type.upgrades[this.upgradeNum];
+	if(this.upgradeBranch != null) {
+		this.upgrade = this.upgrade[this.upgradeNum];
+	}
 
 	this.angle = Math.PI/2;
 	this.cooldowns = this.upgrade.attacks.map(function(ps) {return ps.cooldown});
@@ -337,9 +380,16 @@ Tower.prototype.cooldown = function() {
 	}
 }
 
-Tower.prototype.nextUpgrade = function() {
+Tower.prototype.nextUpgrade = function(branch) {
 	this.upgradeNum += 1;
-	this.upgrade = this.type.upgrades[this.upgradeNum];
+	if(Array.isArray(this.type.upgrades[this.upgradeNum]) && this.upgradeBranch == null) {
+		this.upgradeBranch = branch;
+	} 
+	if(this.upgradeBranch == null) {
+		this.upgrade = this.type.upgrades[this.upgradeNum];	
+	} else {
+		this.upgrade = this.type.upgrades[this.upgradeNum][this.upgradeBranch];
+	}
 	this.state.money -= this.upgrade.cost;
 	this.baseSellPrice += this.upgrade.cost;
 	this.cooldowns = this.upgrade.attacks.map(function(ps) {return ps.cooldown});

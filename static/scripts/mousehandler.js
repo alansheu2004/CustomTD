@@ -56,7 +56,7 @@ function MouseHandler(state) {
 		e.preventDefault();
 		var mouse = thisState.setMouse(thisHandler.touchToMouseEvent(e, 'mousedown'));
 		if (thisHandler.startDraggingTower(mouse)) {
-			return;
+			//return;
 		} else if (thisHandler.startPressingButton(mouse)) {
 			return;
 		} else if (thisHandler.startPressingTower(thisState.selectionCoors)) {
@@ -158,7 +158,6 @@ MouseHandler.prototype.dragTower = function(mouse) {
 			this.setDropValid(mouse);
 			this.state.dragCanvas.valid = false;
 		}
-		console.log();
 		return true;
 	} else {
 		return false;
@@ -170,9 +169,6 @@ MouseHandler.prototype.checkButtonPressed = function(mouse) {
 	if (this.state.buttonPressed) {
 		if (!this.state.selection.inBounds(mouse.x, mouse.y)) {
 			this.state.buttonPressed = false;
-			if (this.state.selection.validationCanvas) {
-				this.state.selection.validationCanvas.valid = false;
-			}
 			return true;
 		}
 	} else {
@@ -251,9 +247,11 @@ MouseHandler.prototype.dropTower = function(mouse) {
 
 		if(this.state.towerDraggedOutOfOptionBox) {
 			if (this.state.dropValid) {
-				this.state.addTower(this.state.selection, mouse.x, mouse.y);
+				var newTower = this.state.addTower(this.state.selection, mouse.x, mouse.y);
 				this.state.money -= this.state.selection.upgrades[0].cost;
 				this.state.hoveringTowerOption = false;
+
+				this.state.focusTower(newTower, this.state.towers.indexOf(newTower));
 			}
 		} else {
 			this.state.hoveringTowerOption = true;
@@ -274,8 +272,8 @@ MouseHandler.prototype.releaseButton = function(mouse) {
 		this.state.buttonPressed = false;
 		if(this.state.selection.inBounds(mouse.x, mouse.y)) {
 			this.state.selection.action(this.state);
-			if (this.state.selection.validationCanvas) {
-				this.state.selection.validationCanvas.valid = false;
+			for (let canvas of this.state.selection.validationCanvas) {
+				canvas.valid = false;
 			}
 			return true;
 		}
