@@ -2,8 +2,8 @@ PEA = new ProjectileType(null, 2, 800, 300, 1,
 						false, 15, false, [], [],
 						"images/pea.png", 30, 30);
 SNOW_PEA = new ProjectileType(PEA, 2, 800, INHERIT, INHERIT,
-						INHERIT, INHERIT, INHERIT, [{"type":COLD,"time":3}], INHERIT,
-						"images/pea.png", 30, 30);
+						true, INHERIT, INHERIT, [{"type":COLD,"time":3}], INHERIT,
+						"images/snowpea.png", 30, 30);
 BULLET_PEA = new ProjectileType(PEA, 3, 1000, 500, INHERIT,
 						INHERIT, 10, INHERIT, INHERIT, INHERIT,
 						INHERIT, 20, 20);
@@ -24,7 +24,7 @@ SHARP_SPIKE = new ProjectileType(SPIKE, 3, 500, INHERIT, INHERIT,
 						INHERIT, INHERIT, INHERIT);
 SPIKE_BALL = new ProjectileType(null, 1, 300, Infinity, 1,
 						true, 20, null, [], [new ProjectileAttack(SPIKE, null, {type:"radial", number:6})],
-						"images/spike.png", 40, 40);
+						"images/spikeball.png", 40, 40);
 ICICLE = new ProjectileType(null, Infinity, 900, 120, 1,
 						true, 15, false, [{"type":FREEZE,"time":3}], [],
 						"images/icicle.svg", 25, 50);
@@ -32,8 +32,8 @@ CABBAGE = new ProjectileType(null, 1, 600, Infinity, 0,
 						true, 20, false, [], [new PulseAttack(CABBAGE_EXPLOSION, null, 2*Math.PI, null)],
 						"images/cabbage.png", 40, 40);
 THICC_CABBAGE = new ProjectileType(null, 1, 600, Infinity, 0,
-						true, 20, false, [], [new PulseAttack(THICC_CABBAGE_EXPLOSION, null, 2*Math.PI, null)],
-						"images/cabbage.png", 40, 40);
+						true, 25, false, [], [new PulseAttack(THICC_CABBAGE_EXPLOSION, null, 2*Math.PI, null)],
+						"images/cabbage.png", 50, 50);
 LEAF = new ProjectileType(null, Infinity, 400, 120, 0,
 						true, 10, false, [{"type": FLUSTERED, "time":3}], [],
 						"images/leaf.png", 20, 20);

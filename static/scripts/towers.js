@@ -16,7 +16,7 @@ var defaultTowerTypes = [
 								[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)]),
 							new TowerUpgrade("Snow Pea", 360, 160,
 								"Shoots snow peas that slow foes",
-								"images/repeater.svg", 70, 73,
+								"images/snowpeashooter.svg", 70, 73,
 								[new ProjectileAttack(SNOW_PEA, 600, {type:"single"}, null)])
 						]
 					]
@@ -38,8 +38,8 @@ var defaultTowerTypes = [
 								[new ProjectileAttack(FAR_STAR, 1000, {type:"radial", number:10}, -Math.PI/2)]),
 							new TowerUpgrade("Gravistar", 490, 180,
 								"Shoots a giant single homing star",
-								"images/superstar.svg", 70, 70,
-								[new ProjectileAttack(HOMING_STAR, 2000, {type:"single"}, -Math.PI/2)])
+								"images/gravistar.svg", 70, 70,
+								[new ProjectileAttack(HOMING_STAR, 2000, {type:"single"}, null)])
 						]
 					]
 	),
@@ -60,7 +60,7 @@ var defaultTowerTypes = [
 								[new PulseAttack(DEEP_FREEZE_PULSE, 2500, 2*Math.PI, null), new ProjectileAttack(ICICLE, 5000, {type:"radial", number:6}, Math.PI/2)]),
 							new TowerUpgrade("Climate Change", 240, 180,
 								"The range increses greatly",
-								"images/deepfreeze.svg", 80, 70,
+								"images/climatechange.svg", 80, 70,
 								[new PulseAttack(FAR_FREEZE_PULSE, 3000, 2*Math.PI, null)]),
 						]
 					]
@@ -80,9 +80,9 @@ var defaultTowerTypes = [
 								"A mechanized tail rapidly shoots spikes",
 								"images/mechameow.svg", 70, 70,
 								[new ProjectileAttack(SHARP_SPIKE, 333, {type:"single"}, null)]),
-							new TowerUpgrade("Spike Bombs", 500, 150,
+							new TowerUpgrade("Spike Balls", 500, 150,
 								"Shoots spike balls that explode into multiple spikes",
-								"images/mechameow.svg", 70, 70,
+								"images/spikeballs.svg", 70, 70,
 								[new ProjectileAttack(SPIKE_BALL, 1000, {type:"single"}, null)])
 						]
 					]
@@ -93,9 +93,9 @@ var defaultTowerTypes = [
 							"Shoots cabbages that explode on contact",
 							"images/cabbagepult.svg", 70, 80,
 							[new ProjectileAttack(CABBAGE, 1500, {type:"single"}, null)]),
-						new TowerUpgrade("Thiccness+", 180, 200,
+						new TowerUpgrade("Thiccness", 180, 200,
 							"Cabbage explosions are slightly bigger",
-							"images/leaftornado.svg", 70, 80,
+							"images/thiccness.svg", 70, 80,
 							[new ProjectileAttack(THICC_CABBAGE, 1500, {type:"single"}, null)]),
 						[
 							new TowerUpgrade("Leaf Tornado", 420, 200,
