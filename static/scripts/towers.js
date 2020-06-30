@@ -45,7 +45,7 @@ var defaultTowerTypes = [
 	),
 	new TowerType("Iceshroom", 30, false, false,
 					[
-						new TowerUpgrade("BASE", 155, 120,
+						new TowerUpgrade("BASE", 180, 120,
 							"Blasts cold air that temporarily freezes nearby bloons",
 							"images/iceshroom.svg", 80, 70,
 							[new PulseAttack(FREEZE_PULSE, 3000, 2*Math.PI, null)]),
@@ -54,11 +54,11 @@ var defaultTowerTypes = [
 							"images/deepfreeze.svg", 80, 70,
 							[new PulseAttack(DEEP_FREEZE_PULSE, 3000, 2*Math.PI, null)]),
 						[
-							new TowerUpgrade("Icicle Spikes", 300, 120,
+							new TowerUpgrade("Icicle Spikes", 340, 120,
 								"Shoots ice shards that freeze and damage enemies",
 								"images/iciclespikes.svg", 80, 70,
 								[new PulseAttack(DEEP_FREEZE_PULSE, 2500, 2*Math.PI, null), new ProjectileAttack(ICICLE, 5000, {type:"radial", number:6}, Math.PI/2)]),
-							new TowerUpgrade("Climate Change", 240, 180,
+							new TowerUpgrade("Climate Change", 300, 180,
 								"The range increses greatly",
 								"images/climatechange.svg", 80, 70,
 								[new PulseAttack(FAR_FREEZE_PULSE, 3000, 2*Math.PI, null)]),
@@ -89,7 +89,7 @@ var defaultTowerTypes = [
 	),
 	new TowerType("Cabbage-pult", 30, true, false,
 					[
-						new TowerUpgrade("BASE", 600, 180,
+						new TowerUpgrade("BASE", 500, 180,
 							"Shoots cabbages that explode on contact",
 							"images/cabbagepult.svg", 70, 80,
 							[new ProjectileAttack(CABBAGE, 1500, {type:"single"}, null)]),

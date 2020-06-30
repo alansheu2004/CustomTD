@@ -19,7 +19,7 @@ HOMING_STAR = new ProjectileType(STAR, 8, 400, Infinity,  INHERIT,
 SPIKE = new ProjectileType(null, 2, 400, Infinity, 1,
 						true, 10, 360, [], [],
 						"images/spike.png", 15, 30);
-SHARP_SPIKE = new ProjectileType(SPIKE, 3, 500, INHERIT, INHERIT,
+SHARP_SPIKE = new ProjectileType(SPIKE, 4, 500, INHERIT, INHERIT,
 						INHERIT, INHERIT, 450, INHERIT, INHERIT,
 						INHERIT, INHERIT, INHERIT);
 SPIKE_BALL = new ProjectileType(null, 1, 300, Infinity, 1,

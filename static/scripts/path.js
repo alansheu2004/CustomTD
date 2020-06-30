@@ -153,5 +153,5 @@ var defaultPath = new Path(
 		{x : 640, y : 360},
 		{x : 960, y : 360},
 	],
-	40
+	45
 );
