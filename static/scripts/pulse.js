@@ -1,8 +1,10 @@
 const FREEZE_PULSE = new PulseType(null, 0.5, 120, 0, [{"type":FREEZE, "time":1}], [], "#66ccff");
-const DEEP_FREEZE_PULSE = new PulseType(null, 0.5, 120, 0, [{"type":FREEZE, "time":1}, {"type":COLD, "time":1.5}], [], "#66ccff");
+const DEEP_FREEZE_PULSE = new PulseType(null, 0.5, 120, 0, [{"type":FREEZE, "time":1}, {"type":COLD, "time":2}], [], "#66ccff");
+const FAR_FREEZE_PULSE = new PulseType(DEEP_FREEZE_PULSE, INHERIT, 180, 0, INHERIT, [], INHERIT);
 
 const CABBAGE_EXPLOSION = new PulseType(null, 0.25, 60, 1, [], [], "#42a653");
-const MELON_EXPLOSION = new PulseType(CABBAGE_EXPLOSION, INHERIT, INHERIT, 2, [], [], INHERIT);
+const THICC_CABBAGE_EXPLOSION = new PulseType(CABBAGE_EXPLOSION, INHERIT, 75, 1, [], [], "#42a653");
+const MELON_EXPLOSION = new PulseType(THICC_CABBAGE_EXPLOSION, INHERIT, INHERIT, 2, [], [], INHERIT);
 
 function PulseType(base, time, radius, damage, effects, attacks, color) {
     this.time = time; //time to expand to radius

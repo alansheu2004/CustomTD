@@ -9,10 +9,16 @@ var defaultTowerTypes = [
 							"Shoots peas twice as fast",
 							"images/repeater.svg", 70, 73,
 							[new ProjectileAttack(PEA, 600, {type:"single"}, null)]),
-						new TowerUpgrade("Threepeater", 350, 180,
-							"Shoots 3 peas at a time with bullet speed",
-							"images/threepeater.svg", 74, 68,
-							[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)])
+						[
+							new TowerUpgrade("Threepeater", 350, 180,
+								"Shoots 3 peas at a time with bullet speed",
+								"images/threepeater.svg", 74, 68,
+								[new ProjectileAttack(BULLET_PEA, 750, {type:"spray", number:3, angle: Math.PI/8}, null)]),
+							new TowerUpgrade("Snow Pea", 360, 160,
+								"Shoots snow peas that slow foes",
+								"images/repeater.svg", 70, 73,
+								[new ProjectileAttack(SNOW_PEA, 600, {type:"single"}, null)])
+						]
 					]
 	),
 	new TowerType("Starfruit", 25, false, false,
@@ -25,10 +31,16 @@ var defaultTowerTypes = [
 							"Shoots slightly faster and farther",
 							"images/shootingstar.svg", 70, 70,
 							[new ProjectileAttack(FAR_STAR, 1000, {type:"radial", number:5}, -Math.PI/2)]),
-						new TowerUpgrade("Superstar", 540, 160,
-							"Doubles the number of stars shot",
-							"images/superstar.svg", 70, 70,
-							[new ProjectileAttack(FAR_STAR, 1000, {type:"radial", number:10}, -Math.PI/2)])
+						[
+							new TowerUpgrade("Superstar", 540, 160,
+								"Doubles the number of stars shot",
+								"images/superstar.svg", 70, 70,
+								[new ProjectileAttack(FAR_STAR, 1000, {type:"radial", number:10}, -Math.PI/2)]),
+							new TowerUpgrade("Gravistar", 490, 180,
+								"Shoots a giant single homing star",
+								"images/superstar.svg", 70, 70,
+								[new ProjectileAttack(HOMING_STAR, 2000, {type:"single"}, -Math.PI/2)])
+						]
 					]
 	),
 	new TowerType("Iceshroom", 30, false, false,
@@ -41,10 +53,16 @@ var defaultTowerTypes = [
 							"Leaves enemies slow after thawing",
 							"images/deepfreeze.svg", 80, 70,
 							[new PulseAttack(DEEP_FREEZE_PULSE, 3000, 2*Math.PI, null)]),
-						new TowerUpgrade("Icicle Spikes", 300, 120,
-							"Shoots ice shards that freeze and damage enemies",
-							"images/iciclespikes.svg", 80, 70,
-							[new PulseAttack(DEEP_FREEZE_PULSE, 2500, 2*Math.PI, null), new ProjectileAttack(ICICLE, 5000, {type:"radial", number:6}, Math.PI/2)])
+						[
+							new TowerUpgrade("Icicle Spikes", 300, 120,
+								"Shoots ice shards that freeze and damage enemies",
+								"images/iciclespikes.svg", 80, 70,
+								[new PulseAttack(DEEP_FREEZE_PULSE, 2500, 2*Math.PI, null), new ProjectileAttack(ICICLE, 5000, {type:"radial", number:6}, Math.PI/2)]),
+							new TowerUpgrade("Climate Change", 240, 180,
+								"The range increses greatly",
+								"images/deepfreeze.svg", 80, 70,
+								[new PulseAttack(FAR_FREEZE_PULSE, 3000, 2*Math.PI, null)]),
+						]
 					]
 	),
 	new TowerType("Cattail", 25, true, true,
@@ -57,10 +75,16 @@ var defaultTowerTypes = [
 							"Shoots faster and sharper spikes",
 							"images/sharpshooter.svg", 70, 70,
 							[new ProjectileAttack(SHARP_SPIKE, 1000, {type:"single"}, null)]),
-						new TowerUpgrade("Mechameow", 400, 150,
-							"A mechanized tail rapidly shoots spikes",
-							"images/mechameow.svg", 70, 70,
-							[new ProjectileAttack(SHARP_SPIKE, 333, {type:"single"}, null)])
+						[
+							new TowerUpgrade("Mechameow", 400, 150,
+								"A mechanized tail rapidly shoots spikes",
+								"images/mechameow.svg", 70, 70,
+								[new ProjectileAttack(SHARP_SPIKE, 333, {type:"single"}, null)]),
+							new TowerUpgrade("Spike Bombs", 500, 150,
+								"Shoots spike balls that explode into multiple spikes",
+								"images/mechameow.svg", 70, 70,
+								[new ProjectileAttack(SPIKE_BALL, 1000, {type:"single"}, null)])
+						]
 					]
 	),
 	new TowerType("Cabbage-pult", 30, true, false,
@@ -69,14 +93,20 @@ var defaultTowerTypes = [
 							"Shoots cabbages that explode on contact",
 							"images/cabbagepult.svg", 70, 80,
 							[new ProjectileAttack(CABBAGE, 1500, {type:"single"}, null)]),
-						new TowerUpgrade("Leaf Tornado", 200, 200,
-							"Leaves erupt from the cabbage, slightly flustering foes",
+						new TowerUpgrade("Thiccness+", 180, 200,
+							"Cabbage explosions are slightly bigger",
 							"images/leaftornado.svg", 70, 80,
-							[new ProjectileAttack(LEAFY_CABBAGE, 1500, {type:"single"}, null)]),
-						new TowerUpgrade("Melon-pult", 500, 200,
-							"Shoots melons (for some reason) that do double damage and big explosions",
-							"images/melonpult.svg", 70, 92,
-							[new ProjectileAttack(MELON, 1750, {type:"single"}, null)])
+							[new ProjectileAttack(THICC_CABBAGE, 1500, {type:"single"}, null)]),
+						[
+							new TowerUpgrade("Leaf Tornado", 420, 200,
+								"Leaves erupt from the cabbage, slightly flustering foes",
+								"images/leaftornado.svg", 70, 80,
+								[new ProjectileAttack(LEAFY_CABBAGE, 1500, {type:"single"}, null)]),
+							new TowerUpgrade("Melon-pult", 560, 200,
+								"Shoots melons (for some reason) that do double damage and big explosions",
+								"images/melonpult.svg", 70, 92,
+								[new ProjectileAttack(MELON, 1750, {type:"single"}, null)])
+						]
 					]
 	)
 ];
