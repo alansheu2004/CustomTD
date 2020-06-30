@@ -56,7 +56,7 @@ function MouseHandler(state) {
 		e.preventDefault();
 		var mouse = thisState.setMouse(thisHandler.touchToMouseEvent(e, 'mousedown'));
 		if (thisHandler.startDraggingTower(mouse)) {
-			return;
+			//return;
 		} else if (thisHandler.startPressingButton(mouse)) {
 			return;
 		} else if (thisHandler.startPressingTower(thisState.selectionCoors)) {
