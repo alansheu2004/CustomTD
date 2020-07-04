@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>CustomTD - Play</title>
+		
+		{% include "snippets/head.html" %}
+		<link rel="stylesheet" type="text/css" href="stylesheets/play.css">
+	</head>
+	
+	<body>
+		{% include "snippets/header.html" %}
+
+		<div id="canvasDiv">
+			<canvas id="backgroundCanvas" width="640" height="360"></canvas>
+			<canvas id="enemyCanvas" width="640" height="360"></canvas>
+			<canvas id="attackCanvas" width="640" height="360"></canvas>
+			<canvas id="towerCanvas" width="640" height="360"></canvas>
+			<canvas id="panelCanvas" width="640" height="360"></canvas>
+			<canvas id="labelCanvas" width="640" height="360"></canvas>
+			<canvas id="dragCanvas" width="640" height="360"></canvas>
+			<canvas id="splashCanvas" width="640" height="360"></canvas>
+		</div>
+	</body>
+	
+	{% for filename in scripts %}
+		{% if filename %}
+			<script type="text/javascript" src="{{ filename }}"></script>
+		{% endif %}
+	{% endfor %}
+</html>
