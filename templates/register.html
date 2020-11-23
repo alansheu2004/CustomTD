@@ -2,7 +2,7 @@
 
 <html>
     <head>
-        <title>CustomTD - Login</title>
+        <title>CustomTD - Register</title>
         
         {% include "snippets/head.html" %}
         <link rel="stylesheet" type="text/css" href="stylesheets/form.css">
@@ -12,7 +12,7 @@
         {% include "snippets/header.html" %}
         <article>
             <form action="{{ url_for('index') }}" method="post">
-                <h1>Login</h1>
+                <h1>Register</h1>
 
                 <div class="inputGroup">
                     <label>Username:</label>
@@ -22,12 +22,18 @@
                 <div class="inputGroup">
                     <label>Password:</label>
                     <input type="password" name="password" maxlength="20">
+                    <input type="password" name="password" maxlength="20" placeholder="Repeat...">
                 </div>
 
-                <a href="{{ url_for('register') }}">Don't have an account?</a>
+                <div class="inputGroup">
+                    <label>Email:</label>
+                    <input type="text" name="email">
+                </div>
+
+                <a href="{{ url_for('login') }}">Already have an account?</a>
                 
                 <input type="hidden" name="login" value="login">
-                <input type="submit" value="Log In">
+                <input type="submit" value="Register">
             </form>
         </article>
         {% include "snippets/footer.html" %}

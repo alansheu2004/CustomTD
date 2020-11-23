@@ -5,9 +5,20 @@
         <title>CustomTD - Home</title>
         
         {% include "snippets/head.html" %}
+        <link rel="stylesheet" type="text/css" href="stylesheets/index.css">
     </head>
     
     <body>
         {% include "snippets/header.html" %}
+
+        <article>
+            <div class="highlightBox">
+                <p>Welcome to CustomTD, where you can create your own Tower Defense Games and play others'! Currently, you can do neither of these, but why not try out a test game? {{ email }}</p>
+
+                <a href="{{ url_for('play') }}">Play!</a>
+            </div>
+        </article>
+
+        {% include "snippets/footer.html" %}
     </body>
 </html>

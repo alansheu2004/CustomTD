@@ -9,6 +9,10 @@ form h1 {
     margin-bottom: 5vh;
 }
 
+form a {
+    font-size: 3vh;
+}
+
 form div.inputGroup {
     margin: auto;
     margin-bottom: 5vh;
@@ -44,12 +48,15 @@ form input[type="submit"] {
     font-size: 4vh;
     padding: 1vh 2vw;
     color: white;
-    margin-top: 2vh;
+    margin: auto;
+    margin-top: 4vh;
+    display: block;
 }
 
 form input[type="submit"]:hover {
     background-color: var(--highlight-background-color);
     transition: 0.25s;
+    cursor: pointer;
 }
 
 form input[type="submit"]:active {

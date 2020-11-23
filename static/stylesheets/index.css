@@ -1,0 +1,21 @@
+div.highlightBox {
+    background-color: var(--highlight-background-color);
+    padding: 5vh 5vw;
+    text-align: center;
+}
+
+div.highlightBox p {
+    font-size: 3vh;
+    color: var(--highlight-text-color);
+    margin-bottom: 5vh;
+}
+
+div.highlightBox a {
+    margin: auto;
+    text-align: center;
+    font-size: 4vh;
+    color: var(--highlight-text-color);
+    background-color: var(--highlight-content-color);
+    padding: 1vh 2vw;
+    text-decoration: none;
+}
