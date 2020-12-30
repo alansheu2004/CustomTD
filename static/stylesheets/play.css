@@ -1,6 +1,6 @@
 div#canvasDiv {
     display: block;
-    height: 80%;
+    height: 80vh;
     width: calc(80vh * 16 / 9);
     margin: 5vh auto;
     position: relative;

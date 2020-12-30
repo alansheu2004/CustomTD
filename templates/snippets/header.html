@@ -4,7 +4,8 @@
     {% if session['username'] %}
         <span class="navSpan">Logged in as {{ session['username'] }}!</span>
         <span class="spaceFiller"></span>
-        <a class="navLink">Profile</a>
+        <a class="navLink">Profile</a>  
+        <a class="navLink">Log out</a>
     {% else %}
         <span class="navSpan">You're not logged in!</span>
         <span class="spaceFiller"></span>

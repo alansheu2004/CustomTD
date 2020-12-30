@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, session
-from flask_sqlalchemy import SQLAlchemy
 import os
 import sys
 from requests import get
@@ -19,7 +18,7 @@ def index():
 
 @app.route('/login')
 def login():
-    return render_template('login.html', email=User.query.all()[0].email)
+    return render_template('login.html')
 
 @app.route('/register')
 def register():
