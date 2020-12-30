@@ -1,0 +1,65 @@
+form {
+    text-align: center;
+}
+
+form h1 {
+    text-align: center;
+    font-size: 8vh;
+    color: var(--highlight-content-color);
+    margin-bottom: 5vh;
+}
+
+form a {
+    font-size: 3vh;
+}
+
+form div.inputGroup {
+    margin: auto;
+    margin-bottom: 5vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+form label {
+    font-size: 4vh;
+    color: var(--text-color);
+    flex: 0 0 0;
+    vertical-align: middle;
+}
+
+form input[type="text"], form input[type="password"] {
+    padding: 1vh 1vw;
+    font-size: 4vh;
+    margin-left: 1vw;
+    border: 2px solid var(--text-color);
+    transition: 0.25s;
+    width: 0;
+    flex: 1 1 0;
+}
+
+form input[type="text"]:focus, form input[type="password"]:focus {
+    border-color: var(--highlight-background-color);
+}
+
+form input[type="submit"] {
+    border: none;
+    background-color: var(--highlight-content-color);
+    font-size: 4vh;
+    padding: 1vh 2vw;
+    color: white;
+    margin: auto;
+    margin-top: 4vh;
+    display: block;
+}
+
+form input[type="submit"]:hover {
+    background-color: var(--highlight-background-color);
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+form input[type="submit"]:active {
+    background-color: var(--highlight-content-color);
+    transition: 0.25s;
+}

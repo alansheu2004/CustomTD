@@ -1,59 +1,24 @@
 <!DOCTYPE html>
 
 <html>
-	<head>
-		<title>Tower Defense Project</title>
-		<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+    <head>
+        <title>CustomTD - Home</title>
+        
+        {% include "snippets/head.html" %}
+        <link rel="stylesheet" type="text/css" href="stylesheets/index.css">
+    </head>
+    
+    <body>
+        {% include "snippets/header.html" %}
 
-		{% include "snippets/favicons.html" %}
-	</head>
-	
-	<body>
-		<div id="canvasDiv">
-			<canvas id="backgroundCanvas" width="640" height="360"></canvas>
-			<canvas id="enemyCanvas" width="640" height="360"></canvas>
-			<canvas id="attackCanvas" width="640" height="360"></canvas>
-			<canvas id="towerCanvas" width="640" height="360"></canvas>
-			<canvas id="panelCanvas" width="640" height="360"></canvas>
-			<canvas id="labelCanvas" width="640" height="360"></canvas>
-			<canvas id="dragCanvas" width="640" height="360"></canvas>
-			<canvas id="splashCanvas" width="640" height="360"></canvas>
-		</div>
+        <article>
+            <div class="highlightBox">
+                <p>Welcome to CustomTD, where you can create your own Tower Defense Games and play others'! Currently, you can do neither of these, but why not try out a test game? {{ email }}</p>
 
-		<!-- <h3>Peashooter</h3>
-		<p>Repeater shoots peas twice as fast</p>
-		<p>Threepeater shoots 3 bullet peas with greater pierce and speed</p>
+                <a href="{{ url_for('play') }}">Play!</a>
+            </div>
+        </article>
 
-		<h3>Starfruit</h3>
-		<p>Shooting Star shoots stars slightly more quickly and farther</p>
-		<p>Superstar shoots 10 stars instead of 5</p>
-
-		<h3>Iceshroom</h3>
-		<p>Deep Freeze leaves bloons slowed after thawing</p>
-		<p>Sends out 6 ice shards that damage and freeze for 3 seconds</p>
-
-		<h3>Cattail</h3>
-		<p>Sharpshooter gives spikes one more pierce</p>
-		<p>Mechameow lets it shoot rapidly</p>
-
-		<h3>Cabbage-pult</h3>
-		<p>Leaf Tornado sends out leaves that very temporarily slows bloons</p>
-		<p>Melon-pult makes the cabbage for some reason shoot melons that take off 2 layers</p> -->
-		
-		<!--<u><h2 style="margin-top: 1vh;">Send Some Enemies!</h2></u>
-		<div style="margin-top: 1vh;">
-			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, RED))" style="background-color: red;"></button>
-			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, BLUE))" style="background-color: skyblue;"></button>
-			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, GREEN))" style="background-color: limegreen;"></button>
-			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, YELLOW))" style="background-color: yellow;"></button>
-			<button class="enemy" onclick="currentState.addEnemy(new Enemy(currentState, PINK))" style="background-color: pink;"></button>
-		</div>-->
-		
-	</body>
-	
-	{% for filename in scripts %}
-		{% if filename %}
-			<script type="text/javascript" src="{{ filename }}"></script>
-		{% endif %}
-	{% endfor %}
+        {% include "snippets/footer.html" %}
+    </body>
 </html>
