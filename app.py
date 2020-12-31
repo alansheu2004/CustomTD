@@ -11,6 +11,7 @@ app.secret_key = os.urandom(16)
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
+    return "Yay"
     if request.method == 'POST':
         if request.form['login'] == 'login':
             session['username'] = request.form['username']
