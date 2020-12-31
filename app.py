@@ -37,7 +37,9 @@ def register():
 
 @app.route('/editor')
 def editor():
-    return render_template('editor.html')
+    scripts = ['mousehandler', 'buttons', 'constants', 'polygon', 'path', 'map', 'enemies', 'enemywaves', 'effects', 'pulse', 'projectile', 'towers', 'mapscreen', 'panel', 'canvas']
+    scripts = [os.path.join('scripts/', filename + ".js") for filename in scripts]
+    return render_template('editor.html', scripts=scripts)
 
 @app.route('/play')
 def play():

@@ -1,10 +1,3 @@
-#editorHeader {
-    padding: 10px 2vw;
-    background-color: var(--highlight-content-color);
-    display: flex;
-    flex-direction: row;
-}
-
 input[type="text"] {
     background: none;
     border: none;
@@ -31,12 +24,14 @@ button {
 
 button:hover {
     cursor: pointer;
-    filter: brightness(1.25);
 }
 
-button:active {
-    filter: none;
-    transition: 0;
+#editorHeader {
+    padding: 10px 2vw;
+    background-color: var(--highlight-content-color);
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
 }
 
 #editorTitle {
@@ -45,6 +40,7 @@ button:active {
     border-color: transparent;
     transition: 0.25s;
     min-width: 0;
+    padding: 0;
 }
 
 #editorTitle:hover {
@@ -54,7 +50,6 @@ button:active {
 
 #editorTitle:focus {
     border-color: transparent;
-    transition: 0.25s;
 }
 
 #editorHeader button {
@@ -63,7 +58,15 @@ button:active {
     color: white;
     border: none;
     flex: 0 0 auto;
-    margin-left: 1.5vw;
+    margin-left: 1vw;
+}
+
+#editorHeader button:hover {
+    filter: brightness(1.25);
+}
+
+#editorHeader button:active {
+    filter: none;
 }
 
 button#save {
@@ -72,4 +75,37 @@ button#save {
 
 button#publish {
     background-color: orange;
+}
+
+#tabBar {
+    height: calc(14pt + 20px + 5px);
+}
+
+#tabBar input[type="radio"] {
+    display: none;
+}
+
+#tabBar label {
+    display: inline-block;
+    background-color: var(--highlight-content-color);
+    color: var(--highlight-text-color);
+    font-size: 14pt;
+    padding: 10px 1vw;
+    margin-right: 3px;
+    transition: 0.25s;
+    line-height: 1;
+}
+
+#tabBar label:hover {
+    cursor: pointer;
+}
+
+#tabBar input:checked + label {
+    background-color: var(--highlight-background-color);
+    padding-bottom: 17px;
+}
+
+#tabContent {
+    background-color: var(--highlight-background-color);
+    height: 100vh;
 }
