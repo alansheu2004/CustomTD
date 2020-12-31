@@ -77,6 +77,11 @@ button#publish {
     background-color: orange;
 }
 
+div#canvasDiv {
+    width: 80%;
+    height: calc((100vw - 2 * var(--article-padding)) * 0.8 * 9 / 16);
+}   
+
 #tabBar {
     height: calc(14pt + 20px + 5px);
 }

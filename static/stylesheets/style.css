@@ -29,6 +29,8 @@
 	--highlight-background-color: #00cc33;
 	--highlight-content-color: #009933;
 	--highlight-text-color: white;
+
+	--article-padding: 15vw;
 }
 
 html, body {
@@ -43,7 +45,7 @@ body {
 }
 
 article {
-	padding: 5vh 15vw;
+	padding: 5vh var(--article-padding);
 	flex: 1 0 auto;
 }
 
