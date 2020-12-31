@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>CustomTD - Editor</title>
+        
+        {% include "snippets/head.html" %}
+        <link rel="stylesheet" type="text/css" href="stylesheets/editor.css">
+    </head>
+    
+    <body>
+        {% include "snippets/header.html" %}
+        <article>
+            <h1>Editor</h1>
+
+            <div id="editorHeader">
+                <input type="text" id="editorTitle" name="title" placeholder="Untitled Game">
+                <button id="save">Save</button>
+                <button id="publish">Publish</button>
+            </div>
+        </article>
+        {% include "snippets/footer.html" %}
+    </body>
+</html>

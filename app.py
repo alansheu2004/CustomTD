@@ -35,6 +35,10 @@ def register():
     else:
         return redirect(url_for('index'))
 
+@app.route('/editor')
+def editor():
+    return render_template('editor.html')
+
 @app.route('/play')
 def play():
     scripts = ['mousehandler', 'buttons', 'constants', 'polygon', 'path', 'map', 'enemies', 'enemywaves', 'effects', 'pulse', 'projectile', 'towers', 'mapscreen', 'panel', 'canvas']

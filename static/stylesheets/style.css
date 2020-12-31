@@ -56,3 +56,10 @@ article a:hover {
 	color: var(--highlight-background-color);
 	transition: 0.25s;
 }
+
+h1 {
+    text-align: center;
+    font-size: 30pt;
+    color: var(--highlight-content-color);
+    margin-bottom: 3vh;
+}

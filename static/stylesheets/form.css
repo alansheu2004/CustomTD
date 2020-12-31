@@ -4,15 +4,8 @@ form {
     margin: auto;
 }
 
-form h1 {
-    text-align: center;
-    font-size: 8vh;
-    color: var(--highlight-content-color);
-    margin-bottom: 5vh;
-}
-
 form a {
-    font-size: 3vh;
+    font-size: 12pt;
 }
 
 form div.inputGroup {
@@ -24,7 +17,7 @@ form div.inputGroup {
 }
 
 form label {
-    font-size: 3vh;
+    font-size: 14pt;
     color: var(--text-color);
     flex: 0 0 0;
     vertical-align: middle;
@@ -32,11 +25,11 @@ form label {
 
 form input[type="text"], form input[type="password"] {
     padding: 0 1vw;
-    font-size: 3vh;
+    font-size: 14pt;
     margin-left: 1vw;
     border: none;
     border-bottom: 2px solid var(--text-color);
-    transition: 0.1s;
+    transition: 0.25s;
     width: 0;
     flex: 1 1 0;
 }
@@ -48,7 +41,7 @@ form input[type="text"]:focus, form input[type="password"]:focus {
 form input[type="submit"] {
     border: none;
     background-color: var(--highlight-content-color);
-    font-size: 3vh;
+    font-size: 14pt;
     padding: 1vh 2vw;
     color: white;
     margin: auto;
