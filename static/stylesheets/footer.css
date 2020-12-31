@@ -1,0 +1,36 @@
+footer {
+    background-color: var(--highlight-content-color);
+    width: 100%;
+    text-align: center;
+    padding: 3vh 0;
+    flex: 0 0 auto;
+}
+
+div#coolButtons {
+    /*padding-top: 15vh;*/
+}
+
+div#coolButtons a {
+    display: inline-block;
+    width: 6vh;
+    height: 6vh;
+    margin: 0 0.5vw;
+    filter: opacity(0.75);
+}
+
+div#coolButtons a:hover {
+    filter: opacity(1);
+}
+
+div#coolButtons a img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+footer p, footer a {
+    font-size: 2vh;
+    color: var(--highlight-text-color);;
+    margin: 1vh 0;
+}

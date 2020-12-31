@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>CustomTD - Login</title>
+        
+        {% include "snippets/head.html" %}
+        <link rel="stylesheet" type="text/css" href="stylesheets/form.css">
+    </head>
+    
+    <body>
+        {% include "snippets/header.html" %}
+        <article>
+            <form action="{{ url_for('index') }}" method="post">
+                <h1>Login</h1>
+
+                <div class="inputGroup">
+                    <label>Username:</label>
+                    <input type="text" name="username" maxlength="20">
+                </div>
+                
+                <div class="inputGroup">
+                    <label>Password:</label>
+                    <input type="password" name="password" maxlength="20">
+                </div>
+
+                <a href="{{ url_for('register') }}">Don't have an account?</a>
+                
+                <input type="hidden" name="login" value="login">
+                <input type="submit" value="Log In">
+            </form>
+        </article>
+        {% include "snippets/footer.html" %}
+    </body>
+</html>
