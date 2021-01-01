@@ -1,3 +1,24 @@
+//Show Boundaries
+var showBoundariesInput = document.getElementById("showBoundaries");
+var showBoundariesLabel = document.querySelector("label[for=showBoundaries]");
+function setUpShowBoundariesInput() {
+    showBoundariesInput.checked = currentState.mapscreen.showBoundaries;
+    if(showBoundariesInput.checked) {
+        showBoundariesLabel.textContent = "Hide Boundaries";
+    } else {
+        showBoundariesLabel.textContent = "Show Boundaries";
+    }
+    showBoundariesInput.addEventListener("change", function() {
+        currentState.mapscreen.showBoundaries = showBoundariesInput.checked;
+        if(showBoundariesInput.checked) {
+            showBoundariesLabel.textContent = "Hide Boundaries";
+        } else {
+            showBoundariesLabel.textContent = "Show Boundaries";
+        }
+        currentState.labelCanvas.valid = false;
+    });
+}
+
 //Font Select
 var fontSelect = document.getElementById("font");
 for (let option of fontSelect.children) {
@@ -92,5 +113,33 @@ function setUpBackgroundMusicInput() {
         currentState.playBackgroundMusic();
         backgroundMusicLabel.textContent = "Add...";
         removeBackgroundMusicButton.style.display = "none";
+    });
+}
+
+//Background Image
+var backgroundImageInput = document.getElementById("backgroundImage");
+var currentBackgroundImage = document.getElementById("currentBackgroundImage");
+function setUpBackgroundImageInput() {
+    if(currentState.game.backgroundMusic) {
+        currentBackgroundImage.src = currentState.game.map.background.src;
+    }
+
+    backgroundImageInput.addEventListener("change", function() {
+        var url = (window.URL ? URL : webkitURL).createObjectURL(backgroundImageInput.files[0]);
+        currentState.game.map.background.src = url;
+        currentBackgroundImage.src = url;
+        currentState.backgroundCanvas.valid = false;
+    });
+}
+
+//Spinners
+var pathWidthSpinner = document.getElementById("pathWidth");
+
+function setUpSpinners() {
+    pathWidthSpinner.value = currentState.map.path.width;
+    pathWidthSpinner.addEventListener("input", function() {
+        currentState.map.path.width = pathWidthSpinner.value;
+        currentState.map.path.setBoundary();
+        currentState.labelCanvas.valid = false;
     });
 }

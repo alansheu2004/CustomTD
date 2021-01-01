@@ -2,7 +2,8 @@
 				path,
 				obstacles,
 				waters) {
-	this.background = background;
+	this.background = new Image();
+	this.background.src = background;
 	this.path = path;
 	this.obstacles = obstacles;
 	this.waters = waters;

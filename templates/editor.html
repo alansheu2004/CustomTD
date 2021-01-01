@@ -11,115 +11,150 @@
     
     <body>
         {% include "snippets/header.html" %}
-        <article>
-            <h1>Game Editor</h1>
 
-            <div id="editorHeader">
-                <input type="text" id="editorTitle" name="title" placeholder="Untitled Game">
-                <button id="save">Save</button>
-                <button id="publish">Publish</button>
+        <div id="editorHeader">
+            <h2>Game Editor</h2>
+            <input type="text" id="editorTitle" name="title" placeholder="Untitled Game">
+            <button id="save">Save</button>
+            <button id="publish">Publish</button>
+        </div>
+
+        <div id="editor">
+            <div id="leftDiv">
+                <div id="canvasDiv">
+                    <canvas id="backgroundCanvas" width="640" height="360"></canvas>
+                    <canvas id="enemyCanvas" width="640" height="360"></canvas>
+                    <canvas id="attackCanvas" width="640" height="360"></canvas>
+                    <canvas id="towerCanvas" width="640" height="360"></canvas>
+                    <canvas id="panelCanvas" width="640" height="360"></canvas>
+                    <canvas id="labelCanvas" width="640" height="360"></canvas>
+                    <canvas id="dragCanvas" width="640" height="360"></canvas>
+                    <canvas id="splashCanvas" width="640" height="360"></canvas>
+                </div>
+    
+                <input type="checkbox" name="showBoundaries" id="showBoundaries"><label for="showBoundaries">Show Boundaries</label>
             </div>
 
-            <div id="canvasDiv">
-                <canvas id="backgroundCanvas" width="640" height="360"></canvas>
-                <canvas id="enemyCanvas" width="640" height="360"></canvas>
-                <canvas id="attackCanvas" width="640" height="360"></canvas>
-                <canvas id="towerCanvas" width="640" height="360"></canvas>
-                <canvas id="panelCanvas" width="640" height="360"></canvas>
-                <canvas id="labelCanvas" width="640" height="360"></canvas>
-                <canvas id="dragCanvas" width="640" height="360"></canvas>
-                <canvas id="splashCanvas" width="640" height="360"></canvas>
-            </div>
-
-            <div id="tabBar">
-                <input type="radio" class="tab" name="tab" value="general" id="generalTab" checked><label for="generalTab">General</label>
-                <input type="radio" class="tab" name="tab" value="map" id="mapTab"><label for="mapTab">Map</label>
-                <input type="radio" class="tab" name="tab" value="attacks" id="attacksTab"><label for="attacksTab">Attacks</label>
-                <input type="radio" class="tab" name="tab" value="towers" id="towersTab"><label for="towersTab">Towers</label>
-                <input type="radio" class="tab" name="tab" value="enemies" id="enemiesTab"><label for="enemiesTab">Enemies</label>
-                <input type="radio" class="tab" name="tab" value="rounds" id="roundsTab"><label for="roundsTab">Rounds</label>
-            </div>
-
-            <div id="general" class="tabContent">
-                <section>
-                    <h2>Theme</h2>
-                    <div class="group">
-                        <div>
-                            <label>Font: </label>
-                            <select name="font" id="font">
-                                <option value="Oeztype">Oeztype</option>
-                                <option value="Arial">Arial</option>
-                                <option value="Consolas">Consolas</option>
-                                <option value="Montserrat">Montserrat</option>
-                            </select>
+            <div id="rightDiv">
+                <div id="tabBar">
+                    <input type="radio" class="tab" name="tab" value="theme" id="themeTab" checked><label for="themeTab">Theme</label>
+                    <input type="radio" class="tab" name="tab" value="map" id="mapTab"><label for="mapTab">Map</label>
+                    <input type="radio" class="tab" name="tab" value="attacks" id="attacksTab"><label for="attacksTab">Attacks</label>
+                    <input type="radio" class="tab" name="tab" value="towers" id="towersTab"><label for="towersTab">Towers</label>
+                    <input type="radio" class="tab" name="tab" value="enemies" id="enemiesTab"><label for="enemiesTab">Enemies</label>
+                    <input type="radio" class="tab" name="tab" value="rounds" id="roundsTab"><label for="roundsTab">Rounds</label>
+                </div>
+    
+                <div id="theme" class="tabContent">
+                    <section>
+                        <h2>Appearance</h2>
+                        <div class="group">
+                            <div>
+                                <label>Font: </label>
+                                <select name="font" id="font">
+                                    <option value="Oeztype">Oeztype</option>
+                                    <option value="Arial">Arial</option>
+                                    <option value="Consolas">Consolas</option>
+                                    <option value="Montserrat">Montserrat</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-
-                    <div>
-                        <label>Panel Base Color: </label>
-                        <label for="panelBaseColor"><input type="color" id="panelBaseColor"></label>
-                    </div>
-                    <div>
-                        <label>Panel Box Color: </label>
-                        <label for="panelBoxColor"><input type="color" id="panelBoxColor"></label>
-                    </div>
-                    <div>
-                        <label>Panel Text Color: </label>
-                        <label for="panelTextColor"><input type="color" id="panelTextColor"></label>
-                    </div>
-
-                    <div class="group">
+    
                         <div>
-                            <label>Panel Tower Option Color: </label>
-                            <label for="panelTowerOptionColor"><input type="color" id="panelTowerOptionColor"></label>
+                            <label>Panel Base Color: </label>
+                            <label for="panelBaseColor"><input type="color" id="panelBaseColor"></label>
                         </div>
                         <div>
-                            <label>Panel Tower Option Outline Color: </label>
-                            <label for="panelTowerOptionOutlineColor"><input type="color" id="panelTowerOptionOutlineColor"></label>
-                        </div>
-                    </div>
-
-                    <div class="group">
-                        <div>
-                            <label>Panel Button Color: </label>
-                            <label for="panelButtonColor"><input type="color" id="panelButtonColor"></label>
+                            <label>Panel Box Color: </label>
+                            <label for="panelBoxColor"><input type="color" id="panelBoxColor"></label>
                         </div>
                         <div>
-                            <label>Panel Button Text Color: </label>
-                            <label for="panelButtonTextColor"><input type="color" id="panelButtonTextColor"></label>
+                            <label>Panel Text Color: </label>
+                            <label for="panelTextColor"><input type="color" id="panelTextColor"></label>
                         </div>
-                    </div>
-                </section>
-                <section>
-                    <h2>Sounds</h2>
-                    <div>
-                        <label>Background Music: </label>
-                        <label for="backgroundMusic">Add...</label><input type="file" id="backgroundMusic" accept="audio/*">
-                        <button id="removeBackgroundMusic" style="display: none">Remove</button>
-                    </div>
-                </section>
+    
+                        <div class="group">
+                            <div>
+                                <label>Panel Tower Option Color: </label>
+                                <label for="panelTowerOptionColor"><input type="color" id="panelTowerOptionColor"></label>
+                            </div>
+                            <div>
+                                <label>Panel Tower Option Outline Color: </label>
+                                <label for="panelTowerOptionOutlineColor"><input type="color" id="panelTowerOptionOutlineColor"></label>
+                            </div>
+                        </div>
+    
+                        <div class="group">
+                            <div>
+                                <label>Panel Button Color: </label>
+                                <label for="panelButtonColor"><input type="color" id="panelButtonColor"></label>
+                            </div>
+                            <div>
+                                <label>Panel Button Text Color: </label>
+                                <label for="panelButtonTextColor"><input type="color" id="panelButtonTextColor"></label>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Sounds</h2>
+                        <div>
+                            <label>Background Music: </label>
+                            <label for="backgroundMusic" class="file">Add...</label><input type="file" id="backgroundMusic" accept="audio/*">
+                            <button id="removeBackgroundMusic" class="file" style="display: none">Remove</button><br />
+                        </div>
+                    </section>
+                </div>
+    
+                <div id="map" class="tabContent">
+                    <section>
+                        <h2>Background</h2>
+                        <div>
+                            <img id="currentBackgroundImage" /><br />
+                            <label for="backgroundImage" class="file">Change...</label><input type="file" id="backgroundImage" accept="image/*">
+                            <span>Image will be stretched to fill 4:3 area</span>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Geometry</h2>
+                        <h5>(Currently does nothing)</h5>
+                        <div class="group">
+                            <div>
+                                <label>Path:</label> <button id="editPath">Edit...</button>
+                            </div>
+                            <div>
+                                <label>Path Width:</label> <input type="number" id="pathWidth" min="0" max="50" step="1">
+                            </div>
+                        </div>
+    
+                        <div class="group">
+                            <div>
+                                <label>Obstacles:</label> <button id="editObstacles">Edit...</button>
+                            </div>
+                            <div>
+                                <label>Water:</label> <button id="editWater">Edit...</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+    
+                <div id="attacks" class="tabContent">
+                    <p>attacks</p>
+                </div>
+    
+                <div id="towers" class="tabContent">
+                    <p>towers</p>
+                </div>
+    
+                <div id="enemies" class="tabContent">
+                    <p>enemies</p>
+                </div>
+    
+                <div id="rounds" class="tabContent">
+                    <p>rounds</p>
+                </div>
             </div>
+        </div>
 
-            <div id="map" class="tabContent">
-                <p>map</p>
-            </div>
-
-            <div id="attacks" class="tabContent">
-                <p>attacks</p>
-            </div>
-
-            <div id="towers" class="tabContent">
-                <p>towers</p>
-            </div>
-
-            <div id="enemies" class="tabContent">
-                <p>enemies</p>
-            </div>
-
-            <div id="rounds" class="tabContent">
-                <p>rounds</p>
-            </div>
-        </article>
         {% include "snippets/footer.html" %}
 
         <script type="text/javascript" src="scripts/editor/inputs.js"></script>

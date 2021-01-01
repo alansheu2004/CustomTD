@@ -36,7 +36,15 @@ button:hover {
     background-color: var(--highlight-content-color);
     display: flex;
     flex-direction: row;
-    margin-bottom: 10px;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#editorHeader h2 {
+    margin: 0;
+    margin-right: 20px;
+    color: white;
+    font-size: 20pt;
 }
 
 #editorTitle {
@@ -82,13 +90,53 @@ button#publish {
     background-color: orange;
 }
 
+#editor {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#leftDiv {
+    text-align: center;
+    flex: 1 1 0;
+}
+
+#rightDiv {
+    flex: 1 1 0;
+}
+
 div#canvasDiv {
-    width: 70%;
-    height: calc((100vw - 2 * var(--article-padding)) * 0.7 * 9 / 16);
+    width: 90%;
+    height: calc(50vw * 0.9 * 9 / 16);
+}
+
+input#showBoundaries {
+    display: none;
+}
+
+input#showBoundaries + label {
+    display: inline-block;
+    margin-bottom: 10px;
+    background-color: var(--highlight-background-color);
+    color: var(--highlight-text-color);
+    font-size: 12pt;
+    padding: 4px 6px;
+}
+
+input#showBoundaries + label:hover {
+    cursor: pointer;
+}
+
+input#showBoundaries:checked + label {
+    background-color: var(--highlight-content-color);
 }
 
 #tabBar {
-    height: calc(14pt + 20px + 5px);
+    display: flex;
+    justify-content: center;
+    flex-wrap: no-wrap;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 #tabBar input[type="radio"] {
@@ -101,7 +149,7 @@ div#canvasDiv {
     color: var(--highlight-text-color);
     font-size: 14pt;
     padding: 10px 1vw;
-    margin-right: 3px;
+    margin-right: 5px;
     transition: 0.25s;
     line-height: 1;
 }
@@ -112,7 +160,6 @@ div#canvasDiv {
 
 #tabBar input:checked + label {
     background-color: var(--highlight-background-color);
-    padding-bottom: 17px;
 }
 
 .tabContent {
@@ -121,6 +168,8 @@ div#canvasDiv {
     color: var(--highlight-text-color);
     padding: 2vw;
     font-size: 14pt;
+    height: 80vh;
+    overflow-y: auto;
 }
 
 .tabContent.selected {
@@ -146,13 +195,18 @@ select {
 .tabContent button {
     background-color: var(--highlight-content-color);
     border: none;
+    display: inline-block;
+    color: var(--highlight-text-color);
+    font-size: 12pt;
+    padding: 2px 6px;
+    vertical-align: middle;
 }
 
-input#backgroundMusic {
+input[type="file"] {
     display: none;
 }
 
-label[for="backgroundMusic"], button#removeBackgroundMusic {
+label.file, button.file {
     display: inline-block;
     background-color: var(--highlight-content-color);
     color: var(--highlight-text-color);
@@ -161,7 +215,7 @@ label[for="backgroundMusic"], button#removeBackgroundMusic {
     vertical-align: middle;
 }
 
-label[for="backgroundMusic"]:hover, button#removeBackgroundMusic:hover {
+label.file:hover, button.file {
     cursor: pointer;
 }
 
@@ -197,4 +251,18 @@ label[for$="Color"]:hover {
 
 div:hover > label[for$="Color"] {
     background-size: 75% 75%;
+}
+
+#currentBackgroundImage {
+    max-width: 50%;
+}
+
+input[type="number"] {
+    background-color: var(--highlight-content-color);
+    color: var(--highlight-text-color);
+    border: none;
+    font-size: 12pt;
+    padding: 2px 2px;
+    width: 3em;
+    text-align: left;
 }

@@ -2,7 +2,8 @@ function MapScreen(state, map) {
     this.state = state;
     this.game = state.game;
 
-    var thisMapScreen = this;
+	var thisMapScreen = this;
+	this.showBoundaries = false;
 
     var healthImage = new Image();
 	healthImage.src = "images/heart.png";
@@ -53,14 +54,12 @@ MapScreen.prototype.draw = function() {
 	this.drawBackground();
 	this.drawEnemies();
     this.drawTowers();
-    this.drawLabels();
+	this.drawLabels();
 }
 
 //Draws the background of the game
 MapScreen.prototype.drawBackground = function() {
-	 background = new Image();
-	background.src = this.state.map.background;
-	this.state.backgroundContext.drawImage(background, MAP_X, MAP_Y, MAP_WIDTH, MAP_HEIGHT);
+	this.state.backgroundContext.drawImage(this.state.map.background, MAP_X, MAP_Y, MAP_WIDTH, MAP_HEIGHT);
 }
 
 MapScreen.prototype.drawBoundaries = function() {
@@ -136,5 +135,9 @@ MapScreen.prototype.drawLabels = function() {
     this.state.labelContext.strokeText(this.state.health, MAP_RESOURCE_TEXT_OFFSET_X, MAP_HEALTH_CENTER_Y);
     this.state.labelContext.fillText(this.state.health, MAP_RESOURCE_TEXT_OFFSET_X, MAP_HEALTH_CENTER_Y);
     this.state.labelContext.strokeText(this.state.money, MAP_RESOURCE_TEXT_OFFSET_X, MAP_MONEY_CENTER_Y);
-    this.state.labelContext.fillText(this.state.money, MAP_RESOURCE_TEXT_OFFSET_X, MAP_MONEY_CENTER_Y);
+	this.state.labelContext.fillText(this.state.money, MAP_RESOURCE_TEXT_OFFSET_X, MAP_MONEY_CENTER_Y);
+	
+	if(this.showBoundaries) {
+		this.drawBoundaries();
+	}
 }

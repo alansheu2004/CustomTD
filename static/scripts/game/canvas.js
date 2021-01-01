@@ -37,9 +37,12 @@ function init() {
 	currentState = new GameState(document.getElementById("canvasDiv"), DEFAULT_GAME);
 
 	if(editing) {
+		setUpShowBoundariesInput()
 		setUpFontSelect();
 		setUpColorInputs();
 		setUpBackgroundMusicInput();
+		setUpBackgroundImageInput();
+		setUpSpinners();
 	}
 }
 
@@ -293,6 +296,7 @@ GameState.prototype.updateEnemyPositions = function() {
 			this.enemies[i].updateDist();
 			if (this.enemies[i].dist > this.map.path.totalLength) {
 				this.health = Math.max(this.health - this.enemies[i].type.damage, 0);
+				this.labelCanvas.valid = false;
 				if (this.health<=0) {
 					this.gameOver = true;
 				}

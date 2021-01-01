@@ -5,7 +5,7 @@ function Path(points, width) {
 	this.totalLength = 0;
 
 	this.width = width;
-	this.boundary = this.getBoundary();
+	this.setBoundary();
 
 	this.setStepProperties();
 }
@@ -66,7 +66,7 @@ function drawCriticalPoints(context, color, radius) {
 	}
 }
 
-Path.prototype.getBoundary = function(context, color, lineWidth, fillOpacity) {
+Path.prototype.setBoundary = function() {
     var poly = new Polygon([]);
 
     var angles = [];
@@ -135,7 +135,7 @@ Path.prototype.getBoundary = function(context, color, lineWidth, fillOpacity) {
     	);
     }
 
-    return poly;
+    this.boundary = poly;
 }
 
 Path.prototype.drawBoundary = function(context, color, lineWidth, fillOpacity) {
