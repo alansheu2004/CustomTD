@@ -106,12 +106,12 @@ Panel.prototype.drawDescriptionBox = function() {
 }
 
 Panel.prototype.drawSellButton = function() {
-	this.state.panelContext.fillStyle = this.game.sellButtonColor;
+	this.state.panelContext.fillStyle = this.game.panelButtonColor;
 	this.state.panelContext.fillRect(SELL_BUTTON_MID_X - SELL_BUTTON_WIDTH/2, SELL_BUTTON_Y, SELL_BUTTON_WIDTH, SELL_BUTTON_HEIGHT);
 
 	this.state.panelContext.textAlign = "center";
 	this.state.panelContext.textBaseline = "middle";
-	this.state.panelContext.fillStyle = this.game.sellButtonTextColor;
+	this.state.panelContext.fillStyle = this.game.panelButtonTextColor;
 	
 	this.state.setFontFit(this.state.panelContext, "Sell-$" + Math.ceil(this.state.focusedTower.baseSellPrice*this.state.game.sellMultiplier), SELL_BUTTON_FONT_SIZE, SELL_BUTTON_INNER_WIDTH);
 	this.state.panelContext.fillText("Sell-$" + Math.ceil(this.state.focusedTower.baseSellPrice*this.state.game.sellMultiplier), SELL_BUTTON_MID_X, SELL_BUTTON_Y + SELL_BUTTON_HEIGHT/2);
@@ -218,7 +218,7 @@ Panel.prototype.drawUpgrades = function() {
 
 Panel.prototype.drawUpgrade = function(upgrade, offset) {
 	//Info button
-	this.state.panelContext.fillStyle = this.game.sellButtonColor;
+	this.state.panelContext.fillStyle = this.game.panelButtonColor;
 	this.state.panelContext.beginPath();
 	this.state.panelContext.arc(UPGRADE_INFO_BUTTON_MID_X, UPGRADE_INFO_BUTTON_MID_Y+offset, UPGRADE_INFO_BUTTON_R, 0, 2*Math.PI);
 	this.state.panelContext.fill();
@@ -227,7 +227,7 @@ Panel.prototype.drawUpgrade = function(upgrade, offset) {
 	this.state.panelContext.font = "normal " + UPGRADE_INFO_BUTTON_FONT_SIZE + "px " + this.game.font;
 	this.state.panelContext.textAlign = "center";
 	this.state.panelContext.textBaseline = "middle";
-	this.state.panelContext.fillStyle = this.game.sellButtonTextColor;
+	this.state.panelContext.fillStyle = this.game.panelButtonTextColor;
 	this.state.panelContext.fillText("i", UPGRADE_INFO_BUTTON_MID_X, UPGRADE_INFO_BUTTON_MID_Y+offset);
 
 	//Can't afford
@@ -315,12 +315,12 @@ Panel.prototype.drawTowerBox = function() {
 	
 	for (var i=0; i<this.state.towerTypes.length; i++) {
 		this.state.panelContext.filter = "none";
-		this.state.panelContext.fillStyle = this.game.panelTowerOptionBoxFillColor;
+		this.state.panelContext.fillStyle = this.game.panelTowerOptionColor;
 		var towerCoors = this.getTowerOptionCoors(i);
 		this.state.panelContext.fillRect(towerCoors.x+PANEL_TOWER_OPTION_PADDING, towerCoors.y+PANEL_TOWER_OPTION_PADDING, PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING), PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING));
 
 		if((this.state.draggingTower || this.state.hoveringTowerOption) && this.state.selection==this.state.towerTypes[i] && this.state.money>=this.state.selection.upgrades[0].cost) {
-			this.state.panelContext.strokeStyle = this.game.panelTowerOptionBoxHoverOutlineColor;
+			this.state.panelContext.strokeStyle = this.game.panelTowerOptionOutlineColor;
 			this.state.panelContext.lineWidth = PANEL_TOWER_OPTION_SIZE/15;
 			this.state.panelContext.strokeRect(towerCoors.x+PANEL_TOWER_OPTION_PADDING, towerCoors.y+PANEL_TOWER_OPTION_PADDING, PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING), PANEL_TOWER_OPTION_SIZE-(2*PANEL_TOWER_OPTION_PADDING));
 		}
@@ -338,7 +338,7 @@ Panel.prototype.drawTowerBox = function() {
 
 //Draws the scrollbar in the tower box
 Panel.prototype.drawScrollBar = function() {
-	this.state.panelContext.fillStyle = this.game.panelTowerOptionScrollBarColor;
+	this.state.panelContext.fillStyle = this.game.panelBaseColor;
 	this.state.panelContext.fillRect(PANEL_TOWER_OPTION_SCROLL_BAR_X, PANEL_TOWER_OPTION_SCROLL_BAR_Y, PANEL_TOWER_OPTION_SCROLL_BAR_WIDTH, PANEL_TOWER_OPTION_SCROLL_BAR_HEIGHT);
 }
 
@@ -354,14 +354,14 @@ Panel.prototype.drawPlayButton = function() {
 	if(this.state.buttonPressed && this.state.selection == this.playButton) {
 		this.state.panelContext.fillStyle = "#664321"; //This should probably be changed
 	} else {
-		this.state.panelContext.fillStyle = this.game.panelButtonFillColor;
+		this.state.panelContext.fillStyle = this.game.panelButtonColor;
 	}
 
 	this.state.panelContext.beginPath();
 	this.state.panelContext.arc(PLAY_BUTTON_X, PLAY_BUTTON_Y, PLAY_BUTTON_R, 0, 2*Math.PI);
 	this.state.panelContext.fill();
 
-	this.state.panelContext.fillStyle = this.game.panelButtonSymbolColor;
+	this.state.panelContext.fillStyle = this.game.panelButtonTextColor;
 	this.state.panelContext.beginPath();
 	this.state.panelContext.moveTo(PLAY_BUTTON_X - PLAY_BUTTON_R/4, PLAY_BUTTON_Y - PLAY_BUTTON_R/2);
 	this.state.panelContext.lineTo(PLAY_BUTTON_X - PLAY_BUTTON_R/4, PLAY_BUTTON_Y + PLAY_BUTTON_R/2);
@@ -376,14 +376,14 @@ Panel.prototype.drawFullscreenButton = function() {
 	if(this.state.buttonPressed && this.state.selection == this.fullscreenButton) {
 		this.state.panelContext.fillStyle = "#664321"; //This should probably be changed
 	} else {
-		this.state.panelContext.fillStyle = this.game.panelButtonFillColor;
+		this.state.panelContext.fillStyle = this.game.panelButtonColor;
 	}
 
 	this.state.panelContext.beginPath();
 	this.state.panelContext.arc(FULLSCREEN_BUTTON_X, FULLSCREEN_BUTTON_Y, FULLSCREEN_BUTTON_R, 0, 2*Math.PI);
 	this.state.panelContext.fill();
 
-	this.state.panelContext.strokeStyle = this.game.panelButtonSymbolColor;
+	this.state.panelContext.strokeStyle = this.game.panelButtonTextColor;
 	this.state.panelContext.lineWidth = FULLSCREEN_BUTTON_R / 6;
 
 	var nfss = 8;

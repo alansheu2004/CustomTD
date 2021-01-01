@@ -1,4 +1,4 @@
-var currentState = null; //The current state (should be used for testing primarily)
+var currentState = null;
 
 //This function is called when starting a new game
 function init() {
@@ -25,18 +25,19 @@ function init() {
 		"panelBaseColor" : "#996633",
 		"panelBoxColor": "#d3a06e",
 		"panelTextColor" : "#ffd630",
-		"panelTowerOptionBoxFillColor" : "#f4cea8",
-		"panelTowerOptionBoxHoverOutlineColor" : "#996633",
-		"panelTowerOptionScrollBarColor" : "#664321",
-		"panelButtonFillColor" : "#804c1b",
-		"panelButtonSymbolColor" : "#ffd630",
-
-		"sellButtonColor": "#992200",
-		"sellButtonTextColor": "#ffd630",
+		"panelTowerOptionColor" : "#f4cea8",
+		"panelTowerOptionOutlineColor" : "#996633",
+		"panelButtonColor": "#992200",
+		"panelButtonTextColor": "#ffd630",
 		"sellMultiplier": 0.75
 	}
 
 	currentState = new GameState(document.getElementById("canvasDiv"), DEFAULT_GAME);
+
+	if(editing) {
+		setUpFontSelect();
+		setUpColorInputs();
+	}
 }
 
 //Defines the Canvas, game, and all its properties
@@ -520,12 +521,4 @@ GameState.prototype.toggleFullscreen = function() {
 	}
 }
 
-window.onload = function() {
-	init();
-	try {		
-		
-	} catch (e) {
-		alert("There's an error in the code:\n\n" + e.message + "\n\nPlease notify me1234q@gmail.com about this and wait approximately a month for a reply because that's how often he checks his email.")
-		console.trace();
-	}
-}
+window.onload = init;

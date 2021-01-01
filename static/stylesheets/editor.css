@@ -1,3 +1,8 @@
+@font-face {
+	font-family: Oeztype;
+	src: url(../fonts/oeztype.ttf);
+}
+
 input[type="text"] {
     background: none;
     border: none;
@@ -78,9 +83,9 @@ button#publish {
 }
 
 div#canvasDiv {
-    width: 80%;
-    height: calc((100vw - 2 * var(--article-padding)) * 0.8 * 9 / 16);
-}   
+    width: 70%;
+    height: calc((100vw - 2 * var(--article-padding)) * 0.7 * 9 / 16);
+}
 
 #tabBar {
     height: calc(14pt + 20px + 5px);
@@ -115,9 +120,87 @@ div#canvasDiv {
     background-color: var(--highlight-background-color);
     color: var(--highlight-text-color);
     padding: 2vw;
-    font-size: 12pt;
+    font-size: 14pt;
 }
 
 .tabContent.selected {
     display: block;
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+div.group {
+    margin-bottom: 10px;
+}
+
+select {
+    background-color: var(--highlight-content-color);
+    border: none;
+    font-size: 10pt;
+    color: var(--highlight-text-color);
+    padding: 2px 4px;
+}
+
+.tabContent button {
+    background-color: var(--highlight-content-color);
+    border: none;
+}
+
+button#playBackgroundMusic {
+    vertical-align: middle;
+    height: 25px;
+    width: 25px;
+    background-image: url("../images/editor/play.png");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: 40% 50%;
+}
+
+input#backgroundMusic {
+    display: none;
+}
+
+label[for="backgroundMusic"] {
+    display: inline-block;
+    background-color: var(--highlight-content-color);
+    color: var(--highlight-text-color);
+    font-size: 12pt;
+    padding: 4px 6px;
+    vertical-align: middle;
+}
+
+label[for="backgroundMusic"]:hover {
+    cursor: pointer;
+}
+
+input[type="color"] {
+    height: 15px;
+    width: 15px;
+    visibility: hidden;
+}
+
+label[for$="Color"] {
+    vertical-align: middle;
+    display: inline-block;
+    margin-left: 3px;
+    font-size: 0;
+    border: 1px solid var(--highlight-text-color);
+    background-image: url("../images/editor/edit.png");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: 0 0;
+}
+
+label[for$="Color"].inverted {
+    background-image: url("../images/editor/editInverted.png");
+}
+
+label[for$="Color"]:hover {
+    cursor: pointer;
+}
+
+div:hover > label[for$="Color"] {
+    background-size: 75% 75%;
 }

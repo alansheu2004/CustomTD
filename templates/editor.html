@@ -41,7 +41,60 @@
             </div>
 
             <div id="general" class="tabContent">
-                <p>general</p>
+                <section>
+                    <h2>Theme</h2>
+                    <div class="group">
+                        <div>
+                            <label>Font: </label>
+                            <select name="font" id="font">
+                                <option value="Oeztype">Oeztype</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Consolas">Consolas</option>
+                                <option value="Montserrat">Montserrat</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Background Music: </label>
+                            <button id="playBackgroundMusic"></button>
+                            <label for="backgroundMusic">Change...<input type="file" id="backgroundMusic"></label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Panel Base Color: </label>
+                        <label for="panelBaseColor"><input type="color" id="panelBaseColor"></label>
+                    </div>
+                    <div>
+                        <label>Panel Box Color: </label>
+                        <label for="panelBoxColor"><input type="color" id="panelBoxColor"></label>
+                    </div>
+                    <div>
+                        <label>Panel Text Color: </label>
+                        <label for="panelTextColor"><input type="color" id="panelTextColor"></label>
+                    </div>
+
+                    <div class="group">
+                        <div>
+                            <label>Panel Tower Option Color: </label>
+                            <label for="panelTowerOptionColor"><input type="color" id="panelTowerOptionColor"></label>
+                        </div>
+                        <div>
+                            <label>Panel Tower Option Outline Color: </label>
+                            <label for="panelTowerOptionOutlineColor"><input type="color" id="panelTowerOptionOutlineColor"></label>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div>
+                            <label>Panel Button Color: </label>
+                            <label for="panelButtonColor"><input type="color" id="panelButtonColor"></label>
+                        </div>
+                        <div>
+                            <label>Panel Button Text Color: </label>
+                            <label for="panelButtonTextColor"><input type="color" id="panelButtonTextColor"></label>
+                        </div>
+                    </div>
+                </section>
             </div>
 
             <div id="map" class="tabContent">
@@ -66,11 +119,12 @@
         </article>
         {% include "snippets/footer.html" %}
 
+        <script type="text/javascript" src="scripts/editor/inputs.js"></script>
+        <script type="text/javascript" src="scripts/editor/tabs.js"></script>
         {% for filename in scripts %}
             {% if filename %}
                 <script type="text/javascript" src="{{ filename }}"></script>
             {% endif %}
         {% endfor %}
-        <script type="text/javascript" src="scripts/tabs.js"></script>
     </body>
 </html>
