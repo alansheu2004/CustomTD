@@ -9,6 +9,9 @@ app.debug = True
 
 app.secret_key = os.urandom(16)
 
+scripts = ['mousehandler', 'buttons', 'constants', 'polygon', 'path', 'map', 'enemies', 'enemywaves', 'effects', 'pulse', 'projectile', 'towers', 'mapscreen', 'panel', 'canvas']
+scripts = [os.path.join('scripts/game/', filename + ".js") for filename in scripts]
+
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
@@ -37,14 +40,10 @@ def register():
 
 @app.route('/editor')
 def editor():
-    scripts = ['mousehandler', 'buttons', 'constants', 'polygon', 'path', 'map', 'enemies', 'enemywaves', 'effects', 'pulse', 'projectile', 'towers', 'mapscreen', 'panel', 'canvas']
-    scripts = [os.path.join('scripts/', filename + ".js") for filename in scripts]
     return render_template('editor.html', scripts=scripts)
 
 @app.route('/play')
 def play():
-    scripts = ['mousehandler', 'buttons', 'constants', 'polygon', 'path', 'map', 'enemies', 'enemywaves', 'effects', 'pulse', 'projectile', 'towers', 'mapscreen', 'panel', 'canvas']
-    scripts = [os.path.join('scripts/', filename + ".js") for filename in scripts]
     return render_template('play.html', scripts=scripts)
 
 if __name__ == "__main__":

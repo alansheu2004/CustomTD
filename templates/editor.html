@@ -34,14 +34,34 @@
             <div id="tabBar">
                 <input type="radio" class="tab" name="tab" value="general" id="generalTab" checked><label for="generalTab">General</label>
                 <input type="radio" class="tab" name="tab" value="map" id="mapTab"><label for="mapTab">Map</label>
-                <input type="radio" class="tab" name="tab" value="attack" id="attackTab"><label for="attackTab">Attacks</label>
-                <input type="radio" class="tab" name="tab" value="tower" id="towerTab"><label for="towerTab">Towers</label>
-                <input type="radio" class="tab" name="tab" value="enemy" id="enemyTab"><label for="enemyTab">Enemies</label>
-                <input type="radio" class="tab" name="tab" value="round" id="roundTab"><label for="roundTab">Rounds</label>
+                <input type="radio" class="tab" name="tab" value="attacks" id="attacksTab"><label for="attacksTab">Attacks</label>
+                <input type="radio" class="tab" name="tab" value="towers" id="towersTab"><label for="towersTab">Towers</label>
+                <input type="radio" class="tab" name="tab" value="enemies" id="enemiesTab"><label for="enemiesTab">Enemies</label>
+                <input type="radio" class="tab" name="tab" value="rounds" id="roundsTab"><label for="roundsTab">Rounds</label>
             </div>
 
-            <div id="tabContent">
+            <div id="general" class="tabContent">
+                <p>general</p>
+            </div>
 
+            <div id="map" class="tabContent">
+                <p>map</p>
+            </div>
+
+            <div id="attacks" class="tabContent">
+                <p>attacks</p>
+            </div>
+
+            <div id="towers" class="tabContent">
+                <p>towers</p>
+            </div>
+
+            <div id="enemies" class="tabContent">
+                <p>enemies</p>
+            </div>
+
+            <div id="rounds" class="tabContent">
+                <p>rounds</p>
             </div>
         </article>
         {% include "snippets/footer.html" %}
@@ -51,5 +71,6 @@
                 <script type="text/javascript" src="{{ filename }}"></script>
             {% endif %}
         {% endfor %}
+        <script type="text/javascript" src="scripts/tabs.js"></script>
     </body>
 </html>

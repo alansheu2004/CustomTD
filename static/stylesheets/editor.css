@@ -110,7 +110,14 @@ div#canvasDiv {
     padding-bottom: 17px;
 }
 
-#tabContent {
+.tabContent {
+    display: none;
     background-color: var(--highlight-background-color);
-    height: 100vh;
+    color: var(--highlight-text-color);
+    padding: 2vw;
+    font-size: 12pt;
+}
+
+.tabContent.selected {
+    display: block;
 }
