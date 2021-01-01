@@ -53,11 +53,6 @@
                                 <option value="Montserrat">Montserrat</option>
                             </select>
                         </div>
-                        <div>
-                            <label>Background Music: </label>
-                            <button id="playBackgroundMusic"></button>
-                            <label for="backgroundMusic">Change...<input type="file" id="backgroundMusic"></label>
-                        </div>
                     </div>
 
                     <div>
@@ -93,6 +88,14 @@
                             <label>Panel Button Text Color: </label>
                             <label for="panelButtonTextColor"><input type="color" id="panelButtonTextColor"></label>
                         </div>
+                    </div>
+                </section>
+                <section>
+                    <h2>Sounds</h2>
+                    <div>
+                        <label>Background Music: </label>
+                        <label for="backgroundMusic">Add...</label><input type="file" id="backgroundMusic" accept="audio/*">
+                        <button id="removeBackgroundMusic" style="display: none">Remove</button>
                     </div>
                 </section>
             </div>

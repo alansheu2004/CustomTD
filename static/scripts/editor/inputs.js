@@ -65,3 +65,32 @@ function setUpColorInputs() {
         });
     }
 }
+
+//Background Music
+var backgroundMusicInput = document.getElementById("backgroundMusic");
+var backgroundMusicLabel = document.querySelector("label[for=backgroundMusic]");
+var removeBackgroundMusicButton = document.getElementById("removeBackgroundMusic");
+function setUpBackgroundMusicInput() {
+    if(currentState.game.backgroundMusic) {
+        backgroundMusicLabel.textContent = "Change...";
+        removeBackgroundMusicButton.style.display = "initial";
+    } else {
+        backgroundMusicLabel.textContent = "Add...";
+        removeBackgroundMusicButton.style.display = "none";
+    }
+
+    backgroundMusicInput.addEventListener("change", function() {
+        currentState.pauseBackgroundMusic();
+        currentState.game.backgroundMusic = (window.URL ? URL : webkitURL).createObjectURL(backgroundMusicInput.files[0]);
+        currentState.playBackgroundMusic();
+        backgroundMusicLabel.textContent = "Change...";
+        removeBackgroundMusicButton.style.display = "initial";
+    });
+    removeBackgroundMusicButton.addEventListener("click", function() {
+        currentState.pauseBackgroundMusic();
+        currentState.game.backgroundMusic = null;
+        currentState.playBackgroundMusic();
+        backgroundMusicLabel.textContent = "Add...";
+        removeBackgroundMusicButton.style.display = "none";
+    });
+}

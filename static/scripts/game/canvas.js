@@ -4,6 +4,7 @@ var currentState = null;
 function init() {
 	if(currentState != null) {
 		currentState.nextRound = null;
+		currentState.backgroundMusic.pause();
 	}
 
 	var DEFAULT_GAME = {
@@ -14,6 +15,7 @@ function init() {
 		"towerTypes" : defaultTowerTypes,
 		"enemyWaves" : defaultWaves,
 		"font" : "Oeztype",
+		"backgroundMusic" : "sounds/grasswalk.mp3",
 
 		"gameOverBackgroundColor" : "rgb(211, 160, 110)",
 		"gameOverTextColor" : "#996633",
@@ -37,6 +39,7 @@ function init() {
 	if(editing) {
 		setUpFontSelect();
 		setUpColorInputs();
+		setUpBackgroundMusicInput();
 	}
 }
 
@@ -131,6 +134,7 @@ function GameState(canvasDiv, game) {
 	this.panel = new Panel(this);
 
 	this.font = game.font;
+	this.backgroundMusic = document.createElement("audio");
 	
 	this.backgroundImage = game.backgroundImage;
 	this.health = game.health;
@@ -160,7 +164,6 @@ function GameState(canvasDiv, game) {
 	    },
 	    false, []);
 	this.addButton(this.restartButton);
-
 
 	this.interval = 40;
 	
@@ -519,6 +522,17 @@ GameState.prototype.toggleFullscreen = function() {
 	} else {
 		document.exitFullscreen().then(function() {thisState.panelCanvas.valid = false;});;
 	}
+}
+
+GameState.prototype.playBackgroundMusic = function() {
+	if(this.game.backgroundMusic) {
+		this.backgroundMusic.src = this.game.backgroundMusic;
+		this.backgroundMusic.play();
+	}
+}
+
+GameState.prototype.pauseBackgroundMusic = function() {
+	this.backgroundMusic.pause();
 }
 
 window.onload = init;
