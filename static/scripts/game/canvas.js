@@ -43,6 +43,8 @@ function init() {
 		setUpBackgroundMusicInput();
 		setUpBackgroundImageInput();
 		setUpSpinners();
+		setUpTowerTable();
+		setUpTowerInputs();
 	}
 }
 

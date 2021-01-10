@@ -45,12 +45,12 @@ article {
 	text-align: center;
 }
 
-article a {
+a {
 	color: var(--highlight-content-color);
 	transition: 0.25s;
 }
 
-article a:hover {
+a:hover {
 	color: var(--highlight-background-color);
 	transition: 0.25s;
 }

@@ -90,11 +90,11 @@ Enemy.prototype.damage = function(id, damage) {
 			this.health = this.type.health;
 			this.damage(id, damageLeft);
 		}
-	}
 	
-	this.state.labelCanvas.valid = false;
-	this.state.enemyCanvas.valid = false;
-	this.state.panelCanvas.valid = false;
+		this.state.labelCanvas.valid = false;
+		this.state.enemyCanvas.valid = false;
+		this.state.panelCanvas.valid = false;
+	}
 }
 
 Enemy.prototype.addEffect = function(newEffect, time) {

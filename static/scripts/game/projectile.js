@@ -1,56 +1,71 @@
-PEA = new ProjectileType(null, 2, 800, 300, 1,
+PEA = new ProjectileType("Pea", null, 2, 800, 300, 1,
 						false, 15, false, [], [],
 						"images/pea.png", 30, 30);
-SNOW_PEA = new ProjectileType(PEA, 2, 800, INHERIT, INHERIT,
+SNOW_PEA = new ProjectileType("Snow Pea", PEA, 2, 800, INHERIT, INHERIT,
 						true, INHERIT, INHERIT, [{"type":COLD,"time":3}], INHERIT,
 						"images/snowpea.png", 30, 30);
-BULLET_PEA = new ProjectileType(PEA, 3, 1000, 500, INHERIT,
+BULLET_PEA = new ProjectileType("Bullet Pea", PEA, 3, 1000, 500, INHERIT,
 						INHERIT, 10, INHERIT, INHERIT, INHERIT,
 						INHERIT, 20, 20);
-STAR = new ProjectileType(null, Infinity, 800, 140, 1,
+STAR = new ProjectileType("Star", null, Infinity, 800, 140, 1,
 						false, 20, false, [], [],
 						"images/star.png", 40, 40);
-FAR_STAR = new ProjectileType(STAR, INHERIT, 800, 180,  INHERIT,
+FAR_STAR = new ProjectileType("Far Star", STAR, INHERIT, 800, 180,  INHERIT,
 						INHERIT, INHERIT, INHERIT, INHERIT, INHERIT,
 						INHERIT, INHERIT, INHERIT);
-HOMING_STAR = new ProjectileType(STAR, 8, 400, Infinity,  INHERIT,
+HOMING_STAR = new ProjectileType("Homing Star", STAR, 8, 400, Infinity,  INHERIT,
 						true, 30, 1000, INHERIT, INHERIT,
 						INHERIT, 60, 60);
-SPIKE = new ProjectileType(null, 2, 400, Infinity, 1,
+SPIKE = new ProjectileType("Spike", null, 2, 400, Infinity, 1,
 						true, 10, 360, [], [],
 						"images/spike.png", 15, 30);
-SHARP_SPIKE = new ProjectileType(SPIKE, 4, 500, INHERIT, INHERIT,
+SHARP_SPIKE = new ProjectileType("Sharp Spike", SPIKE, 4, 500, INHERIT, INHERIT,
 						INHERIT, INHERIT, 450, INHERIT, INHERIT,
 						INHERIT, INHERIT, INHERIT);
-SPIKE_BALL = new ProjectileType(null, 1, 300, Infinity, 1,
+SPIKE_BALL = new ProjectileType("Spike Ball", null, 1, 300, Infinity, 1,
 						true, 20, null, [], [new ProjectileAttack(SPIKE, null, {type:"radial", number:6})],
 						"images/spikeball.png", 40, 40);
-ICICLE = new ProjectileType(null, Infinity, 900, 120, 1,
+ICICLE = new ProjectileType("Icicle", null, Infinity, 900, 120, 1,
 						true, 15, false, [{"type":FREEZE,"time":3}], [],
 						"images/icicle.svg", 25, 50);
-CABBAGE = new ProjectileType(null, 1, 600, Infinity, 0,
+CABBAGE = new ProjectileType("Cabbage", null, 1, 600, Infinity, 0,
 						true, 20, false, [], [new PulseAttack(CABBAGE_EXPLOSION, null, 2*Math.PI, null)],
 						"images/cabbage.png", 40, 40);
-THICC_CABBAGE = new ProjectileType(null, 1, 600, Infinity, 0,
+THICC_CABBAGE = new ProjectileType("Thicc Cabbage", null, 1, 600, Infinity, 0,
 						true, 25, false, [], [new PulseAttack(THICC_CABBAGE_EXPLOSION, null, 2*Math.PI, null)],
 						"images/cabbage.png", 50, 50);
-LEAF = new ProjectileType(null, Infinity, 400, 120, 0,
+LEAF = new ProjectileType("Leaf", null, Infinity, 400, 120, 0,
 						true, 10, false, [{"type": FLUSTERED, "time":3}], [],
 						"images/leaf.png", 20, 20);
-LEAFY_CABBAGE = new ProjectileType(THICC_CABBAGE, INHERIT, 500, INHERIT, INHERIT,
+LEAFY_CABBAGE = new ProjectileType("Leafy Cabbage", THICC_CABBAGE, INHERIT, 500, INHERIT, INHERIT,
 						INHERIT, 25, INHERIT, INHERIT, [new PulseAttack(THICC_CABBAGE_EXPLOSION, null, 2*Math.PI, null), new ProjectileAttack(LEAF, 750, {type:"radial", number:12}, -Math.PI/2)],
 						INHERIT, 50, 50);
-MELON = new ProjectileType(THICC_CABBAGE, INHERIT, 400, INHERIT, INHERIT,
+MELON = new ProjectileType("Melon", THICC_CABBAGE, INHERIT, 400, INHERIT, INHERIT,
 						INHERIT, 30, INHERIT, INHERIT, [new PulseAttack(MELON_EXPLOSION, null, 2*Math.PI, null)],
 						"images/melon.png", 60, 60);
+
+const projectiles = [
+	PEA,
+	SNOW_PEA,
+	STAR,
+	HOMING_STAR, 
+	SPIKE,
+	SPIKE_BALL,
+	ICICLE,
+	CABBAGE,
+	LEAF,
+	LEAFY_CABBAGE,
+	MELON
+]
 
 function mod(m,n) {
 	return ((m%n)+n)%n;
 }
 
-function ProjectileType(base, pierce, speed, maxRange, damage,
+function ProjectileType(name, base, pierce, speed, maxRange, damage,
 						rotating, radius, homing, effects, attacks,
 						image, imgwidth, imgheight) {
+	this.name = name;
 	this.pierce = pierce;
 	this.speed = speed; //px per seconds
 	this.maxRange = maxRange;

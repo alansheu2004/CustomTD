@@ -162,11 +162,15 @@ input#showBoundaries:checked + label {
     background-color: var(--highlight-background-color);
 }
 
+#tabContentWrapper {
+    padding: 2vw;
+    background-color: var(--highlight-background-color);
+}
+
 .tabContent {
     display: none;
     background-color: var(--highlight-background-color);
     color: var(--highlight-text-color);
-    padding: 2vw;
     font-size: 14pt;
     height: 80vh;
     overflow-y: auto;
@@ -257,12 +261,69 @@ div:hover > label[for$="Color"] {
     max-width: 50%;
 }
 
-input[type="number"] {
+input[type="number"], input[type="text"] {
     background-color: var(--highlight-content-color);
     color: var(--highlight-text-color);
     border: none;
     font-size: 12pt;
     padding: 2px 2px;
-    width: 3em;
     text-align: left;
+}
+
+input[type="number"] {
+    width: 3em;
+}
+
+input[type="text"] {
+    width: 10em;
+}
+
+table {
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+}
+
+thead, tr {
+    background-color: var(--highlight-content-color);
+    margin-bottom: 2px;
+    border: none;
+    border-bottom: 3px solid var(--highlight-background-color);
+}
+
+td {
+    height: 50px;
+}
+
+th, td {
+    border: none;
+    padding: 2px;
+    text-align: center;
+    padding: 10px;
+}
+
+td img {
+    max-height: 30px;
+    max-width: 30px;
+    margin: 0 15px;
+}
+
+.tabContent td button, .tabContent td input {
+    background-color: var(--highlight-background-color);
+}
+
+a {
+	color: var(--highlight-text-color);
+	transition: 0.25s;
+}
+
+a:hover {
+    color: var(--highlight-text-color);
+    text-decoration: underline;
+    cursor: pointer;
+	transition: 0.25s;
+}
+
+.templates {
+    display: none;
 }
