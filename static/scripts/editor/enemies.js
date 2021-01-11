@@ -30,18 +30,37 @@ var enemySpeedInput = document.getElementById("enemySpeed");
 var enemyRewardInput = document.getElementById("enemyReward");
 var enemyDamageInput = document.getElementById("enemyDamage");
 
+var enemyChildSelect = document.getElementById("enemyChild");
+
 var currentEnemy = null;
 function editEnemy(enemy) {
     currentEnemy = enemy;
     currentEnemyImage.src = enemy.image.src;
     enemyWidthInput.value = enemy.imgwidth;
     enemyHeightInput.value = enemy.imgheight;
+
     enemyNameInput.value = enemy.name;
     enemySizeInput.value = enemy.size;
     enemyHealthInput.value = enemy.health;
     enemySpeedInput.value = enemy.speed;
     enemyRewardInput.value = enemy.reward;
     enemyDamageInput.value = enemy.damage;
+
+    while(enemyChildSelect.options.length > 1) {
+        enemyChildSelect.options.remove(1);
+    }
+    enemyChildSelect.options[0].enemy = null;
+    for(let enemyType of currentState.game.enemyTypes) {
+        if(enemyType != enemy) {
+            let option = document.createElement("option");
+            option.text = enemyType.name;
+            option.enemy = enemyType;
+            if(enemy.child == enemyType) {
+                option.selected = true;
+            }
+            enemyChildSelect.add(option);
+        }
+    }
 
     mainEnemyScreen.style.display = "none";
     editEnemyScreen.style.display = "initial";
@@ -112,5 +131,9 @@ function setUpEnemyInputs() {
     enemyDamageInput.addEventListener("input", function() {
         currentEnemy.damage = enemyDamageInput.value;
         currentState.panelCanvas.valid = false;
+    });
+
+    enemyChildSelect.addEventListener("change", function() {
+        currentEnemy.child = enemyChildSelect.options[enemyChildSelect.selectedIndex].enemy;
     });
 }
