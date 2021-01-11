@@ -3,6 +3,12 @@ var towerTable = document.getElementById("towerTable");
 var towerTableTemplate = document.getElementById("towerTableTemplate");
 var backtoTowerScreen = document.getElementById("backToTowerScreen");
 function setUpTowerTable() {
+    fillTowerRows();
+    backtoTowerScreen.addEventListener("click", exitTower);
+}
+
+function fillTowerRows() {
+    towerTable.textContent = "";
     for(let tower of currentState.game.towerTypes) {
         let row = towerTableTemplate.cloneNode(true);
         row.style.display = "table-row";
@@ -12,7 +18,6 @@ function setUpTowerTable() {
         row.children[3].children[0].addEventListener("click", function() {deleteTower(tower, row)});
         towerTable.appendChild(row);
     }
-    backtoTowerScreen.addEventListener("click", exitTower);
 }
 
 var mainTowerScreen = document.getElementById("mainTowerScreen");
@@ -159,6 +164,7 @@ function setUpTowerInputs() {
 
     towerNameInput.addEventListener("input", function() {
         currentTower.name = towerNameInput.value;
+        fillTowerRows();
         currentState.panelCanvas.valid = false;
     });
 
@@ -186,6 +192,7 @@ function setUpTowerInputs() {
         var url = (window.URL ? URL : webkitURL).createObjectURL(document.getElementById("upgradeImage0").files[0]);
         currentTower.upgrades[0].image.src = url;
         document.querySelector("#baseUpgrade .upgradeImage").src = url;
+        fillTowerRows();
         currentState.towerCanvas.valid = false;
         currentState.panelCanvas.valid = false;
     });
@@ -198,12 +205,14 @@ function setUpTowerInputs() {
 
     document.querySelector("#baseUpgrade .width").addEventListener("input", function() {
         currentTower.upgrades[0].imgwidth = document.querySelector("#baseUpgrade .width").value;
+        fillEnemyRows();
         currentState.towerCanvas.valid = false;
         currentState.panelCanvas.valid = false;
     });
 
     document.querySelector("#baseUpgrade .height").addEventListener("input", function() {
         currentTower.upgrades[0].imgheight = document.querySelector("#baseUpgrade .height").value;
+        fillEnemyRows();
         currentState.towerCanvas.valid = false;
         currentState.panelCanvas.valid = false;
     });

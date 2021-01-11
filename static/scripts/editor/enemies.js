@@ -3,6 +3,12 @@ var enemyTable = document.getElementById("enemyTable");
 var enemyTableTemplate = document.getElementById("enemyTableTemplate");
 var backtoEnemyScreen = document.getElementById("backToEnemyScreen");
 function setUpEnemyTable() {
+    fillEnemyRows();
+    backtoEnemyScreen.addEventListener("click", exitEnemy);
+}
+
+function fillEnemyRows() {
+    enemyTable.textContent = "";
     for(let enemy of currentState.game.enemyTypes) {
         let row = enemyTableTemplate.cloneNode(true);
         row.style.display = "table-row";
@@ -12,7 +18,6 @@ function setUpEnemyTable() {
         row.children[3].children[0].addEventListener("click", function() {deleteEnemy(enemy, row)});
         enemyTable.appendChild(row);
     }
-    backtoEnemyScreen.addEventListener("click", exitEnemy);
 }
 
 var mainEnemyScreen = document.getElementById("mainEnemyScreen");
@@ -90,21 +95,25 @@ function setUpEnemyInputs() {
         var url = (window.URL ? URL : webkitURL).createObjectURL(enemyImageInput.files[0]);
         currentEnemy.image.src = url;
         currentEnemyImage.src = url;
+        fillEnemyRows();
         currentState.enemyCanvas.valid = false;
     });
 
     enemyWidthInput.addEventListener("input", function() {
         currentEnemy.imgwidth = enemyWidthInput.value;
+        fillEnemyRows();
         currentState.enemyCanvas.valid = false;
     });
 
     enemyHeightInput.addEventListener("input", function() {
         currentEnemy.imgheight = enemyHeightInput.value;
+        fillEnemyRows();
         currentState.enemyCanvas.valid = false;
     });
 
     enemyNameInput.addEventListener("input", function() {
         currentEnemy.name = enemyNameInput.value;
+        fillEnemyRows();
         currentState.enemyCanvas.valid = false;
     });
 
