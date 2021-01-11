@@ -102,7 +102,7 @@ button#publish {
 }
 
 #rightDiv {
-    flex: 1 1 0;
+    flex: 0.8 1 0;
 }
 
 div#canvasDiv {
@@ -133,8 +133,8 @@ input#showBoundaries:checked + label {
 
 #tabBar {
     display: flex;
-    justify-content: center;
-    flex-wrap: no-wrap;
+    width: 100%;
+    flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
 }
@@ -152,6 +152,8 @@ input#showBoundaries:checked + label {
     margin-right: 5px;
     transition: 0.25s;
     line-height: 1;
+    flex: 1 1 0;
+    text-align: center;
 }
 
 #tabBar label:hover {
