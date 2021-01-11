@@ -172,7 +172,7 @@ input#showBoundaries:checked + label {
     background-color: var(--highlight-background-color);
     color: var(--highlight-text-color);
     font-size: 14pt;
-    height: 80vh;
+    height: 60vh;
     overflow-y: auto;
 }
 
@@ -182,6 +182,10 @@ input#showBoundaries:checked + label {
 
 section {
     margin-bottom: 20px;
+}
+
+section div {
+    margin-bottom: 2px;
 }
 
 div.group {
@@ -322,6 +326,16 @@ a:hover {
     text-decoration: underline;
     cursor: pointer;
 	transition: 0.25s;
+}
+
+textarea {
+    background-color: var(--highlight-content-color);
+    width: 50%;
+    padding: 3px;
+    color: white;
+    resize: none;
+    border: none;
+    vertical-align: text-top;
 }
 
 .templates {

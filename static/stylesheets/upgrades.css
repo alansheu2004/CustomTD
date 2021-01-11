@@ -1,0 +1,57 @@
+.upgrade {
+    display: flex;
+    flex-direction: row;
+}
+
+#upgradeTable td {
+    border-right: 3px solid var(--highlight-background-color);
+}
+
+.upgrade label {
+    font-size: 12pt;
+}
+
+.upgradeImageDiv {
+    flex: 0 0 auto;
+}
+
+.upgradeImage {
+    width: 100vw;
+    max-width: 50px;
+    max-height: 50px;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.upgradeImageDiv label {
+    background-color: var(--highlight-background-color);
+    padding: 5px;
+}
+
+.upgradeInfoDiv {
+    flex: 1 1 0;
+}
+
+.upgradeName {
+    margin-bottom: 5px;
+}
+
+.upgradeInfoDiv div {
+}
+
+.upgradeInfoDiv input[type="number"], .upgradeInfoDiv input[type="text"], .upgradeInfoDiv textArea {
+    background-color: var(--highlight-background-color);
+    color: var(--highlight-text-color);
+}
+
+.upgradeInfoDiv textArea {
+    width: 75%;
+}
+
+input[type="number"] {
+    width: 3.5em;
+}
+
+input[type="text"] {
+    width: 10em;
+}

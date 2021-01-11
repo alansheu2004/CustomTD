@@ -7,6 +7,7 @@
         {% include "snippets/head.html" %}
         <link rel="stylesheet" type="text/css" href="stylesheets/play.css">
         <link rel="stylesheet" type="text/css" href="stylesheets/editor.css">
+        <link rel="stylesheet" type="text/css" href="stylesheets/upgrades.css">
     </head>
     
     <body>
@@ -151,18 +152,17 @@
                                     <td><img /></td>
                                     <td style="width: 100%"></td>
                                     <td><button class="editTower">Edit</button></td>
-                                    <td><button class="deleteTower">X</button></td>
+                                    <td><button class="deleteTower">Delete</button></td>
                                 </tr>
                             </table>
                         </div>
                         
                         <div id="editTowerScreen" style="display: none;">
+                            <div class="group">
+                                <a id="backToTowerScreen">&lt; Back to Tower List</a>
+                            </div>
                             <section>
-                                <a id="backToTowerScreen">&lt; Back to Tower Screen</a>
                                 <h2>Edit Tower</h2>
-                            </section>
-
-                            <section>
                                 <div>
                                     <!-- <img id="currentTowerImage" /><br />
                                     <label for="towerImage" class="file">Change Image...</label><input type="file" id="towerImage" accept="image/*">
@@ -172,13 +172,59 @@
                                     <label>Name:</label> <input type="text" id="towerName" maxlength="31">
                                 </div>
                                 <div>
+                                    <label>Description:</label>
+                                    <textarea maxlength="63" rows="2" id="towerDescription"></textarea>
+                                </div>
+                                <div>
                                     <label>Footprint:</label> <input type="number" id="towerFootprint" min="1" max="50">
+                                </div>
+                                <div>
+                                    <label>Cost:</label> <input type="number" id="towerCost" min="0">
                                 </div>
                                 <div>
                                     <label>Turning:</label> <input type="checkbox" id="towerTurning">
                                 </div>
                                 <div>
                                     <label>Water-Based:</label> <input type="checkbox" id="towerWater">
+                                </div>
+                            </section>
+
+                            <section>
+                                <h2>Upgrades</h2>
+                                <table id="upgradeTable">
+                                    <tr>
+                                        <td colspan="2">
+                                            <div id="baseUpgrade" class="upgrade">
+                                                <div class="upgradeImageDiv">
+                                                    <img class="upgradeImage" />
+                                                    <label for="upgradeImage0" class="file">Change...</label><input type="file" id="upgradeImage0" accept="image/*">
+                                                </div>
+                                                <div class="upgradeInfoDiv">
+                                                    <div><label class="upgradeName">BASE UPGRADE</label></div>
+                                                    <div>
+                                                        <label>Range:</label> <input class="range" type="number" min="1" max="500">
+                                                    </div>
+                                                    <div style="display: inline-block;"><label>Width:</label> <input class="width" type="number" min="1" max="150"></div>
+                                                    <div style="display: inline-block;"><label>Height:</label> <input class="height" type="number" min="1" max="150"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <div id="upgradeTemplate" class="upgrade" style="display: none;">
+                                    <div class="upgradeImageDiv">
+                                        <img src="images/peashooter.svg" class="upgradeImage" />
+                                        <label for="upgradeImageLabel" class="file">Change...</label><input type="file" id="upgradeImageInput" accept="image/*">
+                                    </div>
+                                    <div class="upgradeInfoDiv">
+                                        <div><input class="upgradeName" type="text" placeholder="Upgrade Name"></div>
+                                        <div><textarea class="upgradeDescription" maxlength="63" placeholder="Upgrade Description"></textarea></div>
+                                        <div><label>Cost:</label> <input class="upgradeCost" type="number" min="0"></div>
+                                        <div><label>Range:</label> <input class="range" type="number" min="1" max="500"></div>
+                                        <div style="display: inline-block;"><label>Width:</label> <input class="width" type="number" min="1" max="150"></div>
+                                        <div style="display: inline-block;"><label>Height:</label> <input class="height" type="number" min="1" max="150"></div>
+                                    </div>
                                 </div>
                             </section>
                         </div>
