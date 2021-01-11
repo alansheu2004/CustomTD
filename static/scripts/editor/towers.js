@@ -54,11 +54,13 @@ function editTower(tower) {
             let td = tr.insertCell();
             tr.appendChild(td);
             td.appendChild(makeUpgradeDiv(upgrade[0], counter));
+            td.querySelector(".upgradeDescription").rows = 3;
             counter++;
 
             td = tr.insertCell();
             tr.appendChild(td);
             td.appendChild(makeUpgradeDiv(upgrade[1], counter));
+            td.querySelector(".upgradeDescription").rows = 3;
         } else {
             let tr = upgradeTable.insertRow();
             let td = tr.insertCell();

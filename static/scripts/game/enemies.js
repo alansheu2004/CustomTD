@@ -1,19 +1,22 @@
-var RED = new EnemyType(100, null, 1, 1, 22, 1,
+var RED = new EnemyType("Red", 100, null, 1, 1, 22, 1,
 	"images/red.svg", 36, 48);
-var BLUE = new EnemyType(133, RED, 2, 2, 23, 1,
+var BLUE = new EnemyType("Blue", 133, RED, 2, 2, 23, 1,
 	"images/blue.svg", 38, 51);
-var GREEN = new EnemyType(200, BLUE, 2, 3, 24, 1,
+var GREEN = new EnemyType("Green", 200, BLUE, 2, 3, 24, 1,
 	"images/green.svg", 40, 54);
-var YELLOW = new EnemyType(400, GREEN, 3, 4, 26, 1,
+var YELLOW = new EnemyType("Yellow", 400, GREEN, 3, 4, 26, 1,
 	"images/yellow.svg", 42, 57);
-var PINK = new EnemyType(500, YELLOW, 5, 5, 28, 1,
+var PINK = new EnemyType("Pink", 500, YELLOW, 5, 5, 28, 1,
 	"images/pink.svg", 44, 60);
 
-function EnemyType(speed, child, rewardMoney, damage, size, health,
+const defaultEnemyTypes = [RED, BLUE, GREEN, YELLOW, PINK]
+
+function EnemyType(name, speed, child, reward, damage, size, health,
 					image, imgwidth, imgheight) {
+	this.name = name;
 	this.speed = speed; // px per sec
 	this.child = child;
-	this.rewardMoney = rewardMoney;
+	this.reward = reward;
 	this.damage = damage; //if passed through map
 	this.size = size;
 	this.health = health;
@@ -78,7 +81,7 @@ Enemy.prototype.updatePosition = function() {
 }
 
 Enemy.prototype.damage = function(id, damage) {
-	this.state.money += this.type.rewardMoney;
+	this.state.money += this.type.reward;
 	this.health -= damage;
 
 	if(this.health <= 0) {

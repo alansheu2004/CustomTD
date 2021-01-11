@@ -13,6 +13,7 @@ function init() {
 		"money" : 500,
 		"roundlyIncome" : 200,
 		"towerTypes" : defaultTowerTypes,
+		"enemyTypes" : defaultEnemyTypes,
 		"enemyWaves" : defaultWaves,
 		"font" : "Oeztype",
 		"backgroundMusic" : "sounds/grasswalk.mp3",
@@ -45,6 +46,8 @@ function init() {
 		setUpSpinners();
 		setUpTowerTable();
 		setUpTowerInputs();
+		setUpEnemyTable();
+		setUpEnemyInputs();
 	}
 }
 
