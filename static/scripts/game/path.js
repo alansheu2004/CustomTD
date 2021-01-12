@@ -74,7 +74,7 @@ Path.prototype.setBoundary = function() {
     	angles.push(Math.atan2(this.points[i].y-this.points[i-1].y, this.points[i].x-this.points[i-1].x));
  	}
 
-    if(this.points[0].x == MAP_X || this.points[0].y == MAP_WIDTH) {
+    if(this.points[0].x == MAP_X || this.points[0].x == MAP_WIDTH) {
     	poly.addPoint(
     		this.points[0].x, 
     		this.points[0].y - (1/Math.cos(angles[0])) * this.width/2
@@ -83,7 +83,7 @@ Path.prototype.setBoundary = function() {
     		this.points[0].x, 
     		this.points[0].y + (1/Math.cos(angles[0])) * this.width/2
     	)
-    } else if(this.points[0].x == MAP_Y || this.points[0].y == MAP_HEIGHT) {
+    } else if(this.points[0].y == MAP_Y || this.points[0].y == MAP_HEIGHT) {
     	poly.addPoint(
     		this.points[0].x - (1/Math.sin(angles[0])) * this.width/2,
     		this.points[0].y 
@@ -142,16 +142,45 @@ Path.prototype.drawBoundary = function(context, color, lineWidth, fillOpacity) {
 	this.boundary.draw(context, color, lineWidth, fillOpacity);
 }
 
+// var defaultPath = new Path(
+// 	[
+//         {x : 0, y  : 360},
+// 		{x : 320, y : 360},
+// 		{x : 480, y : 90},
+// 		{x : 720,y : 180},
+// 		{x : 240, y : 540},
+// 		{x : 480, y : 630},
+// 		{x : 640, y : 360},
+// 		{x : 960, y : 360},
+// 	],
+// 	45
+// );
+
 var defaultPath = new Path(
 	[
-        {x : 0, y  : 360},
-		{x : 320, y : 360},
-		{x : 480, y : 90},
-		{x : 720,y : 180},
-		{x : 240, y : 540},
-		{x : 480, y : 630},
-		{x : 640, y : 360},
-		{x : 960, y : 360},
+        {x : 960, y  : 560},
+		{x : 488, y : 564},
+		{x : 193, y : 581},
+		{x : 135, y : 603},
+		{x : 122, y : 637},
+		{x : 195, y : 688},
+		{x : 295, y : 698},
+		{x : 425, y : 673},
+		{x : 490, y : 567},
+		{x : 568, y : 265},
+		{x : 627, y : 153},
+		{x : 734, y : 124},
+		{x : 890, y : 139},
+		{x : 929, y : 175},
+		{x : 898, y : 258},
+		{x : 823, y : 285},
+		{x : 674, y : 287},
+		{x : 226, y : 153},
+		{x : 149, y : 163},
+		{x : 73, y : 253},
+		{x : 62, y : 360},
+		{x : 42, y : 411},
+		{x : 0, y : 421},
 	],
-	45
+	30
 );

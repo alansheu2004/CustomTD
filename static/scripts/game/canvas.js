@@ -37,7 +37,7 @@ function init() {
 
 	currentState = new GameState(document.getElementById("canvasDiv"), DEFAULT_GAME);
 
-	if(editing) {
+	if(editing != null) {
 		setUpShowBoundariesInput()
 		setUpFontSelect();
 		setUpColorInputs();
