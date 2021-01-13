@@ -16,14 +16,14 @@ FAR_STAR = new ProjectileType("Far Star", STAR, INHERIT, 800, 180,  INHERIT,
 HOMING_STAR = new ProjectileType("Homing Star", STAR, 8, 400, Infinity,  INHERIT,
 						true, 30, 1000, INHERIT, INHERIT,
 						INHERIT, 60, 60);
-SPIKE = new ProjectileType("Spike", null, 2, 400, Infinity, 1,
+SPIKE = new ProjectileType("Spike", null, 1, 400, Infinity, 1,
 						true, 10, 360, [], [],
 						"images/spike.png", 15, 30);
-SHARP_SPIKE = new ProjectileType("Sharp Spike", SPIKE, 4, 500, INHERIT, INHERIT,
+SHARP_SPIKE = new ProjectileType("Sharp Spike", SPIKE, 2, 500, INHERIT, INHERIT,
 						INHERIT, INHERIT, 450, INHERIT, INHERIT,
 						INHERIT, INHERIT, INHERIT);
 SPIKE_BALL = new ProjectileType("Spike Ball", null, 1, 300, Infinity, 1,
-						true, 20, null, [], [new ProjectileAttack(SPIKE, null, {type:"radial", number:6})],
+						true, 20, null, [], [new ProjectileAttack(SHARP_SPIKE, null, {type:"radial", number:6})],
 						"images/spikeball.png", 40, 40);
 ICICLE = new ProjectileType("Icicle", null, Infinity, 900, 120, 1,
 						true, 15, false, [{"type":FREEZE,"time":3}], [],

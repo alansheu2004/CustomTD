@@ -1,17 +1,17 @@
 @font-face {
 	font-family: Montserrat;
-	src: url(../fonts/montserrat/Montserrat-Regular.otf);
+	src: url("../fonts/montserrat/Montserrat-Regular.otf");
 }
 
 @font-face {
 	font-family: Montserrat;
 	font-weight: bold;
-	src: url(../fonts/montserrat/Montserrat-Bold.otf);
+	src: url("../fonts/montserrat/Montserrat-Bold.otf");
 }
 
 @font-face {
 	font-family: Oeztype;
-	src: url(../fonts/oeztype.ttf);
+	src: url("../fonts/oeztype.ttf");
 }
 
 * {

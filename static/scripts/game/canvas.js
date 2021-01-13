@@ -1,5 +1,6 @@
 var currentState = null;
 
+
 //This function is called when starting a new game
 function init() {
 	if(currentState != null) {
@@ -153,6 +154,7 @@ function GameState(canvasDiv, game) {
 	this.towers = [];
 	this.path = game.path;
 	this.showingBoundaries = true;
+	this.fastForwarding = false;
 
 	this.enemies = [];
 	this.enemyWaves = game.enemyWaves;
@@ -205,23 +207,25 @@ GameState.prototype.addEnemy = function(enemy) {
 
 //Called every frame; updates all element states and calls validate() if necessary
 GameState.prototype.update = function() {
-	if (this.gameOverFade < 1)	 {
-		this.updateEnemyPositions();
-		this.updateenemyWaves();
-
-		if (this.gameOver) {
-			this.splashCanvas.valid = false;
-			this.gameOverFade += 0.03;
-		} else {
-			this.sortEnemies();
-			this.updateTowerStates();
-			if (this.revalidationTimer > 0) {
-				this.valid = false;
-				this.revalidationTimer -= this.interval;
-			}
-			if (this.roundNotifyTimer > 0) {
-				this.labelCanvas.valid = false;
-				this.roundNotifyTimer -= this.interval;
+	if (this.gameOverFade < 1){
+		for(let f = 0; f < (this.fastForwarding ? FF_RATE : 1); f++) {
+			this.updateEnemyPositions();
+			this.updateenemyWaves();
+			
+			if (this.gameOver) {
+				this.splashCanvas.valid = false;
+				this.gameOverFade += 0.03;
+			} else {
+				this.sortEnemies();
+				this.updateTowerStates();
+				if (this.revalidationTimer > 0) {
+					this.valid = false;
+					this.revalidationTimer -= this.interval;
+				}
+				if (this.roundNotifyTimer > 0) {
+					this.labelCanvas.valid = false;
+					this.roundNotifyTimer -= this.interval;
+				}
 			}
 		}
 	}
@@ -297,7 +301,7 @@ GameState.prototype.clear = function(canvas) {
 GameState.prototype.updateEnemyPositions = function() {
 	
 	if (this.enemies.length > 0) {
-		for (var i = 0; i<this.enemies.length; i++) {
+		for (let i = 0; i<this.enemies.length; i++) {
 			this.enemies[i].updateDist();
 			if (this.enemies[i].dist > this.map.path.totalLength) {
 				this.health = Math.max(this.health - this.enemies[i].type.damage, 0);
@@ -318,7 +322,7 @@ GameState.prototype.updateEnemyPositions = function() {
 
 GameState.prototype.updateenemyWaves = function() {
 	if(this.inRound) {
-		for(var i=0; i<this.bunchTimer.length; i++) {
+		for(let i=0; i<this.bunchTimer.length; i++) {
 			if(this.enemyCountdown[i] > 0) {
 				this.bunchTimer[i] -= this.interval;
 				while (this.bunchTimer[i] <= 0 && this.enemyCountdown[i]>0) {
@@ -393,7 +397,7 @@ GameState.prototype.showBoundaries = function(show) {
 
 //Updates the towers based on enemies
 GameState.prototype.updateTowerStates = function(){
-	for (var i = 0; i<this.towers.length; i++) {
+	for (let i = 0; i<this.towers.length; i++) {
 		this.towers[i].updateState(this.enemies);
 		this.towers[i].updateAttacks();
 	}
@@ -542,6 +546,10 @@ GameState.prototype.playBackgroundMusic = function() {
 
 GameState.prototype.pauseBackgroundMusic = function() {
 	this.backgroundMusic.pause();
+}
+
+GameState.prototype.toggleFF = function() {
+	this.fastForwarding = !this.fastForwarding;
 }
 
 window.onload = init;

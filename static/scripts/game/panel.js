@@ -13,6 +13,12 @@ function Panel(state) {
 		true, [state.labelCanvas, state.panelCanvas]);
 	state.addButton(this.playButton);
 
+	this.ffButton = new Button(state, 
+		function(x, y) {return Math.hypot(x-FF_BUTTON_X, y-FF_BUTTON_Y) <= FF_BUTTON_R;},
+		function(state) {state.toggleFF();},
+		true, [state.panelCanvas]);
+	state.addButton(this.ffButton);
+
 	this.fullscreenButton = new Button(state, 
 		function(x, y) {return Math.hypot(x-FULLSCREEN_BUTTON_X, y-FULLSCREEN_BUTTON_Y) <= FULLSCREEN_BUTTON_R;},
 		function(state) {state.toggleFullscreen();},
@@ -344,6 +350,7 @@ Panel.prototype.drawScrollBar = function() {
 
 Panel.prototype.drawButtons = function() {
 	this.drawPlayButton();
+	this.drawFFButton();
 	this.drawFullscreenButton();
 }
 
@@ -366,6 +373,39 @@ Panel.prototype.drawPlayButton = function() {
 	this.state.panelContext.moveTo(PLAY_BUTTON_X - PLAY_BUTTON_R/4, PLAY_BUTTON_Y - PLAY_BUTTON_R/2);
 	this.state.panelContext.lineTo(PLAY_BUTTON_X - PLAY_BUTTON_R/4, PLAY_BUTTON_Y + PLAY_BUTTON_R/2);
 	this.state.panelContext.lineTo(PLAY_BUTTON_X + PLAY_BUTTON_R/2, PLAY_BUTTON_Y);
+	this.state.panelContext.closePath();
+	this.state.panelContext.fill();
+
+	this.state.panelContext.filter = "none";
+}
+
+Panel.prototype.drawFFButton = function() {
+	if (this.state.fastForwarding) {
+		this.state.panelContext.filter = "brightness(50%)";
+	}
+
+	if(this.state.buttonPressed && this.state.selection == this.playButton) {
+		this.state.panelContext.fillStyle = "#664321"; //This should probably be changed
+	} else {
+		this.state.panelContext.fillStyle = this.game.panelButtonColor;
+	}
+
+	this.state.panelContext.beginPath();
+	this.state.panelContext.arc(FF_BUTTON_X, FF_BUTTON_Y, FF_BUTTON_R, 0, 2*Math.PI);
+	this.state.panelContext.fill();
+
+	this.state.panelContext.fillStyle = this.game.panelButtonTextColor;
+	this.state.panelContext.beginPath();
+	this.state.panelContext.moveTo(FF_BUTTON_X - FF_BUTTON_R/2 + FF_BUTTON_R/12, FF_BUTTON_Y - FF_BUTTON_R/2);
+	this.state.panelContext.lineTo(FF_BUTTON_X - FF_BUTTON_R/2 + FF_BUTTON_R/12, FF_BUTTON_Y + FF_BUTTON_R/2);
+	this.state.panelContext.lineTo(FF_BUTTON_X + FF_BUTTON_R/12, FF_BUTTON_Y);
+	this.state.panelContext.closePath();
+	this.state.panelContext.fill();
+
+	this.state.panelContext.beginPath();
+	this.state.panelContext.moveTo(FF_BUTTON_X + FF_BUTTON_R/12, FF_BUTTON_Y - FF_BUTTON_R/2);
+	this.state.panelContext.lineTo(FF_BUTTON_X + FF_BUTTON_R/12, FF_BUTTON_Y + FF_BUTTON_R/2);
+	this.state.panelContext.lineTo(FF_BUTTON_X + FF_BUTTON_R/2 + FF_BUTTON_R/12, FF_BUTTON_Y);
 	this.state.panelContext.closePath();
 	this.state.panelContext.fill();
 

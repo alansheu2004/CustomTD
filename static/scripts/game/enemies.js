@@ -1,12 +1,12 @@
-var ZOMBIE = new EnemyType("Zombie", 50, null, 25, 1, 22, 5,
+var ZOMBIE = new EnemyType("Zombie", 50, null, 25, 1, 22, 8,
 	"images/zombie.png", 55, 60);
-var FLAG_ZOMBIE = new EnemyType("Flag Zombie", 50, null, 25, 1, 22, 5,
+var FLAG_ZOMBIE = new EnemyType("Flag Zombie", 50, null, 25, 1, 22, 8,
 	"images/zombieFlag.png", 75, 80);
 var CONE_HEAD_ZOMBIE = new EnemyType("Cone-Head Zombie", 50, ZOMBIE, 0, 1, 22, 5,
 	"images/zombieCone.png", 55, 80);
 var BUCKET_HEAD_ZOMBIE = new EnemyType("Bucket-Head Zombie", 40, ZOMBIE, 0, 1, 22, 15,
 	"images/zombieBucket.png", 55, 75);
-var POLE_VAULT_ZOMBIE = new EnemyType("Pole-Vaulting Zombie", 100, null, 25, 1, 22, 10,
+var POLE_VAULT_ZOMBIE = new EnemyType("Pole-Vaulting Zombie", 100, null, 25, 1, 22, 12,
 	"images/zombiePoleVault.png", 55, 60);
 var FOOTBALL_ZOMBIE = new EnemyType("Football Zombie", 75, null, 25, 1, 22, 20,
 	"images/zombieFootball.png", 60, 60);

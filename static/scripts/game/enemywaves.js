@@ -22,7 +22,7 @@ var ROUND4 = new EnemyWave([
     new EnemyBunch(0, FLAG_ZOMBIE, 1, 0),
     new EnemyBunch(5, POLE_VAULT_ZOMBIE, 10, 3),
     new EnemyBunch(15, CONE_HEAD_ZOMBIE, 20, 1),
-    new EnemyBunch(30, POLE_VAULT_ZOMBIE, 20, 0.5),
+    new EnemyBunch(30, ZOMBIE, 20, 0.5),
     new EnemyBunch(40, BUCKET_HEAD_ZOMBIE, 5, 5)
 ]);
 
