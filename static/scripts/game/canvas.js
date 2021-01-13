@@ -9,9 +9,9 @@ function init() {
 
 	var DEFAULT_GAME = {
 		"map" : defaultMap, 
-		"health" : 20,
-		"money" : 500,
-		"roundlyIncome" : 200,
+		"health" : 5,
+		"money" : 300,
+		"roundlyIncome" : 0,
 		"towerTypes" : defaultTowerTypes,
 		"enemyTypes" : defaultEnemyTypes,
 		"enemyWaves" : defaultWaves,
@@ -37,7 +37,7 @@ function init() {
 
 	currentState = new GameState(document.getElementById("canvasDiv"), DEFAULT_GAME);
 
-	if(editing != null) {
+	if(typeof variable !== undefined) {
 		setUpShowBoundariesInput()
 		setUpFontSelect();
 		setUpColorInputs();
@@ -155,7 +155,7 @@ function GameState(canvasDiv, game) {
 	this.showingBoundaries = true;
 
 	this.enemies = [];
-	this.enemywaves = game.enemyWaves;
+	this.enemyWaves = game.enemyWaves;
 	this.currentWave = []; //
 	this.bunchTimer = []; //Countdown timer for each enemy bunch in the round
 	this.enemyCountdown = []; //How many enemies are left in each bunch
@@ -207,7 +207,7 @@ GameState.prototype.addEnemy = function(enemy) {
 GameState.prototype.update = function() {
 	if (this.gameOverFade < 1)	 {
 		this.updateEnemyPositions();
-		this.updateEnemyWaves();
+		this.updateenemyWaves();
 
 		if (this.gameOver) {
 			this.splashCanvas.valid = false;
@@ -316,7 +316,7 @@ GameState.prototype.updateEnemyPositions = function() {
 	}
 }
 
-GameState.prototype.updateEnemyWaves = function() {
+GameState.prototype.updateenemyWaves = function() {
 	if(this.inRound) {
 		for(var i=0; i<this.bunchTimer.length; i++) {
 			if(this.enemyCountdown[i] > 0) {
@@ -340,7 +340,7 @@ GameState.prototype.updateEnemyWaves = function() {
 		}
 	
 		//Round should be over
-		if(this.round == this.enemywaves.length) {
+		if(this.round == this.enemyWaves.length) {
 			this.gameOverText = "You Won!";
 			this.gameOver = true;
 		} else {
@@ -449,8 +449,8 @@ GameState.prototype.drawRoundNotification = function() {
 		this.labelContext.textBaseline = "hanging";
 		this.labelContext.lineWidth = ROUND_NOTIFICATION_NUMBER_FONT_SIZE/15;
 		this.labelContext.font = "small-caps " + ROUND_NOTIFICATION_NUMBER_FONT_SIZE + "px " + this.game.font;
-		this.labelContext.fillText(this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
-		this.labelContext.strokeText(this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
+		this.labelContext.fillText(this.round == this.enemyWaves.length ? "Final": this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
+		this.labelContext.strokeText(this.round == this.enemyWaves.length ? "Final": this.round, ROUND_NOTIFICATION_CENTER_X, ROUND_NOTIFICATION_NUMBER_Y);
 	}
 }
 
@@ -464,7 +464,7 @@ GameState.prototype.nextRound = function() {
 	this.roundNotifyTimer = 2000;
 	this.panel.playButton.active = false;
 
-	this.currentWave = this.enemywaves[this.round-1];
+	this.currentWave = this.enemyWaves[this.round-1];
 	this.bunchTimer = this.currentWave.enemybunches.map(function(bunch) {return bunch.time * 1000 + 1000});
 	this.enemyCountdown = this.currentWave.enemybunches.map(function(bunch) {return bunch.number});
 

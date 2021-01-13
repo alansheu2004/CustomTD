@@ -9,6 +9,11 @@
 	src: url(../fonts/montserrat/Montserrat-Bold.otf);
 }
 
+@font-face {
+	font-family: Oeztype;
+	src: url(../fonts/oeztype.ttf);
+}
+
 * {
 	margin: 0;
 	padding: 0;

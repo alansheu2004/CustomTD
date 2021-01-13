@@ -1,15 +1,17 @@
-var RED = new EnemyType("Red", 100, null, 1, 1, 22, 1,
-	"images/red.svg", 36, 48);
-var BLUE = new EnemyType("Blue", 133, RED, 2, 2, 23, 1,
-	"images/blue.svg", 38, 51);
-var GREEN = new EnemyType("Green", 200, BLUE, 2, 3, 24, 1,
-	"images/green.svg", 40, 54);
-var YELLOW = new EnemyType("Yellow", 400, GREEN, 3, 4, 26, 1,
-	"images/yellow.svg", 42, 57);
-var PINK = new EnemyType("Pink", 500, YELLOW, 5, 5, 28, 1,
-	"images/pink.svg", 44, 60);
+var ZOMBIE = new EnemyType("Zombie", 50, null, 25, 1, 22, 5,
+	"images/zombie.png", 55, 60);
+var FLAG_ZOMBIE = new EnemyType("Flag Zombie", 50, null, 25, 1, 22, 5,
+	"images/zombieFlag.png", 75, 80);
+var CONE_HEAD_ZOMBIE = new EnemyType("Cone-Head Zombie", 50, ZOMBIE, 0, 1, 22, 5,
+	"images/zombieCone.png", 55, 80);
+var BUCKET_HEAD_ZOMBIE = new EnemyType("Bucket-Head Zombie", 40, ZOMBIE, 0, 1, 22, 15,
+	"images/zombieBucket.png", 55, 75);
+var POLE_VAULT_ZOMBIE = new EnemyType("Pole-Vaulting Zombie", 100, null, 25, 1, 22, 10,
+	"images/zombiePoleVault.png", 55, 60);
+var FOOTBALL_ZOMBIE = new EnemyType("Football Zombie", 75, null, 25, 1, 22, 20,
+	"images/zombieFootball.png", 60, 60);
 
-const defaultEnemyTypes = [RED, BLUE, GREEN, YELLOW, PINK]
+const defaultEnemyTypes = [ZOMBIE, FLAG_ZOMBIE, CONE_HEAD_ZOMBIE, BUCKET_HEAD_ZOMBIE, POLE_VAULT_ZOMBIE, FOOTBALL_ZOMBIE];
 
 function EnemyType(name, speed, child, reward, damage, size, health,
 					image, imgwidth, imgheight) {
@@ -81,10 +83,10 @@ Enemy.prototype.updatePosition = function() {
 }
 
 Enemy.prototype.damage = function(id, damage) {
-	this.state.money += this.type.reward;
 	this.health -= damage;
 
 	if(this.health <= 0) {
+		this.state.money += this.type.reward;
 		if(this.type.child == null) {
 			this.state.enemies.splice(id, 1);
 		} else {
