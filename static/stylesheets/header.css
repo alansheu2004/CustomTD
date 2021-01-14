@@ -46,31 +46,39 @@ header {
     flex: 0 0 auto;
 }
 
-header a.homeLink {
-    padding: 0.5vh 2vw;
+a#homeLink {
+    padding: 0 2vw;
     display: inline-block;
-    text-transform: uppercase;
-    font-size: 24pt;
-    color: var(--highlight-content-color);
     flex: 0 0 0;
-    font-weight: bold;
-    vertical-align: middle;
+    cursor: pointer;
+    position: relative;
 }
 
-header a.homeLink span.small {
-    font-size: 18pt;
-    margin-right: 0.5vw;
+#logo {
+    position: absolute;
+    top: 45%;
+    margin-top: -15pt;
+    height: 30pt;
+    vertical-align: middle;
+    display: inline-block
+}
+
+#logo:before {
+    content: '';
+    display: inline;
+    vertical-align: middle;
+    height: 100%;
 }
 
 header a.headerLink {
     color: var(--highlight-text-color);
     font-size: 18pt;
     padding: 2vh 1vw;
-    cursor: pointer;
     flex: 0 0 auto;
 }
 
 header a.headerLink:hover {
+    cursor: pointer;
     background-color: var(--highlight-content-color);
     transition: 0.25s;
 }
