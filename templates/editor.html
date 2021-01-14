@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>CustomTD - Editor</title>
+        
+        {% include "snippets/head.html" %}
+        <link rel="stylesheet" type="text/css" href="stylesheets/play.css">
+        <link rel="stylesheet" type="text/css" href="stylesheets/editor.css">
+        <link rel="stylesheet" type="text/css" href="stylesheets/upgrades.css">
+    </head>
+    
+    <body>
+        {% include "snippets/header.html" %}
+
+        <div id="editorHeader">
+            <h2>Game Editor</h2>
+            <input type="text" id="title" name="title" placeholder="Untitled Game">
+            <button id="save">Save</button>
+            <button id="publish">Publish</button>
+        </div>
+
+        <div id="editor">
+            <div id="leftDiv">
+                <div id="canvasDiv">
+                    <canvas id="backgroundCanvas" width="640" height="360"></canvas>
+                    <canvas id="enemyCanvas" width="640" height="360"></canvas>
+                    <canvas id="attackCanvas" width="640" height="360"></canvas>
+                    <canvas id="towerCanvas" width="640" height="360"></canvas>
+                    <canvas id="panelCanvas" width="640" height="360"></canvas>
+                    <canvas id="labelCanvas" width="640" height="360"></canvas>
+                    <canvas id="dragCanvas" width="640" height="360"></canvas>
+                    <canvas id="splashCanvas" width="640" height="360"></canvas>
+                </div>
+    
+                <input type="checkbox" name="showBoundaries" id="showBoundaries"><label for="showBoundaries">Show Boundaries</label>
+            </div>
+
+            <div id="rightDiv">
+                <div id="tabBar">
+                    <input type="radio" class="tab" name="tab" value="general" id="generalTab" checked><label for="generalTab">General</label>
+                    <input type="radio" class="tab" name="tab" value="map" id="mapTab"><label for="mapTab">Map</label>
+                    <input type="radio" class="tab" name="tab" value="towers" id="towersTab"><label for="towersTab">Towers</label>
+                    <input type="radio" class="tab" name="tab" value="enemies" id="enemiesTab"><label for="enemiesTab">Enemies</label>
+                </div>
+
+                <div id="tabContentWrapper">
+                    <div id="general" class="tabContent">
+                        <section>
+                            <h2>Gameplay</h2>
+                            <div class="group">
+                                <div><label>Starting Money:</label> <input type="number" id="money" min="0"></div>
+                                <div><label>End-of-Round Income:</label> <input type="number" id="roundlyIncome" min="0"></div>
+                                <div><label>Sell Percent:</label> <input type="number" id="sellMultiplier" min="0" max="100"><label>%</label></div>
+                            </div>
+                            <div class="group">
+                                <div><label>Starting Health:</label> <input type="number" id="health" min="1"></div>
+                            </div>
+                        </section>
+                        <section>
+                            <h2>Appearance</h2>
+                            <div class="group">
+                                <div>
+                                    <label>Font: </label>
+                                    <select name="font" id="font">
+                                        <option value="Oeztype">Oeztype</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Consolas">Consolas</option>
+                                        <option value="Montserrat">Montserrat</option>
+                                    </select>
+                                </div>
+                            </div>
+        
+                            <div>
+                                <label>Panel Base Color: </label>
+                                <label for="panelBaseColor"><input type="color" id="panelBaseColor"></label>
+                            </div>
+                            <div>
+                                <label>Panel Box Color: </label>
+                                <label for="panelBoxColor"><input type="color" id="panelBoxColor"></label>
+                            </div>
+                            <div>
+                                <label>Panel Text Color: </label>
+                                <label for="panelTextColor"><input type="color" id="panelTextColor"></label>
+                            </div>
+        
+                            <div class="group">
+                                <div>
+                                    <label>Panel Tower Option Color: </label>
+                                    <label for="panelTowerOptionColor"><input type="color" id="panelTowerOptionColor"></label>
+                                </div>
+                                <div>
+                                    <label>Panel Tower Option Outline Color: </label>
+                                    <label for="panelTowerOptionOutlineColor"><input type="color" id="panelTowerOptionOutlineColor"></label>
+                                </div>
+                            </div>
+        
+                            <div class="group">
+                                <div>
+                                    <label>Panel Button Color: </label>
+                                    <label for="panelButtonColor"><input type="color" id="panelButtonColor"></label>
+                                </div>
+                                <div>
+                                    <label>Panel Button Text Color: </label>
+                                    <label for="panelButtonTextColor"><input type="color" id="panelButtonTextColor"></label>
+                                </div>
+                            </div>
+
+                            <div class="group">
+                                <div>
+                                    <label>Splash Screen Background Color: </label>
+                                    <label for="splashBackgroundColor"><input type="color" id="splashBackgroundColor"></label>
+                                </div>
+                                <div>
+                                    <label>Splash Screen Text Color: </label>
+                                    <label for="splashTextColor"><input type="color" id="splashTextColor"></label>
+                                </div>
+                            </div>
+                        </section>
+                        <section>
+                            <div class="group">
+                                <div><label>Game Over Text:</label> <input type="text" id="gameOverText" maxlength="31"></div>
+                                <div><label>Victory Text:</label> <input type="text" id="victoryText" maxlength="31"></div>
+                            </div>
+                        </section>
+                        <section>
+                            <h2>Music</h2>
+                            <div>
+                                <label>Background Music: </label>
+                                <label for="backgroundMusic" class="file">Add...</label><input type="file" id="backgroundMusic" accept="audio/*">
+                                <button id="removeBackgroundMusic" class="file" style="display: none">Remove</button>
+                            </div>
+                        </section>
+                    </div>
+        
+                    <div id="map" class="tabContent">
+                        <section>
+                            <h2>Background</h2>
+                            <div>
+                                <img id="currentBackgroundImage" /><br />
+                                <label for="backgroundImage" class="file">Change...</label><input type="file" id="backgroundImage" accept="image/*">
+                                <span>Image will be stretched to fill 4:3 area</span>
+                            </div>
+                        </section>
+                        <section>
+                            <h2>Geometry</h2>
+                            <h5>(Currently does nothing)</h5>
+                            <div class="group">
+                                <div>
+                                    <label>Path:</label> <button id="editPath">Edit...</button>
+                                </div>
+                                <div>
+                                    <label>Path Width:</label> <input type="number" id="pathWidth" min="0" max="50" step="1">
+                                </div>
+                            </div>
+        
+                            <div class="group">
+                                <div>
+                                    <label>Obstacles:</label> <button id="editObstacles">Edit...</button>
+                                </div>
+                                <div>
+                                    <label>Water:</label> <button id="editWater">Edit...</button>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div id="towers" class="tabContent">
+                        <div id="mainTowerScreen">
+                            <section>
+                                <h2>Towers</h2>
+                                <table id="towerTable">
+    
+                                </table>
+                            </section>
+    
+                            <table class="templates">
+                                <tr id="towerTableTemplate" style="display: none">
+                                    <td><img /></td>
+                                    <td style="width: 100%"></td>
+                                    <td><button class="editTower">Edit</button></td>
+                                    <td><button class="deleteTower">Delete</button></td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div id="editTowerScreen" style="display: none;">
+                            <div class="group">
+                                <a id="backToTowerScreen">&lt; Back to Tower List</a>
+                            </div>
+                            <section>
+                                <h2>Edit Tower</h2>
+                                <div>
+                                    <label>Name:</label> <input type="text" id="towerName" maxlength="31">
+                                </div>
+                                <div>
+                                    <label>Description:</label>
+                                    <textarea maxlength="63" rows="2" id="towerDescription"></textarea>
+                                </div>
+                                <div>
+                                    <label>Footprint:</label> <input type="number" id="towerFootprint" min="1" max="50">
+                                </div>
+                                <div>
+                                    <label>Cost:</label> <input type="number" id="towerCost" min="0">
+                                </div>
+                                <div>
+                                    <label>Turning:</label> <input type="checkbox" id="towerTurning">
+                                </div>
+                                <div>
+                                    <label>Water-Based:</label> <input type="checkbox" id="towerWater">
+                                </div>
+                            </section>
+
+                            <section>
+                                <h2>Upgrades</h2>
+                                <table id="upgradeTable">
+                                    <tr>
+                                        <td colspan="2">
+                                            <div id="baseUpgrade" class="upgrade">
+                                                <div class="upgradeImageDiv">
+                                                    <img class="upgradeImage" />
+                                                    <label for="upgradeImage0" class="file">Change...</label><input type="file" id="upgradeImage0" accept="image/*">
+                                                </div>
+                                                <div class="upgradeInfoDiv">
+                                                    <div><label class="upgradeName">BASE FORM</label></div>
+                                                    <div>
+                                                        <label>Range:</label> <input class="range" type="number" min="1" max="500">
+                                                    </div>
+                                                    <div style="display: inline-block;"><label>Width:</label> <input class="width" type="number" min="1" max="150"></div>
+                                                    <div style="display: inline-block;"><label>Height:</label> <input class="height" type="number" min="1" max="150"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <div id="upgradeTemplate" class="upgrade" style="display: none;">
+                                    <div class="upgradeImageDiv">
+                                        <img src="images/peashooter.svg" class="upgradeImage" />
+                                        <label for="upgradeImageLabel" class="file">Change...</label><input type="file" id="upgradeImageInput" accept="image/*">
+                                    </div>
+                                    <div class="upgradeInfoDiv">
+                                        <div><input class="upgradeName" type="text" placeholder="Upgrade Name"></div>
+                                        <div><textarea class="upgradeDescription" maxlength="63" placeholder="Upgrade Description"></textarea></div>
+                                        <div><label>Cost:</label> <input class="upgradeCost" type="number" min="0"></div>
+                                        <div><label>Range:</label> <input class="range" type="number" min="1" max="500"></div>
+                                        <div style="display: inline-block;"><label>Width:</label> <input class="width" type="number" min="1" max="150"></div>
+                                        <div style="display: inline-block;"><label>Height:</label> <input class="height" type="number" min="1" max="150"></div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+        
+                    <div id="enemies" class="tabContent">
+                        <div id="mainEnemyScreen">
+                            <section>
+                                <h2>Enemies</h2>
+                                <table id="enemyTable">
+    
+                                </table>
+                            </section>
+
+                            <section>
+                                <div>
+                                    <label>Damage Sound: </label>
+                                    <label for="damageSound" class="file">Add...</label><input type="file" id="damageSound" accept="audio/*">
+                                    <button id="removeDamageSound" class="file" style="display: none">Remove</button>
+                                </div>
+                            </section>
+    
+                            <table class="templates">
+                                <tr id="enemyTableTemplate" style="display: none">
+                                    <td><img /></td>
+                                    <td style="width: 100%"></td>
+                                    <td><button class="editTower">Edit</button></td>
+                                    <td><button class="deleteTower">Delete</button></td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div id="editEnemyScreen" style="display: none;">
+                            <div class="group">
+                                <a id="backToEnemyScreen">&lt; Back to Enemy List</a>
+                            </div>
+                            <section>
+                                <h2>Edit Enemy</h2>
+                                <div class="group">
+                                    <div>
+                                        <img id="currentEnemyImage" /><br />
+                                        <label for="enemyImage" class="file">Change...</label><input type="file" id="enemyImage" accept="image/*">
+                                    </div>
+                                    <div>
+                                        <label>Width:</label> <input id="enemyWidth" type="number" min="1" max="150">
+                                        <label>Height:</label> <input id="enemyHeight" type="number" min="1" max="150">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Name:</label> <input type="text" id="enemyName" maxlength="31">
+                                </div>
+                                <div>
+                                    <label>Size:</label> <input type="number" id="enemySize" min="1" max="50">
+                                </div>
+                                <div>
+                                    <label>Health:</label> <input type="number" id="enemyHealth" min="0">
+                                </div>
+                                <div>
+                                    <label>Speed:</label> <input type="number" id="enemySpeed" min="0" max="1000">
+                                </div>
+                                <div>
+                                    <label>Reward:</label> <input type="number" id="enemyReward" min="0">
+                                </div>
+                                <div>
+                                    <label>Damage:</label> <input type="number" id="enemyDamage" min="0">
+                                </div>
+
+                                <div class="group">
+                                    <label>Child Enemy:</label>
+                                    <select id="enemyChild">
+                                        <option>--</option>
+                                    </select>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+    
+                
+            </div>
+        </div>
+
+        {% include "snippets/footer.html" %}
+
+        <script type="text/javascript" src="scripts/editor/inputs.js"></script>
+        <script type="text/javascript" src="scripts/editor/tabs.js"></script>
+        <script type="text/javascript" src="scripts/editor/towers.js"></script>
+        <script type="text/javascript" src="scripts/editor/enemies.js"></script>
+        {% for filename in scripts %}
+            {% if filename %}
+                <script type="text/javascript" src="{{ filename }}"></script>
+            {% endif %}
+        {% endfor %}
+    </body>
+</html>

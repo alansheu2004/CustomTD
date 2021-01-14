@@ -15,11 +15,11 @@
 </nav>
 
 <header>
-    <a class="homeLink" href="{{ url_for('index') }}">
-        C<span class="small">ustom</span>TD  
+    <a id="homeLink" href="{{ url_for('index') }}">
+        <img id="logo" src="images/logo.png" />
     </a>
     <span class="spaceFiller"></span>
-    <a class="headerLink">Create</a>
+    <a class="headerLink" href="{{ url_for('editor') }}">Create <sup><small>BETA</small></sup></a>
     <a class="headerLink">Explore</a>
     <a class="headerLink">Search</a>
 </header>

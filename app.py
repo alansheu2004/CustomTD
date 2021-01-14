@@ -9,6 +9,9 @@ app.debug = True
 
 app.secret_key = os.urandom(16)
 
+scripts = ['mousehandler', 'buttons', 'constants', 'polygon', 'path', 'map', 'enemies', 'enemywaves', 'effects', 'pulse', 'projectile', 'towers', 'mapscreen', 'panel', 'canvas']
+scripts = [os.path.join('scripts/game/', filename + ".js") for filename in scripts]
+
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
@@ -35,11 +38,14 @@ def register():
     else:
         return redirect(url_for('index'))
 
+@app.route('/editor')
+def editor():
+    return render_template('editor.html', scripts=scripts)
+
 @app.route('/play')
 def play():
-    scripts = ['mousehandler', 'buttons', 'constants', 'polygon', 'path', 'map', 'enemies', 'enemywaves', 'effects', 'pulse', 'projectile', 'towers', 'mapscreen', 'panel', 'canvas']
-    scripts = [os.path.join('scripts/', filename + ".js") for filename in scripts]
     return render_template('play.html', scripts=scripts)
 
 if __name__ == "__main__":
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
     app.run(debug=True)

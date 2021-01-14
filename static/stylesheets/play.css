@@ -2,7 +2,7 @@ div#canvasDiv {
     display: block;
     height: 80vh;
     width: calc(80vh * 16 / 9);
-    margin: 5vh auto;
+    margin: 10px auto;
     position: relative;
 }
 

@@ -1,17 +1,17 @@
 @font-face {
-	font-family: Oeztype;
-	src: url(../fonts/oeztype.ttf);
-}
-
-@font-face {
 	font-family: Montserrat;
-	src: url(../fonts/montserrat/Montserrat-Regular.otf);
+	src: url("../fonts/montserrat/Montserrat-Regular.otf");
 }
 
 @font-face {
 	font-family: Montserrat;
 	font-weight: bold;
-	src: url(../fonts/montserrat/Montserrat-Bold.otf);
+	src: url("../fonts/montserrat/Montserrat-Bold.otf");
+}
+
+@font-face {
+	font-family: Oeztype;
+	src: url("../fonts/oeztype.ttf");
 }
 
 * {
@@ -29,6 +29,8 @@
 	--highlight-background-color: #00cc33;
 	--highlight-content-color: #009933;
 	--highlight-text-color: white;
+
+	--article-padding: 0;
 }
 
 html, body {
@@ -43,16 +45,24 @@ body {
 }
 
 article {
-	padding: 5vh 15vw;
+	padding: 5vh var(--article-padding) 0;
 	flex: 1 0 auto;
+	text-align: center;
 }
 
-article a {
+a {
 	color: var(--highlight-content-color);
 	transition: 0.25s;
 }
 
-article a:hover {
+a:hover {
 	color: var(--highlight-background-color);
 	transition: 0.25s;
+}
+
+h1 {
+    text-align: center;
+    font-size: 30pt;
+    color: var(--highlight-content-color);
+    margin-bottom: 3vh;
 }

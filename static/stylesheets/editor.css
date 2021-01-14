@@ -1,0 +1,334 @@
+input[type="text"] {
+    background: none;
+    border: none;
+    border-bottom: 2px solid var(--highlight-text-color);
+    color: var(--highlight-text-color);
+    padding: 0 5px;
+    transition: 0.25s;
+}
+
+input[type="text"]:focus {
+    border-color: var(--highlight-background-color);
+    transition: 0.25s;
+}
+
+::placeholder {
+    color: var(--highlight-text-color);
+    filter: opacity(0.6);
+    font-style: italic;
+}
+
+button {
+    transition: 0.25s;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+#editorHeader {
+    padding: 10px 2vw;
+    background-color: var(--highlight-content-color);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#editorHeader h2 {
+    margin: 0;
+    margin-right: 20px;
+    color: white;
+    font-size: 20pt;
+}
+
+#title {
+    font-size: 18pt;
+    flex: 1 1 0;
+    border: 2px solid transparent;
+    border-bottom-color: var(--highlight-text-color);
+    transition: 0.25s;
+    min-width: 0;
+    padding: 0;
+    margin-right: 5vw;
+}
+
+#editorHeader button {
+    padding: 0.5vw 1vw;
+    font-size: 14pt;
+    color: white;
+    border: none;
+    flex: 0 0 auto;
+    margin-left: 1vw;
+}
+
+#editorHeader button:hover {
+    filter: brightness(1.25);
+}
+
+#editorHeader button:active {
+    filter: none;
+}
+
+button#save {
+    background-color: cornflowerblue;
+}
+
+button#publish {
+    background-color: orange;
+}
+
+#editor {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#leftDiv {
+    text-align: center;
+    flex: 1 1 0;
+}
+
+#rightDiv {
+    flex: 0.8 1 0;
+}
+
+div#canvasDiv {
+    width: 90%;
+    height: calc(50vw * 0.9 * 9 / 16);
+}
+
+input#showBoundaries {
+    display: none;
+}
+
+input#showBoundaries + label {
+    display: inline-block;
+    margin-bottom: 10px;
+    background-color: var(--highlight-background-color);
+    color: var(--highlight-text-color);
+    font-size: 12pt;
+    padding: 4px 6px;
+}
+
+input#showBoundaries + label:hover {
+    cursor: pointer;
+}
+
+input#showBoundaries:checked + label {
+    background-color: var(--highlight-content-color);
+}
+
+#tabBar {
+    display: flex;
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#tabBar input[type="radio"] {
+    display: none;
+}
+
+#tabBar label {
+    display: inline-block;
+    background-color: var(--highlight-content-color);
+    color: var(--highlight-text-color);
+    font-size: 14pt;
+    padding: 10px 1vw;
+    margin-right: 5px;
+    transition: 0.25s;
+    line-height: 1;
+    flex: 1 1 0;
+    text-align: center;
+}
+
+#tabBar label:hover {
+    cursor: pointer;
+}
+
+#tabBar input:checked + label {
+    background-color: var(--highlight-background-color);
+}
+
+#tabContentWrapper {
+    padding: 2vw;
+    background-color: var(--highlight-background-color);
+}
+
+.tabContent {
+    display: none;
+    background-color: var(--highlight-background-color);
+    color: var(--highlight-text-color);
+    font-size: 14pt;
+    height: 70vh;
+    overflow-y: auto;
+}
+
+.tabContent.selected {
+    display: block;
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+section div {
+    margin-bottom: 2px;
+}
+
+div.group {
+    margin-bottom: 10px;
+}
+
+select {
+    background-color: var(--highlight-content-color);
+    border: none;
+    font-size: 10pt;
+    color: var(--highlight-text-color);
+    padding: 2px 4px;
+}
+
+.tabContent button {
+    background-color: var(--highlight-content-color);
+    border: none;
+    display: inline-block;
+    color: var(--highlight-text-color);
+    font-size: 12pt;
+    padding: 2px 6px;
+    vertical-align: middle;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+label.file, button.file {
+    display: inline-block;
+    background-color: var(--highlight-content-color);
+    color: var(--highlight-text-color);
+    font-size: 12pt;
+    padding: 4px 6px;
+    vertical-align: middle;
+}
+
+label.file:hover, button.file {
+    cursor: pointer;
+}
+
+.tabContent span {
+    font-size: 10pt;
+}
+
+input[type="color"] {
+    height: 15px;
+    width: 15px;
+    visibility: hidden;
+}
+
+label[for$="Color"] {
+    vertical-align: middle;
+    display: inline-block;
+    margin-left: 3px;
+    font-size: 0;
+    border: 1px solid var(--highlight-text-color);
+    background-image: url("../images/editor/edit.png");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: 0 0;
+}
+
+label[for$="Color"].inverted {
+    background-image: url("../images/editor/editInverted.png");
+}
+
+label[for$="Color"]:hover {
+    cursor: pointer;
+}
+
+div:hover > label[for$="Color"] {
+    background-size: 75% 75%;
+}
+
+#currentBackgroundImage, #currentEnemyImage {
+    max-width: 50%;
+    max-height: 50%;
+}
+
+input[type="number"], input[type="text"] {
+    background-color: var(--highlight-content-color);
+    color: var(--highlight-text-color);
+    border: none;
+    font-size: 12pt;
+    padding: 2px 2px;
+    text-align: left;
+}
+
+input[type="number"] {
+    width: 3em;
+}
+
+input[type="text"] {
+    width: 20em;
+}
+
+table {
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+}
+
+thead, tr {
+    background-color: var(--highlight-content-color);
+    margin-bottom: 2px;
+    border: none;
+    border-bottom: 3px solid var(--highlight-background-color);
+}
+
+td {
+    height: 50px;
+}
+
+th, td {
+    border: none;
+    padding: 2px;
+    text-align: center;
+    padding: 10px;
+}
+
+td img {
+    max-height: 30px;
+    max-width: 30px;
+    margin: 0 15px;
+}
+
+.tabContent td button, .tabContent td input {
+    background-color: var(--highlight-background-color);
+}
+
+a {
+	color: var(--highlight-text-color);
+	transition: 0.25s;
+}
+
+a:hover {
+    color: var(--highlight-text-color);
+    text-decoration: underline;
+    cursor: pointer;
+	transition: 0.25s;
+}
+
+textarea {
+    background-color: var(--highlight-content-color);
+    width: 50%;
+    padding: 3px;
+    color: white;
+    resize: none;
+    border: none;
+    vertical-align: text-top;
+}
+
+.templates {
+    display: none;
+}
