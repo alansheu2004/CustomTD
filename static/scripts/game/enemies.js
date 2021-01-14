@@ -1,14 +1,14 @@
-var ZOMBIE = new EnemyType("Zombie", 60, null, 25, 1, 22, 10,
+var ZOMBIE = new EnemyType("Zombie", 50, null, 25, 1, 22, 5,
 	"images/zombie.png", 55, 60);
-var FLAG_ZOMBIE = new EnemyType("Flag Zombie", 60, null, 25, 1, 22, 10,
+var FLAG_ZOMBIE = new EnemyType("Flag Zombie", 75, null, 25, 1, 22, 5,
 	"images/zombieFlag.png", 75, 80);
-var CONE_HEAD_ZOMBIE = new EnemyType("Cone-Head Zombie", 50, ZOMBIE, 0, 2, 22, 15,
+var CONE_HEAD_ZOMBIE = new EnemyType("Cone-Head Zombie", 50, ZOMBIE, 0, 2, 22, 10,
 	"images/zombieCone.png", 55, 80);
-var BUCKET_HEAD_ZOMBIE = new EnemyType("Bucket-Head Zombie", 50, ZOMBIE, 0, 3, 22, 30,
+var BUCKET_HEAD_ZOMBIE = new EnemyType("Bucket-Head Zombie", 50, ZOMBIE, 0, 3, 22, 20,
 	"images/zombieBucket.png", 55, 75);
-var POLE_VAULT_ZOMBIE = new EnemyType("Pole-Vaulting Zombie", 150, null, 25, 2, 22, 15,
+var POLE_VAULT_ZOMBIE = new EnemyType("Pole-Vaulting Zombie", 125, null, 25, 2, 22, 10,
 	"images/zombiePoleVault.png", 55, 60);
-var FOOTBALL_ZOMBIE = new EnemyType("Football Zombie", 120, null, 25, 5, 22, 30,
+var FOOTBALL_ZOMBIE = new EnemyType("Football Zombie", 100, null, 25, 5, 22, 25,
 	"images/zombieFootball.png", 60, 60);
 
 const defaultEnemyTypes = [ZOMBIE, FLAG_ZOMBIE, CONE_HEAD_ZOMBIE, BUCKET_HEAD_ZOMBIE, POLE_VAULT_ZOMBIE, FOOTBALL_ZOMBIE];
@@ -84,6 +84,7 @@ Enemy.prototype.updatePosition = function() {
 
 Enemy.prototype.damage = function(id, damage) {
 	this.health -= damage;
+	new Audio(this.state.game.damageSound).play();
 
 	if(this.health <= 0) {
 		this.state.money += this.type.reward;

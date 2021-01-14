@@ -42,7 +42,6 @@
                     <input type="radio" class="tab" name="tab" value="map" id="mapTab"><label for="mapTab">Map</label>
                     <input type="radio" class="tab" name="tab" value="towers" id="towersTab"><label for="towersTab">Towers</label>
                     <input type="radio" class="tab" name="tab" value="enemies" id="enemiesTab"><label for="enemiesTab">Enemies</label>
-                    <input type="radio" class="tab" name="tab" value="rounds" id="roundsTab"><label for="roundsTab">Rounds</label>
                 </div>
 
                 <div id="tabContentWrapper">
@@ -129,7 +128,7 @@
                             <div>
                                 <label>Background Music: </label>
                                 <label for="backgroundMusic" class="file">Add...</label><input type="file" id="backgroundMusic" accept="audio/*">
-                                <button id="removeBackgroundMusic" class="file" style="display: none">Remove</button><br />
+                                <button id="removeBackgroundMusic" class="file" style="display: none">Remove</button>
                             </div>
                         </section>
                     </div>
@@ -223,7 +222,7 @@
                                                     <label for="upgradeImage0" class="file">Change...</label><input type="file" id="upgradeImage0" accept="image/*">
                                                 </div>
                                                 <div class="upgradeInfoDiv">
-                                                    <div><label class="upgradeName">BASE UPGRADE</label></div>
+                                                    <div><label class="upgradeName">BASE FORM</label></div>
                                                     <div>
                                                         <label>Range:</label> <input class="range" type="number" min="1" max="500">
                                                     </div>
@@ -260,6 +259,14 @@
                                 <table id="enemyTable">
     
                                 </table>
+                            </section>
+
+                            <section>
+                                <div>
+                                    <label>Damage Sound: </label>
+                                    <label for="damageSound" class="file">Add...</label><input type="file" id="damageSound" accept="audio/*">
+                                    <button id="removeDamageSound" class="file" style="display: none">Remove</button>
+                                </div>
                             </section>
     
                             <table class="templates">
@@ -315,10 +322,6 @@
                                 </div>
                             </section>
                         </div>
-                    </div>
-        
-                    <div id="rounds" class="tabContent">
-                        <p>rounds</p>
                     </div>
                 </div>
     

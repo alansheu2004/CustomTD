@@ -4,7 +4,7 @@ var defaultTowerTypes = [
 						new TowerUpgrade("BASE", 100, 160,
 							"Shoots good ol' reliable peas",
 							"images/peashooter.svg", 70, 70,
-							[new ProjectileAttack(PEA, 1000, {type:"single"}, null)]),
+							[new ProjectileAttack(PEA, 800, {type:"single"}, null)]),
 						new TowerUpgrade("Repeater", 200, 160,
 							"Shoots peas twice as fast",
 							"images/repeater.svg", 70, 73,

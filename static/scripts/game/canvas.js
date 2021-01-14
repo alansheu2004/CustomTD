@@ -12,6 +12,7 @@ var DEFAULT_GAME = {
 	"enemyWaves" : defaultWaves,
 	"font" : "Oeztype",
 	"backgroundMusic" : "sounds/poolMusic.mp3",
+	"damageSound" : "sounds/splat.mp3",
 
 	"splashBackgroundColor" : "#d3a06e",
 	"splashTextColor" : "#996633",
@@ -165,7 +166,7 @@ function GameState(canvasDiv, game) {
 			state.restartButton.active = false; 
 			window.clearInterval(state.loop);
 			state.pauseBackgroundMusic();
-			currentState = new GameState(document.getElementById("canvasDiv"), DEFAULT_GAME);
+			currentState = new GameState(document.getElementById("canvasDiv"), state.game);
 			currentState.playBackgroundMusic();
 	    },
 	    false, []);

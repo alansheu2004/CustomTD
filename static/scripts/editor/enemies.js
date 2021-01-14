@@ -89,6 +89,31 @@ function deleteEnemy(enemy, row) {
     }
 }
 
+//Damage Sound
+var damageSoundInput = document.getElementById("damageSound");
+var damageSoundLabel = document.querySelector("label[for=damageSound]");
+var removeDamageSoundButton = document.getElementById("removeDamageSound");
+function setUpDamageSoundInput() {
+    if(currentState.game.backgroundMusic) {
+        damageSoundLabel.textContent = "Change...";
+        removeDamageSoundButton.style.display = "initial";
+    } else {
+        damageSoundLabel.textContent = "Add...";
+        removeDamageSoundButton.style.display = "none";
+    }
+
+    damageSoundInput.addEventListener("change", function() {
+        currentState.game.damageSound = (window.URL ? URL : webkitURL).createObjectURL(damageSoundInput.files[0]);
+        damageSoundLabel.textContent = "Change...";
+        removeBackgroundMusicButton.style.display = "initial";
+    });
+    removeDamageSoundButton.addEventListener("click", function() {
+        currentState.game.damageSound = null;
+        currentState.playBackgroundMusic();
+        removeDamageSoundButton.style.display = "none";
+    });
+}
+
 
 function setUpEnemyInputs() {
     enemyImageInput.addEventListener("change", function() {
@@ -145,4 +170,7 @@ function setUpEnemyInputs() {
     enemyChildSelect.addEventListener("change", function() {
         currentEnemy.child = enemyChildSelect.options[enemyChildSelect.selectedIndex].enemy;
     });
+
+    setUpDamageSoundInput();
 }
+
