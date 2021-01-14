@@ -37,7 +37,6 @@ function MouseHandler(state) {
 
 	state.canvasDiv.addEventListener('mouseup', function(e) {
 		var mouse = thisState.setMouse(e);
-		//console.log(mouse);
 		if (thisHandler.dropTower(thisState.selectionCoors)){
 			return;
 		} else if (thisHandler.releaseButton(thisState.selectionCoors)) {

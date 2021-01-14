@@ -1,39 +1,41 @@
 var currentState = null;
+var started = false;
 
+var DEFAULT_GAME = {
+	"name" : "ZombiesTD",
+	"map" : defaultMap, 
+	"health" : 5,
+	"money" : 300,
+	"roundlyIncome" : 0,
+	"towerTypes" : defaultTowerTypes,
+	"enemyTypes" : defaultEnemyTypes,
+	"enemyWaves" : defaultWaves,
+	"font" : "Oeztype",
+	"backgroundMusic" : "sounds/grasswalk.mp3",
+
+	"gameOverBackgroundColor" : "rgb(211, 160, 110)",
+	"gameOverTextColor" : "#996633",
+	"gameOverTextStrokeColor" : "rgb(102, 67, 33)",
+	"gameOverText" : "The Zombies have Eaten your Brains!",
+
+	"mapScreenTextColor" : "#ffd630",
+	"mapScreenTextStrokeColor" : "#c48a16",
+
+	"panelBaseColor" : "#996633",
+	"panelBoxColor": "#d3a06e",
+	"panelTextColor" : "#ffd630",
+	"panelTowerOptionColor" : "#f4cea8",
+	"panelTowerOptionOutlineColor" : "#996633",
+	"panelButtonColor": "#992200",
+	"panelButtonTextColor": "#ffd630",
+	"sellMultiplier": 0.75
+}
 
 //This function is called when starting a new game
 function init() {
 	if(currentState != null) {
 		currentState.nextRound = null;
 		currentState.backgroundMusic.pause();
-	}
-
-	var DEFAULT_GAME = {
-		"map" : defaultMap, 
-		"health" : 5,
-		"money" : 300,
-		"roundlyIncome" : 0,
-		"towerTypes" : defaultTowerTypes,
-		"enemyTypes" : defaultEnemyTypes,
-		"enemyWaves" : defaultWaves,
-		"font" : "Oeztype",
-		"backgroundMusic" : "sounds/grasswalk.mp3",
-
-		"gameOverBackgroundColor" : "rgb(211, 160, 110)",
-		"gameOverTextColor" : "#996633",
-		"gameOverTextStrokeColor" : "rgb(102, 67, 33)",
-
-		"mapScreenTextColor" : "#ffd630",
-		"mapScreenTextStrokeColor" : "#c48a16",
-
-		"panelBaseColor" : "#996633",
-		"panelBoxColor": "#d3a06e",
-		"panelTextColor" : "#ffd630",
-		"panelTowerOptionColor" : "#f4cea8",
-		"panelTowerOptionOutlineColor" : "#996633",
-		"panelButtonColor": "#992200",
-		"panelButtonTextColor": "#ffd630",
-		"sellMultiplier": 0.75
 	}
 
 	currentState = new GameState(document.getElementById("canvasDiv"), DEFAULT_GAME);
@@ -134,9 +136,38 @@ function GameState(canvasDiv, game) {
 
 	this.gameOver = false;
 	this.gameOverFade = 0; //opacity of the game over screen fading in
-	this.gameOverText = "Game Over";
 	
 	this.buttons = [];
+
+	this.startButton = new Button(this, 
+	    function(x, y) { //inbounds
+	        return x>=0 && x<=CANVAS_WIDTH &&
+	        y>=0 && y<=CANVAS_HEIGHT;
+	    },
+		function(state) { //action
+			state.startButton.active = false;
+			started = true;
+			state.splashCanvas.valid = false;
+			state.playBackgroundMusic();
+			state.clear(state.splashCanvas);
+	    },
+	    true, []);
+	this.addButton(this.startButton);
+
+	this.restartButton = new Button(this, 
+	    function(x, y) { //inbounds
+	        return x>=0 && x<=CANVAS_WIDTH &&
+	        y>=0 && y<=CANVAS_HEIGHT;
+	    },
+	    function(state) { //action
+			state.restartButton.active = false; 
+			window.clearInterval(state.loop);
+			state.pauseBackgroundMusic();
+			currentState = new GameState(document.getElementById("canvasDiv"), DEFAULT_GAME);
+			currentState.playBackgroundMusic();
+	    },
+	    false, []);
+	this.addButton(this.restartButton);
 
 	this.map = this.game.map;
 	this.mapscreen = new MapScreen(this, this.map);
@@ -163,17 +194,6 @@ function GameState(canvasDiv, game) {
 	this.enemyCountdown = []; //How many enemies are left in each bunch
 
 	this.roundNotifyTimer = 0; //Time left until big round notification disappears
-
-	this.restartButton = new Button(this, 
-	    function(x, y) { //inbounds
-	        return x>=0 && x<=CANVAS_WIDTH &&
-	        y>=0 && y<=CANVAS_HEIGHT;
-	    },
-	    function(state) { //action
-	        state.restartButton.active = false; window.clearInterval(state.loop); init();
-	    },
-	    false, []);
-	this.addButton(this.restartButton);
 
 	this.interval = 40;
 	
@@ -207,14 +227,16 @@ GameState.prototype.addEnemy = function(enemy) {
 
 //Called every frame; updates all element states and calls validate() if necessary
 GameState.prototype.update = function() {
-	if (this.gameOverFade < 1){
+	if (this.gameOverFade < 1) {
 		for(let f = 0; f < (this.fastForwarding ? FF_RATE : 1); f++) {
 			this.updateEnemyPositions();
 			this.updateenemyWaves();
-			
+
 			if (this.gameOver) {
 				this.splashCanvas.valid = false;
 				this.gameOverFade += 0.03;
+			} else if (!started){
+				this.splashCanvas.valid = false;
 			} else {
 				this.sortEnemies();
 				this.updateTowerStates();
@@ -222,12 +244,13 @@ GameState.prototype.update = function() {
 					this.valid = false;
 					this.revalidationTimer -= this.interval;
 				}
-				if (this.roundNotifyTimer > 0) {
-					this.labelCanvas.valid = false;
-					this.roundNotifyTimer -= this.interval;
-				}
 			}
 		}
+	}
+
+	if (this.roundNotifyTimer > 0) {
+		this.labelCanvas.valid = false;
+		this.roundNotifyTimer -= this.interval;
 	}
 	
 	if(!this.validating) {
@@ -277,6 +300,9 @@ GameState.prototype.validate = function() {
 	if(this.gameOver) {
 		this.clear(this.splashCanvas);
 		this.drawGameOver();
+	} else if(!started) {
+		this.clear(this.splashCanvas);
+		this.drawGameStart();
 	} else {
 		if(!this.dragCanvas.valid) {
 			this.clear(dragCanvas);
@@ -358,19 +384,41 @@ GameState.prototype.updateenemyWaves = function() {
 	
 }
 
-//Disactivates the update loop and displays a game over screen
-GameState.prototype.drawGameOver = function() {
-	this.splashContext.globalAlpha = this.gameOverFade;
+GameState.prototype.drawGameStart = function() {
 	this.splashContext.fillStyle = this.game.gameOverBackgroundColor;
 	this.splashContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	
-	this.splashContext.font = "small-caps " + GAME_OVER_TEXT_FONT_SIZE + "px " + this.game.font;
+	this.setFontFit(this.splashContext, this.game.name, GAME_OVER_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
+	this.splashContext.font = "small-caps " + this.splashContext.font;
 	this.splashContext.textAlign = "center";
 	this.splashContext.textBaseline = "alphabetic";
 	this.splashContext.fillStyle =  this.game.gameOverTextColor;
 	this.splashContext.strokeStyle =  this.game.gameOverTextStrokeColor;
 	this.splashContext.lineWidth = GAME_OVER_TEXT_FONT_SIZE/20;
-	this.splashContext.fillText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
+	this.splashContext.fillText(this.game.name, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
+	//this.context.strokeText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
+
+	this.setFontFit(this.splashContext, "Click Anywhere to Start", RESTART_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
+	this.splashContext.textAlign = "center";
+	this.splashContext.baseLine = "hanging";
+	this.splashContext.fillStyle = this.game.gameOverTextColor;
+	this.splashContext.fillText("Click Anywhere to Start", CANVAS_WIDTH/2, RESTART_TEXT_CENTER_Y);
+}
+
+//Displays a game over screen
+GameState.prototype.drawGameOver = function() {
+	this.splashContext.globalAlpha = this.gameOverFade;
+	this.splashContext.fillStyle = this.game.gameOverBackgroundColor;
+	this.splashContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+	
+	this.setFontFit(this.splashContext, this.game.gameOverText, GAME_OVER_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
+	this.splashContext.font = "small-caps " + this.splashContext.font;
+	this.splashContext.textAlign = "center";
+	this.splashContext.textBaseline = "alphabetic";
+	this.splashContext.fillStyle =  this.game.gameOverTextColor;
+	this.splashContext.strokeStyle =  this.game.gameOverTextStrokeColor;
+	this.splashContext.lineWidth = GAME_OVER_TEXT_FONT_SIZE/20;
+	this.splashContext.fillText(this.game.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
 	//this.context.strokeText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
 	
 	this.splashContext.globalAlpha = 1;
@@ -540,6 +588,7 @@ GameState.prototype.toggleFullscreen = function() {
 GameState.prototype.playBackgroundMusic = function() {
 	if(this.game.backgroundMusic) {
 		this.backgroundMusic.src = this.game.backgroundMusic;
+		this.backgroundMusic.loop = true;
 		this.backgroundMusic.play();
 	}
 }

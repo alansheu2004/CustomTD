@@ -9,7 +9,7 @@ function Panel(state) {
 
 	this.playButton = new Button(state, 
 		function(x, y) {return Math.hypot(x-PLAY_BUTTON_X, y-PLAY_BUTTON_Y) <= PLAY_BUTTON_R;},
-		function(state) {state.nextRound();state.playBackgroundMusic();},
+		function(state) {state.nextRound();},
 		true, [state.labelCanvas, state.panelCanvas]);
 	state.addButton(this.playButton);
 
