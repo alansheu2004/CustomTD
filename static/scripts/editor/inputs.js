@@ -49,7 +49,9 @@ var colorInputs = [
     document.getElementById("panelButtonColor"),
     document.getElementById("panelButtonTextColor"),
     document.getElementById("panelTowerOptionColor"),
-    document.getElementById("panelTowerOptionOutlineColor")
+    document.getElementById("panelTowerOptionOutlineColor"),
+    document.getElementById("splashBackgroundColor"),
+    document.getElementById("splashTextColor")
 ];
 
 function shouldInvert(h){
@@ -81,6 +83,28 @@ function setUpColorInputs() {
         }
         input.addEventListener("input", function() {
             input.parentElement.style.backgroundColor = input.value;
+            currentState.game[input.id] = input.value;
+            currentState.panelCanvas.valid = false;
+        });
+    }
+}
+
+//Text Inputs
+var textInputs = [
+    document.getElementById("title"),
+    document.getElementById("gameOverText"),
+    document.getElementById("victoryText"),
+    document.getElementById("money"),
+    document.getElementById("roundlyIncome"),
+    document.getElementById("sellMultiplier"),
+    document.getElementById("health")
+];
+
+function setUpTextInputs() {
+    for(let input of textInputs) {
+        input.value = currentState.game[input.id];
+
+        input.addEventListener("input", function() {
             currentState.game[input.id] = input.value;
             currentState.panelCanvas.valid = false;
         });

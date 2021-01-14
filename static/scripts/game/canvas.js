@@ -2,21 +2,21 @@ var currentState = null;
 var started = false;
 
 var DEFAULT_GAME = {
-	"name" : "ZombiesTD",
+	"title" : "ZombiesTD",
 	"map" : defaultMap, 
-	"health" : 5,
+	"health" : 10,
 	"money" : 300,
 	"roundlyIncome" : 0,
 	"towerTypes" : defaultTowerTypes,
 	"enemyTypes" : defaultEnemyTypes,
 	"enemyWaves" : defaultWaves,
 	"font" : "Oeztype",
-	"backgroundMusic" : "sounds/grasswalk.mp3",
+	"backgroundMusic" : "sounds/poolMusic.mp3",
 
-	"gameOverBackgroundColor" : "rgb(211, 160, 110)",
-	"gameOverTextColor" : "#996633",
-	"gameOverTextStrokeColor" : "rgb(102, 67, 33)",
+	"splashBackgroundColor" : "#d3a06e",
+	"splashTextColor" : "#996633",
 	"gameOverText" : "The Zombies have Eaten your Brains!",
+	"victoryText" : "You Live to See Another Day!",
 
 	"mapScreenTextColor" : "#ffd630",
 	"mapScreenTextStrokeColor" : "#c48a16",
@@ -28,7 +28,7 @@ var DEFAULT_GAME = {
 	"panelTowerOptionOutlineColor" : "#996633",
 	"panelButtonColor": "#992200",
 	"panelButtonTextColor": "#ffd630",
-	"sellMultiplier": 0.75
+	"sellMultiplier": 75
 }
 
 //This function is called when starting a new game
@@ -44,6 +44,7 @@ function init() {
 		setUpShowBoundariesInput()
 		setUpFontSelect();
 		setUpColorInputs();
+		setUpTextInputs();
 		setUpBackgroundMusicInput();
 		setUpBackgroundImageInput();
 		setUpSpinners();
@@ -135,6 +136,7 @@ function GameState(canvasDiv, game) {
 	this.focusedTowerNumber = 0;
 
 	this.gameOver = false;
+	this.victory = false;
 	this.gameOverFade = 0; //opacity of the game over screen fading in
 	
 	this.buttons = [];
@@ -333,6 +335,7 @@ GameState.prototype.updateEnemyPositions = function() {
 				this.health = Math.max(this.health - this.enemies[i].type.damage, 0);
 				this.labelCanvas.valid = false;
 				if (this.health<=0) {
+					this.victory = false;
 					this.gameOver = true;
 				}
 				
@@ -371,7 +374,7 @@ GameState.prototype.updateenemyWaves = function() {
 	
 		//Round should be over
 		if(this.round == this.enemyWaves.length) {
-			this.gameOverText = "You Won!";
+			this.victory = true;
 			this.gameOver = true;
 		} else {
 			this.money += this.game.roundlyIncome; //CHANGE THIS LATER
@@ -385,40 +388,40 @@ GameState.prototype.updateenemyWaves = function() {
 }
 
 GameState.prototype.drawGameStart = function() {
-	this.splashContext.fillStyle = this.game.gameOverBackgroundColor;
+	this.splashContext.fillStyle = this.game.splashBackgroundColor;
 	this.splashContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	
-	this.setFontFit(this.splashContext, this.game.name, GAME_OVER_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
+	this.setFontFit(this.splashContext, this.game.title, GAME_OVER_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
 	this.splashContext.font = "small-caps " + this.splashContext.font;
 	this.splashContext.textAlign = "center";
 	this.splashContext.textBaseline = "alphabetic";
-	this.splashContext.fillStyle =  this.game.gameOverTextColor;
-	this.splashContext.strokeStyle =  this.game.gameOverTextStrokeColor;
+	this.splashContext.fillStyle =  this.game.splashTextColor;
+	this.splashContext.strokeStyle =  this.game.splashTextStrokeColor;
 	this.splashContext.lineWidth = GAME_OVER_TEXT_FONT_SIZE/20;
-	this.splashContext.fillText(this.game.name, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
+	this.splashContext.fillText(this.game.title, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
 	//this.context.strokeText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
 
 	this.setFontFit(this.splashContext, "Click Anywhere to Start", RESTART_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
 	this.splashContext.textAlign = "center";
 	this.splashContext.baseLine = "hanging";
-	this.splashContext.fillStyle = this.game.gameOverTextColor;
+	this.splashContext.fillStyle = this.game.splashTextColor;
 	this.splashContext.fillText("Click Anywhere to Start", CANVAS_WIDTH/2, RESTART_TEXT_CENTER_Y);
 }
 
 //Displays a game over screen
 GameState.prototype.drawGameOver = function() {
 	this.splashContext.globalAlpha = this.gameOverFade;
-	this.splashContext.fillStyle = this.game.gameOverBackgroundColor;
+	this.splashContext.fillStyle = this.game.splashBackgroundColor;
 	this.splashContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	
-	this.setFontFit(this.splashContext, this.game.gameOverText, GAME_OVER_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
+	this.setFontFit(this.splashContext, this.victory ? this.game.victoryText: this.game.gameOverText, GAME_OVER_TEXT_FONT_SIZE, CANVAS_WIDTH*0.9);
 	this.splashContext.font = "small-caps " + this.splashContext.font;
 	this.splashContext.textAlign = "center";
 	this.splashContext.textBaseline = "alphabetic";
-	this.splashContext.fillStyle =  this.game.gameOverTextColor;
-	this.splashContext.strokeStyle =  this.game.gameOverTextStrokeColor;
+	this.splashContext.fillStyle =  this.game.splashTextColor;
+	this.splashContext.strokeStyle =  this.game.splashTextStrokeColor;
 	this.splashContext.lineWidth = GAME_OVER_TEXT_FONT_SIZE/20;
-	this.splashContext.fillText(this.game.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
+	this.splashContext.fillText(this.victory ? this.game.victoryText: this.game.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
 	//this.context.strokeText(this.gameOverText, CANVAS_WIDTH/2, GAME_OVER_TEXT_Y);
 	
 	this.splashContext.globalAlpha = 1;
@@ -463,7 +466,7 @@ GameState.prototype.focusTower = function(tower, id) {
 GameState.prototype.sellFocusedTower = function() {
 	if(this.focusedTower != null) {
 		this.towers.splice(this.focusedTowerNumber, 1);
-		this.money += Math.ceil(this.focusedTower.baseSellPrice * this.game.sellMultiplier);
+		this.money += Math.floor(this.focusedTower.baseSellPrice * this.game.sellMultiplier/100);
 		this.unfocus();
 	}
 	this.labelCanvas.valid = false;

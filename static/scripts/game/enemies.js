@@ -1,14 +1,14 @@
-var ZOMBIE = new EnemyType("Zombie", 50, null, 25, 1, 22, 8,
+var ZOMBIE = new EnemyType("Zombie", 60, null, 25, 1, 22, 10,
 	"images/zombie.png", 55, 60);
-var FLAG_ZOMBIE = new EnemyType("Flag Zombie", 50, null, 25, 1, 22, 8,
+var FLAG_ZOMBIE = new EnemyType("Flag Zombie", 60, null, 25, 1, 22, 10,
 	"images/zombieFlag.png", 75, 80);
-var CONE_HEAD_ZOMBIE = new EnemyType("Cone-Head Zombie", 50, ZOMBIE, 0, 1, 22, 5,
+var CONE_HEAD_ZOMBIE = new EnemyType("Cone-Head Zombie", 50, ZOMBIE, 0, 2, 22, 15,
 	"images/zombieCone.png", 55, 80);
-var BUCKET_HEAD_ZOMBIE = new EnemyType("Bucket-Head Zombie", 40, ZOMBIE, 0, 1, 22, 15,
+var BUCKET_HEAD_ZOMBIE = new EnemyType("Bucket-Head Zombie", 50, ZOMBIE, 0, 3, 22, 30,
 	"images/zombieBucket.png", 55, 75);
-var POLE_VAULT_ZOMBIE = new EnemyType("Pole-Vaulting Zombie", 100, null, 25, 1, 22, 12,
+var POLE_VAULT_ZOMBIE = new EnemyType("Pole-Vaulting Zombie", 150, null, 25, 2, 22, 15,
 	"images/zombiePoleVault.png", 55, 60);
-var FOOTBALL_ZOMBIE = new EnemyType("Football Zombie", 75, null, 25, 1, 22, 20,
+var FOOTBALL_ZOMBIE = new EnemyType("Football Zombie", 120, null, 25, 5, 22, 30,
 	"images/zombieFootball.png", 60, 60);
 
 const defaultEnemyTypes = [ZOMBIE, FLAG_ZOMBIE, CONE_HEAD_ZOMBIE, BUCKET_HEAD_ZOMBIE, POLE_VAULT_ZOMBIE, FOOTBALL_ZOMBIE];

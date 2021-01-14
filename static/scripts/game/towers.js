@@ -4,11 +4,11 @@ var defaultTowerTypes = [
 						new TowerUpgrade("BASE", 100, 160,
 							"Shoots good ol' reliable peas",
 							"images/peashooter.svg", 70, 70,
-							[new ProjectileAttack(PEA, 1200, {type:"single"}, null)]),
-						new TowerUpgrade("Repeater", 225, 160,
+							[new ProjectileAttack(PEA, 1000, {type:"single"}, null)]),
+						new TowerUpgrade("Repeater", 200, 160,
 							"Shoots peas twice as fast",
 							"images/repeater.svg", 70, 73,
-							[new ProjectileAttack(PEA, 600, {type:"single"}, null)]),
+							[new ProjectileAttack(PEA, 500, {type:"single"}, null)]),
 						[
 							new TowerUpgrade("Threepeater", 625, 180,
 								"Shoots 3 peas at a time with bullet speed",
@@ -50,7 +50,7 @@ var defaultTowerTypes = [
 							"images/iceshroom.svg", 80, 70,
 							[new PulseAttack(FREEZE_PULSE, 3000, 2*Math.PI, null)]),
 						new TowerUpgrade("Deep Freeze", 150, 120,
-							"Leaves enemies slow after thawing",
+							"Leaves enemies slow after thawing and damages slightly",
 							"images/deepfreeze.svg", 80, 70,
 							[new PulseAttack(DEEP_FREEZE_PULSE, 3000, 2*Math.PI, null)]),
 						[

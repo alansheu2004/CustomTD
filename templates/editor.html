@@ -15,7 +15,7 @@
 
         <div id="editorHeader">
             <h2>Game Editor</h2>
-            <input type="text" id="editorTitle" name="title" placeholder="Untitled Game">
+            <input type="text" id="title" name="title" placeholder="Untitled Game">
             <button id="save">Save</button>
             <button id="publish">Publish</button>
         </div>
@@ -38,7 +38,7 @@
 
             <div id="rightDiv">
                 <div id="tabBar">
-                    <input type="radio" class="tab" name="tab" value="theme" id="themeTab" checked><label for="themeTab">Theme</label>
+                    <input type="radio" class="tab" name="tab" value="general" id="generalTab" checked><label for="generalTab">General</label>
                     <input type="radio" class="tab" name="tab" value="map" id="mapTab"><label for="mapTab">Map</label>
                     <input type="radio" class="tab" name="tab" value="towers" id="towersTab"><label for="towersTab">Towers</label>
                     <input type="radio" class="tab" name="tab" value="enemies" id="enemiesTab"><label for="enemiesTab">Enemies</label>
@@ -46,7 +46,18 @@
                 </div>
 
                 <div id="tabContentWrapper">
-                    <div id="theme" class="tabContent">
+                    <div id="general" class="tabContent">
+                        <section>
+                            <h2>Gameplay</h2>
+                            <div class="group">
+                                <div><label>Starting Money:</label> <input type="number" id="money" min="0"></div>
+                                <div><label>End-of-Round Income:</label> <input type="number" id="roundlyIncome" min="0"></div>
+                                <div><label>Sell Percent:</label> <input type="number" id="sellMultiplier" min="0" max="100"><label>%</label></div>
+                            </div>
+                            <div class="group">
+                                <div><label>Starting Health:</label> <input type="number" id="health" min="1"></div>
+                            </div>
+                        </section>
                         <section>
                             <h2>Appearance</h2>
                             <div class="group">
@@ -95,9 +106,26 @@
                                     <label for="panelButtonTextColor"><input type="color" id="panelButtonTextColor"></label>
                                 </div>
                             </div>
+
+                            <div class="group">
+                                <div>
+                                    <label>Splash Screen Background Color: </label>
+                                    <label for="splashBackgroundColor"><input type="color" id="splashBackgroundColor"></label>
+                                </div>
+                                <div>
+                                    <label>Splash Screen Text Color: </label>
+                                    <label for="splashTextColor"><input type="color" id="splashTextColor"></label>
+                                </div>
+                            </div>
                         </section>
                         <section>
-                            <h2>Sounds</h2>
+                            <div class="group">
+                                <div><label>Game Over Text:</label> <input type="text" id="gameOverText" maxlength="31"></div>
+                                <div><label>Victory Text:</label> <input type="text" id="victoryText" maxlength="31"></div>
+                            </div>
+                        </section>
+                        <section>
+                            <h2>Music</h2>
                             <div>
                                 <label>Background Music: </label>
                                 <label for="backgroundMusic" class="file">Add...</label><input type="file" id="backgroundMusic" accept="audio/*">

@@ -42,22 +42,15 @@ button:hover {
     font-size: 20pt;
 }
 
-#editorTitle {
+#title {
     font-size: 18pt;
     flex: 1 1 0;
-    border-color: transparent;
+    border: 2px solid transparent;
+    border-bottom-color: var(--highlight-text-color);
     transition: 0.25s;
     min-width: 0;
     padding: 0;
-}
-
-#editorTitle:hover {
-    border-color: var(--highlight-text-color);
-    transition: 0.25s;
-}
-
-#editorTitle:focus {
-    border-color: transparent;
+    margin-right: 5vw;
 }
 
 #editorHeader button {
@@ -277,7 +270,7 @@ input[type="number"] {
 }
 
 input[type="text"] {
-    width: 10em;
+    width: 20em;
 }
 
 table {

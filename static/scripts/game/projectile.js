@@ -7,10 +7,10 @@ SNOW_PEA = new ProjectileType("Snow Pea", PEA, 2, 800, INHERIT, INHERIT,
 BULLET_PEA = new ProjectileType("Bullet Pea", PEA, 3, 1000, 500, INHERIT,
 						INHERIT, 10, INHERIT, INHERIT, INHERIT,
 						INHERIT, 20, 20);
-STAR = new ProjectileType("Star", null, Infinity, 800, 140, 1,
+STAR = new ProjectileType("Star", null, 2, 800, 140, 1,
 						false, 20, false, [], [],
 						"images/star.png", 40, 40);
-FAR_STAR = new ProjectileType("Far Star", STAR, INHERIT, 800, 180,  INHERIT,
+FAR_STAR = new ProjectileType("Far Star", STAR, 3, 800, 180,  INHERIT,
 						INHERIT, INHERIT, INHERIT, INHERIT, INHERIT,
 						INHERIT, INHERIT, INHERIT);
 HOMING_STAR = new ProjectileType("Homing Star", STAR, 8, 400, Infinity,  INHERIT,
