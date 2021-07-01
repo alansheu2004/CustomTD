@@ -82,7 +82,7 @@ function editTower(tower) {
 
 function makeUpgradeDiv(upgrade, counter) {
     let upgradeDiv = upgradeTemplate.cloneNode(true);
-    upgradeDiv.querySelector("[for='upgradeImageLabel']").for = "upgradeImage" + counter;
+    upgradeDiv.querySelector("[for='upgradeImageLabel']").setAttribute("for", "upgradeImage" + counter);
     upgradeDiv.querySelector("#upgradeImageInput").id = "upgradeImage" + counter;
 
     upgradeDiv.querySelector(".upgradeName").value = upgrade.name;
@@ -93,7 +93,9 @@ function makeUpgradeDiv(upgrade, counter) {
     upgradeDiv.querySelector(".width").value = upgrade.imgwidth;
     upgradeDiv.querySelector(".height").value = upgrade.imgheight;
 
+    console.log(upgradeDiv.querySelector("#upgradeImage" + counter))
     upgradeDiv.querySelector("#upgradeImage" + counter).addEventListener("change", function() {
+        console.log("crazy")
         var url = (window.URL ? URL : webkitURL).createObjectURL(upgradeDiv.querySelector("#upgradeImage" + counter).files[0]);
         upgrade.image.src = url;
         upgradeDiv.querySelector(".upgradeImage").src = url;

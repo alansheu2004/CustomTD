@@ -24,8 +24,9 @@
 }
 
 .upgradeImageDiv label {
+    font-size: 10pt;
     background-color: var(--highlight-background-color);
-    padding: 5px;
+    padding: 3px;
 }
 
 .upgradeInfoDiv {
@@ -49,5 +50,5 @@
 }
 
 .upgrade input[type="text"] {
-    width: 10em;
+    width: min(100%, 10em);
 }

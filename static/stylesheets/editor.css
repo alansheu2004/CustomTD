@@ -182,6 +182,13 @@ div.group {
     margin-bottom: 10px;
 }
 
+div.group.sticky {
+    position: sticky;
+    top: 0;
+    background-color: var(--highlight-background-color);
+    padding-bottom: 5px;
+}
+
 select {
     background-color: var(--highlight-content-color);
     border: none;
@@ -251,9 +258,14 @@ div:hover > label[for$="Color"] {
     background-size: 75% 75%;
 }
 
-#currentBackgroundImage, #currentEnemyImage {
+#currentBackgroundImage {
     max-width: 50%;
     max-height: 50%;
+}
+
+#currentEnemyImage {
+    max-width: 15%;
+    max-height: 15%;
 }
 
 input[type="number"], input[type="text"] {

@@ -185,7 +185,7 @@
                         </div>
                         
                         <div id="editTowerScreen" style="display: none;">
-                            <div class="group">
+                            <div class="group sticky">
                                 <a id="backToTowerScreen">&lt; Back to Tower List</a>
                             </div>
                             <section>
@@ -280,15 +280,15 @@
                         </div>
                         
                         <div id="editEnemyScreen" style="display: none;">
-                            <div class="group">
+                            <div class="group sticky">
                                 <a id="backToEnemyScreen">&lt; Back to Enemy List</a>
                             </div>
                             <section>
                                 <h2>Edit Enemy</h2>
                                 <div class="group">
                                     <div>
-                                        <img id="currentEnemyImage" /><br />
-                                        <label for="enemyImage" class="file">Change...</label><input type="file" id="enemyImage" accept="image/*">
+                                        <img id="currentEnemyImage" />
+                                        <label for="enemyImage" class="file">Change Image...</label><input type="file" id="enemyImage" accept="image/*">
                                     </div>
                                     <div>
                                         <label>Width:</label> <input id="enemyWidth" type="number" min="1" max="150">
