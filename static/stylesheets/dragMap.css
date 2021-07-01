@@ -1,0 +1,103 @@
+#glassPane {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 100;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.popup {
+    background-color: var(--highlight-background-color);
+    padding: 20px;
+}
+
+#dragMap {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+#dragMapDisplay {
+    width: 60vw;
+    height: 45vw;
+    background-size: 100% 100%;
+}
+
+polyline {
+    stroke: red;
+    stroke-width: 3;
+    fill: none;
+}
+
+circle {
+    fill: red;
+    stroke: red;
+    stroke-opacity: 0.6;
+    r: 6px;
+    stroke-width: 14;
+    transition: 0.15s;
+    z-index: 100;
+    cursor: move;
+}
+
+circle:hover {
+    cursor: all-scroll;
+    r: 13px;
+    stroke-width: 0;
+    transition: 0.15s;
+}
+
+#dragMapPanel {
+    margin-left: 20px;
+    width: 20vw;
+    color: white;
+    height: 45vw;
+    display: flex;
+    flex-direction: column;
+}
+
+#dragMapPanel h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#pointGroup {
+    overflow-y: auto;
+    padding-right: 10px;
+    flex: 1 1 0;
+}
+
+.pointDiv {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+}
+
+.pointDiv label {
+    margin: 0 5px 0 10px;
+    flex: 0 0 auto;
+}
+
+.pointDiv input {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.pointDiv button {
+    flex: 0 0 auto;
+    background-color: var(--highlight-content-color);
+    border: none;
+    color: var(--highlight-text-color);
+    font-size: 12pt;
+    width: 15pt;
+    height: 15pt;
+    margin-left: 10px;
+    vertical-align: middle;
+}

@@ -7,11 +7,6 @@ input[type="text"] {
     transition: 0.25s;
 }
 
-input[type="text"]:focus {
-    border-color: var(--highlight-background-color);
-    transition: 0.25s;
-}
-
 ::placeholder {
     color: var(--highlight-text-color);
     filter: opacity(0.6);
@@ -269,19 +264,20 @@ div:hover > label[for$="Color"] {
 }
 
 input[type="number"], input[type="text"] {
-    background-color: var(--highlight-content-color);
+    background-color: transparent;
     color: var(--highlight-text-color);
     border: none;
+    border-bottom: 2px solid var(--highlight-text-color);
     font-size: 12pt;
     padding: 2px 2px;
     text-align: left;
 }
 
-input[type="number"] {
-    width: 3em;
+.group input[type="number"] {
+    width: 4em;
 }
 
-input[type="text"] {
+.group input[type="text"] {
     width: 20em;
 }
 
@@ -341,6 +337,6 @@ textarea {
     vertical-align: text-top;
 }
 
-.templates {
-    display: none;
+.templates, [id$="Template"] {
+    display: none !important;
 }

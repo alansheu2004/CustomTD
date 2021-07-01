@@ -53,6 +53,7 @@ function init() {
 		setUpTowerInputs();
 		setUpEnemyTable();
 		setUpEnemyInputs();
+		setUpDragMapInputs();
 	}
 }
 

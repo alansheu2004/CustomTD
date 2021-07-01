@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="stylesheets/play.css">
         <link rel="stylesheet" type="text/css" href="stylesheets/editor.css">
         <link rel="stylesheet" type="text/css" href="stylesheets/upgrades.css">
+        <link rel="stylesheet" type="text/css" href="stylesheets/dragMap.css">
     </head>
     
     <body>
@@ -327,8 +328,29 @@
                         </div>
                     </div>
                 </div>
-    
-                
+            </div>
+
+            <div id="glassPane">
+                <div class="popup" id="dragMapPopup">
+                    <div id="dragMap">
+                        <svg id="dragMapDisplay" width="960" height="720" viewBox="0 0 960 720"></svg>
+                        <div id="dragMapPanel">
+                            <h2></h2>
+                            <div id="pointGroup">
+
+                            </div>
+
+                            <div id="pointDivTemplate" class="pointDiv">
+                                <label>x:</label>
+                                <input type="number" min="0" max="960" step="10">
+                                <label>y:</label>
+                                <input type="number" min="0" max="720" step="10">
+                                <button>+</button>
+                                <button>&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -338,6 +360,7 @@
         <script type="text/javascript" src="scripts/editor/tabs.js"></script>
         <script type="text/javascript" src="scripts/editor/towers.js"></script>
         <script type="text/javascript" src="scripts/editor/enemies.js"></script>
+        <script type="text/javascript" src="scripts/editor/dragMap.js"></script>
         {% for filename in scripts %}
             {% if filename %}
                 <script type="text/javascript" src="{{ filename }}"></script>
