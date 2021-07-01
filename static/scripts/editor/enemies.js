@@ -92,25 +92,49 @@ function deleteEnemy(enemy, row) {
 //Damage Sound
 var damageSoundInput = document.getElementById("damageSound");
 var damageSoundLabel = document.querySelector("label[for=damageSound]");
+var listenDamageSoundButton = document.getElementById("listenDamageSound");
 var removeDamageSoundButton = document.getElementById("removeDamageSound");
 function setUpDamageSoundInput() {
     if(currentState.game.backgroundMusic) {
         damageSoundLabel.textContent = "Change...";
         removeDamageSoundButton.style.display = "initial";
+        listenDamageSoundButton.style.display = "initial";
     } else {
         damageSoundLabel.textContent = "Add...";
         removeDamageSoundButton.style.display = "none";
+        listenDamageSoundButton.style.display = "none";
     }
+    var damageSoundSample = new Audio(currentState.game.damageSound);
 
     damageSoundInput.addEventListener("change", function() {
         currentState.game.damageSound = (window.URL ? URL : webkitURL).createObjectURL(damageSoundInput.files[0]);
+        damageSoundSample.pause();
+        listenDamageSoundButton.textContent = "Listen";
+        damageSoundSample = new Audio(currentState.game.damageSound);
         damageSoundLabel.textContent = "Change...";
-        removeBackgroundMusicButton.style.display = "initial";
+        removeDamageSoundButton.style.display = "initial";
+        listenDamageSoundButton.style.display = "initial";
     });
     removeDamageSoundButton.addEventListener("click", function() {
         currentState.game.damageSound = null;
-        currentState.playBackgroundMusic();
+        damageSoundSample.pause();
+        listenDamageSoundButton.textContent = "Listen";
+        damageSoundLabel.textContent = "Add...";
         removeDamageSoundButton.style.display = "none";
+        listenDamageSoundButton.style.display = "none";
+    });
+    listenDamageSoundButton.addEventListener("click", function() {
+        if(damageSoundSample.paused) {
+            damageSoundSample.play();
+            listenDamageSoundButton.textContent = "Stop";
+        } else {
+            damageSoundSample.pause();
+            listenDamageSoundButton.textContent = "Listen";
+            damageSoundSample.currentTime = 0;
+        }
+    });
+    damageSoundSample.addEventListener("ended", function() {
+        listenDamageSoundButton.textContent = "Listen";
     });
 }
 
