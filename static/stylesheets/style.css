@@ -66,3 +66,7 @@ h1 {
     color: var(--highlight-content-color);
     margin-bottom: 3vh;
 }
+
+button:disabled {
+    filter: opacity(0.6);
+}

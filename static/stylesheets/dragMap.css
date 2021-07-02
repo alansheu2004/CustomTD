@@ -108,12 +108,22 @@ circle:hover, circle.focused, circle.hovered {
     overflow-y: auto;
     padding-right: 5px;
     flex: 1 1 0;
+    text-align: center;
 }
 
 .pointSubgroup {
     border-bottom: 4px solid var(--highlight-text-color);
-    padding-bottom: 15px;
-    margin-bottom: 15px;
+    padding: 10px 0 15px;
+    text-align: center;
+}
+
+.pointSubgroup > button {
+    background-color: var(--highlight-content-color);
+    border: none;
+    color: var(--highlight-text-color);
+    font-size: 10pt;
+    padding: 2px 6px;
+    margin-bottom: 5px;
 }
 
 .pointDiv {
@@ -147,4 +157,18 @@ circle:hover, circle.focused, circle.hovered {
 
 .pointDiv button:disabled {
     filter: opacity(0.6);
+}
+
+#dragMapPanelBottom {
+    flex: 0 0 auto;
+    text-align: center;
+}
+
+#dragMapPanelBottom button {
+    background-color: var(--highlight-content-color);
+    border: none;
+    color: var(--highlight-text-color);
+    font-size: 12pt;
+    padding: 2px 6px;
+    margin: 10px 0;
 }

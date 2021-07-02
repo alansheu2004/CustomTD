@@ -46,19 +46,27 @@ function setUpDragMapInputs() {
         dragMap.style.display = "flex";
         dragMapPanel.children[0].textContent = "Edit Obstacles";
 
-        for(let obstacle of currentState.game.map.obstacles) {
-            let pointSubgroup = document.createElement("div");
-            pointSubgroup.classList.add("pointSubgroup");
-            pointGroup.appendChild(pointSubgroup);
-            let polygon = document.createElementNS("http://www.w3.org/2000/svg", 'polygon');
-            polygon.classList.add("obstacle");
-            dragMapDisplay.appendChild(polygon);
-            let circleGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
-            circleGroup.classList.add("obstacleCircleGroup")
-            dragMapDisplay.appendChild(circleGroup);
-            for(let point of obstacle.points) {
-                addPoint(point, obstacle.points, pointSubgroup, polygon, circleGroup, MAX_OBSTACLE_LENGTH);
+        let addButton = document.createElement("button");
+        addButton.textContent = "Add New Obstacle";
+        addButton.addEventListener("click", function() {
+            let side = 50
+            let newPolygon = new Polygon([
+                {x: MAP_WIDTH/2 - side/2, y: MAP_HEIGHT/2 - side/2},
+                {x: MAP_WIDTH/2 + side/2, y: MAP_HEIGHT/2 - side/2},
+                {x: MAP_WIDTH/2 + side/2, y: MAP_HEIGHT/2 + side/2},
+                {x: MAP_WIDTH/2 - side/2, y: MAP_HEIGHT/2 + side/2}
+            ])
+            currentState.game.map.obstacles.push(newPolygon)
+            addSubgroup(newPolygon, "obstacle", currentState.game.map.obstacles, MAX_OBSTACLE_LENGTH, MAX_OBSTACLE_COUNT);
+
+            if(currentState.game.map.obstacles.length >= MAX_OBSTACLE_COUNT) {
+                addButton.disabled = true;
             }
+        });
+        dragMapPanelBottom.appendChild(addButton);
+
+        for(let obstacle of currentState.game.map.obstacles) {
+            addSubgroup(obstacle, "obstacle", currentState.game.map.obstacles, addButton, MAX_OBSTACLE_LENGTH, MAX_OBSTACLE_COUNT);
         }
         
         showDragMap();
@@ -67,6 +75,40 @@ function setUpDragMapInputs() {
     dragMapDisplay.addEventListener('mouseup', function(e) {
         selectedElement = null;
     });
+}
+
+function addSubgroup(polygon, name, polygonList, addButton, maxLength, maxCount) {
+    let cap = name.capitalize();
+
+    let pointSubgroup = document.createElement("div");
+    pointSubgroup.classList.add("pointSubgroup");
+    pointGroup.appendChild(pointSubgroup);
+
+    let svgPolygon = document.createElementNS("http://www.w3.org/2000/svg", 'polygon');
+    svgPolygon.classList.add(name);
+    dragMapDisplay.appendChild(svgPolygon);
+    let circleGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+    circleGroup.classList.add(name+"CircleGroup")
+    dragMapDisplay.appendChild(circleGroup);
+
+    let deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete " + cap;
+    deleteButton.addEventListener("click", function() {
+        polygonList.splice(polygonList.indexOf(polygon), 1);
+        pointGroup.removeChild(pointSubgroup);
+        dragMapDisplay.removeChild(svgPolygon);
+        dragMapDisplay.removeChild(circleGroup);
+
+        if(polygonList.length < maxCount) {
+            addButton.disabled = false;
+        }
+    });
+    
+    pointSubgroup.appendChild(deleteButton);
+
+    for(let point of polygon.points) {
+        addPoint(point, polygon.points, pointSubgroup, svgPolygon, circleGroup, maxLength);
+    }
 }
 
 function addPoint(point, pointList, group, polyline, circleGroup, max, newIndex) {
@@ -221,4 +263,8 @@ function addPoint(point, pointList, group, polyline, circleGroup, max, newIndex)
 function showDragMap() {
     dragMapDisplay.style.backgroundImage = "url(" + currentState.game.map.background.src + ")";
     glassPane.style.display = "flex";
+}
+
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
 }
