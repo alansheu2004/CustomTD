@@ -8,6 +8,7 @@ var pointGroup = document.getElementById("pointGroup");
 var pointDivTemplate = document.getElementById("pointDivTemplate");
 
 var editPathButton = document.getElementById("editPath");
+var editObstaclesButton = document.getElementById("editObstacles");
 
 var selectedElement = null;
 var pt = dragMapDisplay.createSVGPoint();
@@ -30,23 +31,45 @@ function setUpDragMapInputs() {
         let polyline = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
         dragMapDisplay.appendChild(polyline);
         let circleGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
-        circleGroup.classList.add("circleGroup")
+        circleGroup.classList.add("pathCircleGroup")
         dragMapDisplay.appendChild(circleGroup);
 
-        let counter = 0;
         for (let point of currentState.game.map.path.points) {
-            addPoint(point, pointGroup, polyline, circleGroup, counter);
-            counter++;
+            addPoint(point, currentState.game.map.path.points, pointGroup, polyline, circleGroup);
         }
 
-        dragMapDisplay.addEventListener('mouseup', function(e) {
-            selectedElement = null;
-        });
         showDragMap();
+    });
+
+    //Edit Obstacles
+    editObstaclesButton.addEventListener("click", function() {
+        dragMap.style.display = "flex";
+        dragMapPanel.children[0].textContent = "Edit Obstacles";
+
+        for(let obstacle of currentState.game.map.obstacles) {
+            let pointSubgroup = document.createElement("div");
+            pointSubgroup.classList.add("pointSubgroup");
+            pointGroup.appendChild(pointSubgroup);
+            let polygon = document.createElementNS("http://www.w3.org/2000/svg", 'polygon');
+            polygon.classList.add("obstacle");
+            dragMapDisplay.appendChild(polygon);
+            let circleGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+            circleGroup.classList.add("obstacleCircleGroup")
+            dragMapDisplay.appendChild(circleGroup);
+            for(let point of obstacle.points) {
+                addPoint(point, obstacle.points, pointSubgroup, polygon, circleGroup);
+            }
+        }
+        
+        showDragMap();
+    });
+
+    dragMapDisplay.addEventListener('mouseup', function(e) {
+        selectedElement = null;
     });
 }
 
-function addPoint(point, group, polyline, circleGroup, newIndex) {
+function addPoint(point, pointList, group, polyline, circleGroup, newIndex) {
     let svgPoint = dragMapDisplay.createSVGPoint();
     svgPoint.x = point.x;
     svgPoint.y = point.y;
@@ -113,14 +136,14 @@ function addPoint(point, group, polyline, circleGroup, newIndex) {
     let addButton = pointDiv.getElementsByTagName("button")[0]
     let deleteButton = pointDiv.getElementsByTagName("button")[1]
     addButton.addEventListener("click", function() {
-        points = currentState.game.map.path.points
+        points = pointList;
         let index = points.indexOf(point);
         var newPoint = {
-            x: Math.round((point.x + points[index+1].x)/2),
-            y: Math.round((point.y + points[index+1].y)/2)
+            x: Math.round((point.x + points[(index+1)%pointList.length].x)/2),
+            y: Math.round((point.y + points[(index+1)%pointList.length].y)/2)
         };
         points.splice(index+1, 0, newPoint);
-        addPoint(newPoint, group, polyline, circleGroup, index+1);
+        addPoint(newPoint, pointList, group, polyline, circleGroup, index+1);
 
         currentState.game.map.path.setBoundary();
         currentState.game.map.path.setStepProperties();

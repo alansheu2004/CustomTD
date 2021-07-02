@@ -254,7 +254,7 @@ div:hover > label[for$="Color"] {
 }
 
 #currentBackgroundImage {
-    max-width: 50%;
+    max-width: 70%;
     max-height: 50%;
 }
 
