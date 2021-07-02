@@ -50,7 +50,7 @@ Polygon.prototype.distance = function(point) {
     if (this.contains(point)) {
         return 0;
     } else {
-        let shortest = 9999;
+        let shortest = Infinity;
         let x = point.x;
         let y = point.y;
 

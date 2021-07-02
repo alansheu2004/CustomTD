@@ -35,7 +35,7 @@ function setUpDragMapInputs() {
         dragMapDisplay.appendChild(circleGroup);
 
         for (let point of currentState.game.map.path.points) {
-            addPoint(point, currentState.game.map.path.points, pointGroup, polyline, circleGroup);
+            addPoint(point, currentState.game.map.path.points, pointGroup, polyline, circleGroup, MAX_PATH_LENGTH);
         }
 
         showDragMap();
@@ -57,7 +57,7 @@ function setUpDragMapInputs() {
             circleGroup.classList.add("obstacleCircleGroup")
             dragMapDisplay.appendChild(circleGroup);
             for(let point of obstacle.points) {
-                addPoint(point, obstacle.points, pointSubgroup, polygon, circleGroup);
+                addPoint(point, obstacle.points, pointSubgroup, polygon, circleGroup, MAX_OBSTACLE_LENGTH);
             }
         }
         
@@ -69,7 +69,7 @@ function setUpDragMapInputs() {
     });
 }
 
-function addPoint(point, pointList, group, polyline, circleGroup, newIndex) {
+function addPoint(point, pointList, group, polyline, circleGroup, max, newIndex) {
     let svgPoint = dragMapDisplay.createSVGPoint();
     svgPoint.x = point.x;
     svgPoint.y = point.y;
@@ -133,29 +133,51 @@ function addPoint(point, pointList, group, polyline, circleGroup, newIndex) {
         xInput.focus();
     }
 
-    let addButton = pointDiv.getElementsByTagName("button")[0]
-    let deleteButton = pointDiv.getElementsByTagName("button")[1]
+    let addButton = pointDiv.getElementsByClassName("addPointButton")[0]
+    let deleteButton = pointDiv.getElementsByClassName("deletePointButton")[0]
     addButton.addEventListener("click", function() {
-        points = pointList;
+        let points = pointList;
         let index = points.indexOf(point);
         var newPoint = {
             x: Math.round((point.x + points[(index+1)%pointList.length].x)/2),
             y: Math.round((point.y + points[(index+1)%pointList.length].y)/2)
         };
         points.splice(index+1, 0, newPoint);
-        addPoint(newPoint, pointList, group, polyline, circleGroup, index+1);
+        addPoint(newPoint, pointList, group, polyline, circleGroup, max, index+1);
+
+        if(pointList.length > 2) {
+            for(let button of group.getElementsByClassName("deletePointButton")) {
+                button.disabled = false;
+            }
+        }
+        if(pointList.length >= max) {
+            for(let button of group.getElementsByClassName("addPointButton")) {
+                button.disabled = true;
+            }
+        }
 
         currentState.game.map.path.setBoundary();
         currentState.game.map.path.setStepProperties();
         currentState.labelCanvas.valid = false;
     });
     deleteButton.addEventListener("click", function() {
-        points = currentState.game.map.path.points
+        let points = pointList;
         let index = points.indexOf(point);
         points.splice(index, 1);
         polyline.points.removeItem(index);
         circleGroup.removeChild(circle)
-        group.removeChild(pointDiv);    
+        group.removeChild(pointDiv);
+        
+        if(pointList.length <= 2) {
+            for(let button of group.getElementsByClassName("deletePointButton")) {
+                button.disabled = true;
+            }
+        }
+        if (pointList.length < max) {
+            for(let button of group.getElementsByClassName("addPointButton")) {
+                button.disabled = false;
+            }
+        }
 
         currentState.game.map.path.setBoundary();
         currentState.game.map.path.setStepProperties();

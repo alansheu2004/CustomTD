@@ -144,3 +144,7 @@ circle:hover, circle.focused, circle.hovered {
     margin-right: 5px;
     vertical-align: middle;
 }
+
+.pointDiv button:disabled {
+    filter: opacity(0.6);
+}
