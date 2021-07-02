@@ -20,6 +20,7 @@ function setUpDragMapInputs() {
     closeDragMapPopup.addEventListener("click", function() {
         dragMapDisplay.textContent = "";
         pointGroup.textContent = "";
+        dragMapPanelBottom.textContent = "";
         glassPane.style.display = "none";
     })
 
@@ -242,12 +243,11 @@ function addPoint(point, pointList, group, polyline, circleGroup, max, newIndex)
 
             let newX = Math.min(Math.max(Math.round(cursorpt.x - dx), 0), 960);
             let newY = Math.min(Math.max(Math.round(cursorpt.y - dy), 0), 720);
-            let index = Array.from(pointDiv.parentNode.children).indexOf(pointDiv);
 
             circle.setAttribute("cx", newX);
             circle.setAttribute("cy", newY);
-            polyline.points[index].x = point.x;
-            polyline.points[index].y = point.y;
+            svgPoint.x = point.x;
+            svgPoint.y = point.y;
             xInput.value = newX;
             yInput.value = newY;
             point.x = newX;

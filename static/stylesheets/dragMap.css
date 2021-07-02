@@ -155,10 +155,6 @@ circle:hover, circle.focused, circle.hovered {
     vertical-align: middle;
 }
 
-.pointDiv button:disabled {
-    filter: opacity(0.6);
-}
-
 #dragMapPanelBottom {
     flex: 0 0 auto;
     text-align: center;
