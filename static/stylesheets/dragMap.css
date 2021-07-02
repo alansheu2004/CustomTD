@@ -57,7 +57,14 @@ polygon.obstacle {
     fill-opacity: 0.4;
 }
 
-g.cirlceGroup {
+polygon.water {
+    stroke: blue;
+    stroke-width: 3;
+    fill: blue;
+    fill-opacity: 0.4;
+}
+
+g.circleGroup {
     z-index: 200;
 }
 
@@ -69,6 +76,11 @@ g.cirlceGroup {
 .obstacleCircleGroup circle {
     fill: green;
     stroke: green;
+}
+
+.waterCircleGroup circle {
+    fill: blue;
+    stroke: blue;
 }
 
 circle {

@@ -9,6 +9,7 @@ var pointDivTemplate = document.getElementById("pointDivTemplate");
 
 var editPathButton = document.getElementById("editPath");
 var editObstaclesButton = document.getElementById("editObstacles");
+var editWaterButton = document.getElementById("editWater");
 
 var selectedElement = null;
 var pt = dragMapDisplay.createSVGPoint();
@@ -68,6 +69,37 @@ function setUpDragMapInputs() {
 
         for(let obstacle of currentState.game.map.obstacles) {
             addSubgroup(obstacle, "obstacle", currentState.game.map.obstacles, addButton, MAX_OBSTACLE_LENGTH, MAX_OBSTACLE_COUNT);
+        }
+        
+        showDragMap();
+    });
+
+    //Edit Water
+    editWaterButton.addEventListener("click", function() {
+        dragMap.style.display = "flex";
+        dragMapPanel.children[0].textContent = "Edit Water";
+
+        let addButton = document.createElement("button");
+        addButton.textContent = "Add New Water";
+        addButton.addEventListener("click", function() {
+            let side = 50
+            let newPolygon = new Polygon([
+                {x: MAP_WIDTH/2 - side/2, y: MAP_HEIGHT/2 - side/2},
+                {x: MAP_WIDTH/2 + side/2, y: MAP_HEIGHT/2 - side/2},
+                {x: MAP_WIDTH/2 + side/2, y: MAP_HEIGHT/2 + side/2},
+                {x: MAP_WIDTH/2 - side/2, y: MAP_HEIGHT/2 + side/2}
+            ])
+            currentState.game.map.waters.push(newPolygon)
+            addSubgroup(newPolygon, "water", currentState.game.map.waters, MAX_WATER_LENGTH, MAX_WATER_COUNT);
+
+            if(currentState.game.map.waters.length >= MAX_OBSTACLE_COUNT) {
+                addButton.disabled = true;
+            }
+        });
+        dragMapPanelBottom.appendChild(addButton);
+
+        for(let water of currentState.game.map.waters) {
+            addSubgroup(water, "water", currentState.game.map.waters, addButton, MAX_WATER_LENGTH, MAX_WATER_COUNT);
         }
         
         showDragMap();
