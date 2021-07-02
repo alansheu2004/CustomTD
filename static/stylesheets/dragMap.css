@@ -13,19 +13,34 @@
 }
 
 .popup {
+    position: relative;
     background-color: var(--highlight-background-color);
     padding: 20px;
 }
 
+.closePopup {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    height: 20px;
+    width: 20px;
+    border: none;
+    background-color: var(--highlight-content-color);
+    color: white;
+}
+
 #dragMap {
-    display: flex;
+    display: none;
     flex-direction: row;
     align-items: stretch;
 }
 
 #dragMapDisplay {
-    width: 60vw;
-    height: 45vw;
+    max-width: 60vw;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
     background-size: 100% 100%;
 }
 
@@ -35,29 +50,30 @@ polyline {
     fill: none;
 }
 
+g.cirlceGroup {
+    z-index: 200;
+}
+
 circle {
     fill: red;
     stroke: red;
-    stroke-opacity: 0.6;
+    stroke-opacity: 0.4;
     r: 6px;
     stroke-width: 14;
-    transition: 0.15s;
-    z-index: 100;
+    transition: r 0.15s, stroke-width 0.15s;
     cursor: move;
 }
 
-circle:hover {
+circle:hover, circle.focused, circle.hovered {
     cursor: all-scroll;
     r: 13px;
     stroke-width: 0;
-    transition: 0.15s;
 }
 
 #dragMapPanel {
-    margin-left: 20px;
+    margin-left: 10px;
     width: 20vw;
     color: white;
-    height: 45vw;
     display: flex;
     flex-direction: column;
 }
@@ -69,7 +85,7 @@ circle:hover {
 
 #pointGroup {
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 5px;
     flex: 1 1 0;
 }
 
@@ -81,11 +97,11 @@ circle:hover {
 }
 
 .pointDiv label {
-    margin: 0 5px 0 10px;
     flex: 0 0 auto;
 }
 
 .pointDiv input {
+    margin: 0 10px 0 5px;
     flex: 1 1 0;
     min-width: 0;
 }
@@ -98,6 +114,6 @@ circle:hover {
     font-size: 12pt;
     width: 15pt;
     height: 15pt;
-    margin-left: 10px;
+    margin-right: 5px;
     vertical-align: middle;
 }
