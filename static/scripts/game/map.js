@@ -7,8 +7,8 @@
 	this.path = path;
 	this.obstacles = obstacles;
 	this.waters = waters;
-    this.polydist = this.setPolyDist(); //2 dimensional boolean array of whether a point is on the bath.boundaries (every 10 points)
-    this.waterpolydist = this.setWaterPolyDist();
+    this.setPolyDist(); //2 dimensional boolean array of whether a point is on the bath.boundaries (every 10 points)
+    this.setWaterPolyDist();
 }
 
 Map.prototype.drawPath = function(context, color, lineWidth) {
@@ -64,7 +64,7 @@ Map.prototype.setPolyDist = function() {
 
         rows.push(row);
     }
-    return rows;
+    this.polydist = rows;
 }
 
 Map.prototype.getPolyDist = function(point) {
@@ -112,7 +112,7 @@ Map.prototype.setWaterPolyDist = function() {
 
         rows.push(row);
     }
-    return rows;
+    this.waterpolydist = rows;
 }
 
 Map.prototype.getWaterPolyDist = function(point) {

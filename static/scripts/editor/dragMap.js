@@ -19,6 +19,9 @@ var dy = 0;
 function setUpDragMapInputs() {
 
     closeDragMapPopup.addEventListener("click", function() {
+        currentState.game.map.setPolyDist();
+        currentState.game.map.setWaterPolyDist();
+
         dragMapDisplay.textContent = "";
         pointGroup.textContent = "";
         dragMapPanelBottom.textContent = "";
