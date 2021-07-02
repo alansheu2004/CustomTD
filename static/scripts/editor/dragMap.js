@@ -51,7 +51,7 @@ function addPoint(point, group, polyline, circleGroup, newIndex) {
     svgPoint.x = point.x;
     svgPoint.y = point.y;
     if(newIndex && newIndex<polyline.points.length) {
-        polyline.points.insertItemBefore(svgPoint, polyline.points[newIndex]);
+        polyline.points.insertItemBefore(svgPoint, newIndex);
     } else {
         polyline.points.appendItem(svgPoint);
     }
@@ -70,7 +70,7 @@ function addPoint(point, group, polyline, circleGroup, newIndex) {
     pointDiv.point = point;
     pointDiv.addEventListener("mouseover", function() {circle.classList.add("hovered")});
     pointDiv.addEventListener("mouseout", function() {circle.classList.remove("hovered")});
-    if(newIndex && newIndex<group.length) {
+    if(newIndex && newIndex<group.children.length) {
         group.insertBefore(pointDiv, group.children[newIndex]);
     } else {
         group.appendChild(pointDiv);
@@ -81,26 +81,62 @@ function addPoint(point, group, polyline, circleGroup, newIndex) {
     xInput.value = point.x;
     yInput.value = point.y;
     xInput.addEventListener("input", function() {
-        point.x = xInput.value;
-        let index = Array.from(pointDiv.parentNode.children).indexOf(pointDiv);
-        polyline.points[index].x = point.x;
-        circle.setAttribute("cx", point.x);
+        if(xInput.value.length){
+            point.x = xInput.value;
+            svgPoint.x = point.x;
+            circle.setAttribute("cx", point.x);
+
+            currentState.game.map.path.setBoundary();
+            currentState.game.map.path.setStepProperties();
+            currentState.labelCanvas.valid = false;
+        }
     });
     xInput.addEventListener("focus", function() {circle.classList.add("focused")});
     xInput.addEventListener("blur", function() {circle.classList.remove("focused")});
     yInput.addEventListener("input", function() {
-        point.y = yInput.value;
-        let index = Array.from(pointDiv.parentNode.children).indexOf(pointDiv);
-        polyline.points[index].y = point.y;
-        circle.setAttribute("cy", point.y);
+        if(yInput.value.length){
+            point.y = yInput.value;
+            svgPoint.y = point.y;
+            circle.setAttribute("cy", point.y);
+
+            currentState.game.map.path.setBoundary();
+            currentState.game.map.path.setStepProperties();
+            currentState.labelCanvas.valid = false;
+        }
     });
     yInput.addEventListener("focus", function() {circle.classList.add("focused")});
     yInput.addEventListener("blur", function() {circle.classList.remove("focused")});
+    if(newIndex && newIndex<group.children.length) {
+        xInput.focus();
+    }
 
     let addButton = pointDiv.getElementsByTagName("button")[0]
     let deleteButton = pointDiv.getElementsByTagName("button")[1]
     addButton.addEventListener("click", function() {
-        
+        points = currentState.game.map.path.points
+        let index = points.indexOf(point);
+        var newPoint = {
+            x: Math.round((point.x + points[index+1].x)/2),
+            y: Math.round((point.y + points[index+1].y)/2)
+        };
+        points.splice(index+1, 0, newPoint);
+        addPoint(newPoint, group, polyline, circleGroup, index+1);
+
+        currentState.game.map.path.setBoundary();
+        currentState.game.map.path.setStepProperties();
+        currentState.labelCanvas.valid = false;
+    });
+    deleteButton.addEventListener("click", function() {
+        points = currentState.game.map.path.points
+        let index = points.indexOf(point);
+        points.splice(index, 1);
+        polyline.points.removeItem(index);
+        circleGroup.removeChild(circle)
+        group.removeChild(pointDiv);    
+
+        currentState.game.map.path.setBoundary();
+        currentState.game.map.path.setStepProperties();
+        currentState.labelCanvas.valid = false;
     });
 
     circle.addEventListener('mousedown', function(e) {

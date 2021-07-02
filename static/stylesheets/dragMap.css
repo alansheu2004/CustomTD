@@ -80,7 +80,13 @@ circle:hover, circle.focused, circle.hovered {
 
 #dragMapPanel h2 {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+}
+
+#dragMapPanel p {
+    font-size: 10pt;
+    margin-bottom: 5px;
+    text-align: center;
 }
 
 #pointGroup {
