@@ -15,6 +15,8 @@ var selectedElement = null;
 var pt = dragMapDisplay.createSVGPoint();
 var dx = 0;
 var dy = 0;
+var circleOffsetsX = [];
+var circleOffsetsY = [];
 
 function setUpDragMapInputs() {
 
@@ -139,8 +141,47 @@ function addSubgroup(polygon, name, polygonList, addButton, maxLength, maxCount)
             addButton.disabled = false;
         }
     });
-    
     pointSubgroup.appendChild(deleteButton);
+
+    svgPolygon.addEventListener('mousedown', function(e) {
+        selectedElement = svgPolygon;
+        pt.x = e.clientX;
+        pt.y = e.clientY;
+        let cursorpt =  pt.matrixTransform(dragMapDisplay.getScreenCTM().inverse());
+
+        circleOffsetsX = [];
+        circleOffsetsY = [];
+        for (let circle of circleGroup.children) {
+            circleOffsetsX.push(circle.getAttribute("cx") - cursorpt.x);
+            circleOffsetsY.push(circle.getAttribute("cy") - cursorpt.y);
+        }
+    });
+    dragMapDisplay.addEventListener('mousemove', function(e) {
+        if (selectedElement == svgPolygon) {
+            pt.x = e.clientX;
+            pt.y = e.clientY;
+            let cursorpt =  pt.matrixTransform(dragMapDisplay.getScreenCTM().inverse());
+
+            
+            for (let i=0; i<polygon.points.length; i++) {
+                let newX = Math.min(Math.max(Math.round(cursorpt.x + circleOffsetsX[i]), 0), 960);
+                let newY = Math.min(Math.max(Math.round(cursorpt.y + circleOffsetsY[i]), 0), 720);
+
+                polygon.points[i].x = newX;
+                polygon.points[i].y = newY;
+                circleGroup.children[i].setAttribute("cx", newX);
+                circleGroup.children[i].setAttribute("cy", newY);
+                svgPolygon.points[i].x = newX;
+                svgPolygon.points[i].y = newY;
+                pointSubgroup.children[i+1].getElementsByTagName("input")[0].value = newX;
+                pointSubgroup.children[i+1].getElementsByTagName("input")[1].value = newY;
+
+                currentState.game.map.path.setBoundary();
+                currentState.game.map.path.setStepProperties();
+                currentState.labelCanvas.valid = false;
+            }
+        }
+    });
 
     for(let point of polygon.points) {
         addPoint(point, polygon.points, pointSubgroup, svgPolygon, circleGroup, maxLength);
@@ -279,14 +320,14 @@ function addPoint(point, pointList, group, polyline, circleGroup, max, newIndex)
             let newX = Math.min(Math.max(Math.round(cursorpt.x - dx), 0), 960);
             let newY = Math.min(Math.max(Math.round(cursorpt.y - dy), 0), 720);
 
+            point.x = newX;
+            point.y = newY;
             circle.setAttribute("cx", newX);
             circle.setAttribute("cy", newY);
             svgPoint.x = point.x;
             svgPoint.y = point.y;
             xInput.value = newX;
             yInput.value = newY;
-            point.x = newX;
-            point.y = newY;
 
             currentState.game.map.path.setBoundary();
             currentState.game.map.path.setStepProperties();

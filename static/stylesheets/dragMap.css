@@ -50,6 +50,10 @@ polyline {
     fill: none;
 }
 
+polygon {
+    cursor: move;
+}
+
 polygon.obstacle {
     stroke: green;
     stroke-width: 3;
