@@ -41,8 +41,9 @@ function init() {
 
 	currentState = new GameState(document.getElementById("canvasDiv"), DEFAULT_GAME);
 
-	if(typeof variable !== undefined) {
-		setUpShowBoundariesInput()
+	if(typeof editing !== 'undefined') {
+		setUpShowBoundariesInput();
+		setUpRestartButton();
 		setUpFontSelect();
 		setUpColorInputs();
 		setUpTextInputs();
@@ -163,13 +164,7 @@ function GameState(canvasDiv, game) {
 	        return x>=0 && x<=CANVAS_WIDTH &&
 	        y>=0 && y<=CANVAS_HEIGHT;
 	    },
-	    function(state) { //action
-			state.restartButton.active = false; 
-			window.clearInterval(state.loop);
-			state.pauseBackgroundMusic();
-			currentState = new GameState(document.getElementById("canvasDiv"), state.game);
-			currentState.playBackgroundMusic();
-	    },
+	    this.restart,
 	    false, []);
 	this.addButton(this.restartButton);
 
@@ -204,6 +199,14 @@ function GameState(canvasDiv, game) {
 	this.loop = window.setInterval(function() {
 		thisState.update();
 	}, thisState.interval);
+}
+
+GameState.prototype.restart = function(state) {
+	this.restartButton.active = false; 
+	window.clearInterval(this.loop);
+	this.pauseBackgroundMusic();
+	currentState = new GameState(document.getElementById("canvasDiv"), this.game);
+	currentState.playBackgroundMusic();
 }
 
 //Adds a new tower

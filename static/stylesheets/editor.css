@@ -97,13 +97,14 @@ input#showBoundaries {
     display: none;
 }
 
-input#showBoundaries + label {
+input#showBoundaries + label, button#restartGame {
     display: inline-block;
     margin-bottom: 10px;
     background-color: var(--highlight-background-color);
     color: var(--highlight-text-color);
     font-size: 12pt;
     padding: 4px 6px;
+    border: none;
 }
 
 input#showBoundaries + label:hover {

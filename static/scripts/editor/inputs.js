@@ -19,6 +19,15 @@ function setUpShowBoundariesInput() {
     });
 }
 
+//Restart Button
+var restartButton = document.getElementById("restartGame");
+function setUpRestartButton() {
+    restartButton.addEventListener("click", function() {
+        currentState.restart();
+        currentState.mapscreen.showBoundaries = showBoundariesInput.checked;
+    });
+}
+
 //Font Select
 var fontSelect = document.getElementById("font");
 for (let option of fontSelect.children) {
