@@ -11,6 +11,7 @@ function fillEnemyRows() {
     enemyTable.textContent = "";
     for(let enemy of currentState.game.enemyTypes) {
         let row = enemyTableTemplate.cloneNode(true);
+        row.id = "";
         row.style.display = "table-row";
         row.children[0].children[0].src = enemy.image.src;
         row.children[1].textContent = enemy.name;

@@ -264,6 +264,10 @@ div:hover > label[for$="Color"] {
     max-height: 15%;
 }
 
+[for="enemyImage"] {
+    margin-bottom: 20px;
+}
+
 input[type="number"], input[type="text"] {
     background-color: transparent;
     color: var(--highlight-text-color);
