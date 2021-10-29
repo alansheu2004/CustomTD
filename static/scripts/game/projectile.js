@@ -44,7 +44,7 @@ MELON = new ProjectileType("Melon", THICC_CABBAGE, INHERIT, 400, INHERIT, INHERI
 						INHERIT, 30, INHERIT, INHERIT, [new PulseAttack(MELON_EXPLOSION, null, 2*Math.PI, null)],
 						"images/melon.png", 60, 60);
 
-const projectiles = [
+const defaultProjectileTypes = [
 	PEA,
 	SNOW_PEA,
 	STAR,
@@ -83,7 +83,10 @@ function ProjectileType(name, base, pierce, speed, maxRange, damage,
 	this.imgwidth = imgwidth;
 	this.imgheight = imgheight;
 
+	this.base = base;
+	//this.variations = [];
 	if(base) {
+		//this.base.variations.append(this);
 		for(let key of Object.keys(this)) {
 			if(this[key] == INHERIT) {
 				this[key] = base[key];
