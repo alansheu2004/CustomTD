@@ -19,7 +19,7 @@ nav {
 nav a.navLink {
     color: var(--highlight-text-color);
     font-size: 12pt;
-    padding: 1.5vh 1.5vw;
+    padding: 1vh 1.5vw;
     cursor: pointer;
     flex: 0 0 auto;
 }

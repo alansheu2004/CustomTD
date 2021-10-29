@@ -11,6 +11,7 @@ function fillTowerRows() {
     towerTable.textContent = "";
     for(let tower of currentState.game.towerTypes) {
         let row = towerTableTemplate.cloneNode(true);
+        row.id = "";
         row.style.display = "table-row";
         row.children[0].children[0].src = tower.upgrades[0].image.src;
         row.children[1].textContent = tower.name;
@@ -82,7 +83,8 @@ function editTower(tower) {
 
 function makeUpgradeDiv(upgrade, counter) {
     let upgradeDiv = upgradeTemplate.cloneNode(true);
-    upgradeDiv.querySelector("[for='upgradeImageLabel']").for = "upgradeImage" + counter;
+    upgradeDiv.id = "";
+    upgradeDiv.querySelector("[for='upgradeImageLabel']").setAttribute("for", "upgradeImage" + counter);
     upgradeDiv.querySelector("#upgradeImageInput").id = "upgradeImage" + counter;
 
     upgradeDiv.querySelector(".upgradeName").value = upgrade.name;

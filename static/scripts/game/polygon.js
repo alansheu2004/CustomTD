@@ -88,6 +88,7 @@ Polygon.prototype.distance = function(point) {
 
             var dx = x - xx;
             var dy = y - yy;
+            
             shortest = Math.min(shortest, Math.sqrt(dx * dx + dy * dy));
         }
 

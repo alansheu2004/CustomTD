@@ -7,11 +7,6 @@ input[type="text"] {
     transition: 0.25s;
 }
 
-input[type="text"]:focus {
-    border-color: var(--highlight-background-color);
-    transition: 0.25s;
-}
-
 ::placeholder {
     color: var(--highlight-text-color);
     filter: opacity(0.6);
@@ -102,13 +97,14 @@ input#showBoundaries {
     display: none;
 }
 
-input#showBoundaries + label {
+input#showBoundaries + label, button#restartGame {
     display: inline-block;
     margin-bottom: 10px;
     background-color: var(--highlight-background-color);
     color: var(--highlight-text-color);
     font-size: 12pt;
     padding: 4px 6px;
+    border: none;
 }
 
 input#showBoundaries + label:hover {
@@ -182,6 +178,13 @@ div.group {
     margin-bottom: 10px;
 }
 
+div.group.sticky {
+    position: sticky;
+    top: 0;
+    background-color: var(--highlight-background-color);
+    padding-bottom: 5px;
+}
+
 select {
     background-color: var(--highlight-content-color);
     border: none;
@@ -251,25 +254,35 @@ div:hover > label[for$="Color"] {
     background-size: 75% 75%;
 }
 
-#currentBackgroundImage, #currentEnemyImage {
-    max-width: 50%;
+#currentBackgroundImage {
+    max-width: 70%;
     max-height: 50%;
 }
 
+#currentEnemyImage {
+    max-width: 15%;
+    max-height: 15%;
+}
+
+[for="enemyImage"] {
+    margin-bottom: 20px;
+}
+
 input[type="number"], input[type="text"] {
-    background-color: var(--highlight-content-color);
+    background-color: transparent;
     color: var(--highlight-text-color);
     border: none;
+    border-bottom: 2px solid var(--highlight-text-color);
     font-size: 12pt;
     padding: 2px 2px;
     text-align: left;
 }
 
-input[type="number"] {
-    width: 3em;
+.group input[type="number"] {
+    width: 4em;
 }
 
-input[type="text"] {
+.group input[type="text"] {
     width: 20em;
 }
 
@@ -329,6 +342,6 @@ textarea {
     vertical-align: text-top;
 }
 
-.templates {
-    display: none;
+.templates, [id$="Template"] {
+    display: none !important;
 }

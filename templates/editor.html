@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="stylesheets/play.css">
         <link rel="stylesheet" type="text/css" href="stylesheets/editor.css">
         <link rel="stylesheet" type="text/css" href="stylesheets/upgrades.css">
+        <link rel="stylesheet" type="text/css" href="stylesheets/dragMap.css">
     </head>
     
     <body>
@@ -33,7 +34,8 @@
                     <canvas id="splashCanvas" width="640" height="360"></canvas>
                 </div>
     
-                <input type="checkbox" name="showBoundaries" id="showBoundaries"><label for="showBoundaries">Show Boundaries</label>
+                <input type="checkbox" name="showBoundaries" id="showBoundaries"><label for="showBoundaries">Show Geometries</label>
+                <button id="restartGame">Restart Game</button>
             </div>
 
             <div id="rightDiv">
@@ -128,6 +130,7 @@
                             <div>
                                 <label>Background Music: </label>
                                 <label for="backgroundMusic" class="file">Add...</label><input type="file" id="backgroundMusic" accept="audio/*">
+                                <button id="listenBackgroundMusic" class="file" style="display: none">Listen</button>
                                 <button id="removeBackgroundMusic" class="file" style="display: none">Remove</button>
                             </div>
                         </section>
@@ -144,7 +147,6 @@
                         </section>
                         <section>
                             <h2>Geometry</h2>
-                            <h5>(Currently does nothing)</h5>
                             <div class="group">
                                 <div>
                                     <label>Path:</label> <button id="editPath">Edit...</button>
@@ -185,7 +187,7 @@
                         </div>
                         
                         <div id="editTowerScreen" style="display: none;">
-                            <div class="group">
+                            <div class="group sticky">
                                 <a id="backToTowerScreen">&lt; Back to Tower List</a>
                             </div>
                             <section>
@@ -224,7 +226,7 @@
                                                 <div class="upgradeInfoDiv">
                                                     <div><label class="upgradeName">BASE FORM</label></div>
                                                     <div>
-                                                        <label>Range:</label> <input class="range" type="number" min="1" max="500">
+                                                        <label>Range:</label> <input class="range" type="number" min="1" max="1200">
                                                     </div>
                                                     <div style="display: inline-block;"><label>Width:</label> <input class="width" type="number" min="1" max="150"></div>
                                                     <div style="display: inline-block;"><label>Height:</label> <input class="height" type="number" min="1" max="150"></div>
@@ -243,7 +245,7 @@
                                         <div><input class="upgradeName" type="text" placeholder="Upgrade Name"></div>
                                         <div><textarea class="upgradeDescription" maxlength="63" placeholder="Upgrade Description"></textarea></div>
                                         <div><label>Cost:</label> <input class="upgradeCost" type="number" min="0"></div>
-                                        <div><label>Range:</label> <input class="range" type="number" min="1" max="500"></div>
+                                        <div><label>Range:</label> <input class="range" type="number" min="1" max="1200"></div>
                                         <div style="display: inline-block;"><label>Width:</label> <input class="width" type="number" min="1" max="150"></div>
                                         <div style="display: inline-block;"><label>Height:</label> <input class="height" type="number" min="1" max="150"></div>
                                     </div>
@@ -264,7 +266,9 @@
                             <section>
                                 <div>
                                     <label>Damage Sound: </label>
+                                    
                                     <label for="damageSound" class="file">Add...</label><input type="file" id="damageSound" accept="audio/*">
+                                    <button id="listenDamageSound" class="file" style="display: none">Listen</button>
                                     <button id="removeDamageSound" class="file" style="display: none">Remove</button>
                                 </div>
                             </section>
@@ -280,7 +284,7 @@
                         </div>
                         
                         <div id="editEnemyScreen" style="display: none;">
-                            <div class="group">
+                            <div class="group sticky">
                                 <a id="backToEnemyScreen">&lt; Back to Enemy List</a>
                             </div>
                             <section>
@@ -288,7 +292,7 @@
                                 <div class="group">
                                     <div>
                                         <img id="currentEnemyImage" /><br />
-                                        <label for="enemyImage" class="file">Change...</label><input type="file" id="enemyImage" accept="image/*">
+                                        <label for="enemyImage" class="file">Change Image...</label><input type="file" id="enemyImage" accept="image/*">
                                     </div>
                                     <div>
                                         <label>Width:</label> <input id="enemyWidth" type="number" min="1" max="150">
@@ -324,8 +328,36 @@
                         </div>
                     </div>
                 </div>
-    
-                
+            </div>
+
+            <div id="glassPane">
+                <div class="popup" id="dragMapPopup">
+                    <button id="closeDragMapPopup" class="closePopup">&times;</button>
+                    <div id="dragMap">
+                        <svg id="dragMapDisplay" width="960" height="720" viewBox="0 0 960 720">
+                        </svg>
+                        <div id="dragMapPanel">
+                            <h2></h2>
+                            <p>The map is 960&times;720, starting from the top-left corner.</p>
+                            <p>Drag the left or edit coordinates on the right.</p>
+                            <div id="pointGroup">
+                                
+                            </div>
+                            <div id="dragMapPanelBottom">
+
+                            </div>
+
+                            <div id="pointDivTemplate" class="pointDiv">
+                                <label>x:</label>
+                                <input type="number" min="0" max="960" step="10">
+                                <label>y:</label>
+                                <input type="number" min="0" max="720" step="10">
+                                <button class="addPointButton">+</button>
+                                <button class="deletePointButton">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -335,6 +367,7 @@
         <script type="text/javascript" src="scripts/editor/tabs.js"></script>
         <script type="text/javascript" src="scripts/editor/towers.js"></script>
         <script type="text/javascript" src="scripts/editor/enemies.js"></script>
+        <script type="text/javascript" src="scripts/editor/dragMap.js"></script>
         {% for filename in scripts %}
             {% if filename %}
                 <script type="text/javascript" src="{{ filename }}"></script>

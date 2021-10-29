@@ -1,0 +1,186 @@
+#glassPane {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 100;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.popup {
+    position: relative;
+    background-color: var(--highlight-background-color);
+    padding: 20px;
+}
+
+.closePopup {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    height: 20px;
+    width: 20px;
+    border: none;
+    background-color: var(--highlight-content-color);
+    color: white;
+}
+
+#dragMap {
+    display: none;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+#dragMapDisplay {
+    max-width: 60vw;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    background-size: 100% 100%;
+}
+
+polyline {
+    stroke: red;
+    stroke-width: 3;
+    fill: none;
+}
+
+polygon {
+    cursor: move;
+}
+
+polygon.obstacle {
+    stroke: green;
+    stroke-width: 3;
+    fill: green;
+    fill-opacity: 0.4;
+}
+
+polygon.water {
+    stroke: blue;
+    stroke-width: 3;
+    fill: blue;
+    fill-opacity: 0.4;
+}
+
+g.circleGroup {
+    z-index: 200;
+}
+
+.pathCircleGroup circle {
+    fill: red;
+    stroke: red;
+}
+
+.obstacleCircleGroup circle {
+    fill: green;
+    stroke: green;
+}
+
+.waterCircleGroup circle {
+    fill: blue;
+    stroke: blue;
+}
+
+circle {
+    stroke-opacity: 0.5;
+    r: 6px;
+    stroke-width: 14;
+    transition: r 0.15s, stroke-width 0.15s;
+    cursor: move;
+}
+
+circle:hover, circle.focused, circle.hovered {
+    cursor: all-scroll;
+    r: 13px;
+    stroke-width: 0;
+}
+
+#dragMapPanel {
+    margin-left: 10px;
+    width: 20vw;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+#dragMapPanel h2 {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+#dragMapPanel p {
+    font-size: 9pt;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+#pointGroup {
+    overflow-y: auto;
+    padding-right: 5px;
+    flex: 1 1 0;
+    text-align: center;
+}
+
+.pointSubgroup {
+    border-bottom: 4px solid var(--highlight-text-color);
+    padding: 10px 0 15px;
+    text-align: center;
+}
+
+.pointSubgroup > button {
+    background-color: var(--highlight-content-color);
+    border: none;
+    color: var(--highlight-text-color);
+    font-size: 10pt;
+    padding: 2px 6px;
+    margin-bottom: 5px;
+}
+
+.pointDiv {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+}
+
+.pointDiv label {
+    flex: 0 0 auto;
+}
+
+.pointDiv input {
+    margin: 0 10px 0 5px;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.pointDiv button {
+    flex: 0 0 auto;
+    background-color: var(--highlight-content-color);
+    border: none;
+    color: var(--highlight-text-color);
+    font-size: 12pt;
+    width: 15pt;
+    height: 15pt;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+#dragMapPanelBottom {
+    flex: 0 0 auto;
+    text-align: center;
+}
+
+#dragMapPanelBottom button {
+    background-color: var(--highlight-content-color);
+    border: none;
+    color: var(--highlight-text-color);
+    font-size: 12pt;
+    padding: 2px 6px;
+    margin: 10px 0;
+}

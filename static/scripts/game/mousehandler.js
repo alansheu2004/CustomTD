@@ -308,7 +308,6 @@ MouseHandler.prototype.setDropValid = function(mouse) {
 			return;
 		}
 	}
-
 	this.state.dropValid = true;
 }
 

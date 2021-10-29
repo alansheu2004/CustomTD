@@ -19,6 +19,15 @@ function setUpShowBoundariesInput() {
     });
 }
 
+//Restart Button
+var restartButton = document.getElementById("restartGame");
+function setUpRestartButton() {
+    restartButton.addEventListener("click", function() {
+        currentState.restart();
+        currentState.mapscreen.showBoundaries = showBoundariesInput.checked;
+    });
+}
+
 //Font Select
 var fontSelect = document.getElementById("font");
 for (let option of fontSelect.children) {
@@ -114,18 +123,24 @@ function setUpTextInputs() {
 //Background Music
 var backgroundMusicInput = document.getElementById("backgroundMusic");
 var backgroundMusicLabel = document.querySelector("label[for=backgroundMusic]");
+var listenBackgroundMusicButton = document.getElementById("listenBackgroundMusic");
 var removeBackgroundMusicButton = document.getElementById("removeBackgroundMusic");
 function setUpBackgroundMusicInput() {
     if(currentState.game.backgroundMusic) {
         backgroundMusicLabel.textContent = "Change...";
         removeBackgroundMusicButton.style.display = "initial";
+        listenBackgroundMusicButton.style.display = "initial";
     } else {
         backgroundMusicLabel.textContent = "Add...";
         removeBackgroundMusicButton.style.display = "none";
+        listenBackgroundMusicButton.style.display = "none";
     }
+    var backgroundMusicSample = new Audio(currentState.game.backgroundMusic);
 
     backgroundMusicInput.addEventListener("change", function() {
         currentState.pauseBackgroundMusic();
+        backgroundMusicSample.pause();
+        listenBackgroundMusicButton.textContent = "Listen";
         currentState.game.backgroundMusic = (window.URL ? URL : webkitURL).createObjectURL(backgroundMusicInput.files[0]);
         currentState.playBackgroundMusic();
         backgroundMusicLabel.textContent = "Change...";
@@ -133,10 +148,25 @@ function setUpBackgroundMusicInput() {
     });
     removeBackgroundMusicButton.addEventListener("click", function() {
         currentState.pauseBackgroundMusic();
+        backgroundMusicSample.pause();
+        listenBackgroundMusicButton.textContent = "Listen";
         currentState.game.backgroundMusic = null;
         currentState.playBackgroundMusic();
         backgroundMusicLabel.textContent = "Add...";
         removeBackgroundMusicButton.style.display = "none";
+    });
+    listenBackgroundMusicButton.addEventListener("click", function() {
+        if(backgroundMusicSample.paused) {
+            backgroundMusicSample.play();
+            listenBackgroundMusicButton.textContent = "Stop";
+        } else {
+            backgroundMusicSample.pause();
+            listenBackgroundMusicButton.textContent = "Listen";
+            backgroundMusicSample.currentTime = 0;
+        }
+    });
+    backgroundMusicSample.addEventListener("ended", function() {
+        listenBackgroundMusicButton.textContent = "Listen";
     });
 }
 

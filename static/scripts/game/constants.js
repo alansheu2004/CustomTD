@@ -38,6 +38,12 @@ const MAP_RESOURCE_TEXT_OFFSET_X = 80;
 const RANGE_VALID_COLOR = "black";
 const RANGE_INVALID_COLOR = "red";
 
+const MAX_PATH_LENGTH = 50;
+const MAX_OBSTACLE_LENGTH = 20;
+const MAX_WATER_LENGTH = 20;
+const MAX_OBSTACLE_COUNT = 10;
+const MAX_WATER_COUNT = 5;
+
 const PANEL_X = 960;
 const PANEL_Y = 0;
 const PANEL_WIDTH = 320;
