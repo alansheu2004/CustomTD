@@ -175,6 +175,13 @@
     
                                 </table>
                             </section>
+
+                            <section>
+                                <h2>Projectiles</h2>
+                                <table id="projectileTable">
+    
+                                </table>
+                            </section>
     
                             <table class="templates">
                                 <tr id="towerTableTemplate" style="display: none">
@@ -182,6 +189,12 @@
                                     <td style="width: 100%"></td>
                                     <td><button class="editTower">Edit</button></td>
                                     <td><button class="deleteTower">Delete</button></td>
+                                </tr>
+                                <tr id="projectileTableTemplate" style="display: none">
+                                    <td><img /></td>
+                                    <td style="width: 100%"></td>
+                                    <td><button class="editProjectile">Edit</button></td>
+                                    <td><button class="deleteProjectile">Delete</button></td>
                                 </tr>
                             </table>
                         </div>
@@ -366,6 +379,7 @@
         <script type="text/javascript" src="scripts/editor/inputs.js"></script>
         <script type="text/javascript" src="scripts/editor/tabs.js"></script>
         <script type="text/javascript" src="scripts/editor/towers.js"></script>
+        <script type="text/javascript" src="scripts/editor/projectile.js"></script>
         <script type="text/javascript" src="scripts/editor/enemies.js"></script>
         <script type="text/javascript" src="scripts/editor/dragMap.js"></script>
         {% for filename in scripts %}

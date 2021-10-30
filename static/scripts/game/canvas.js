@@ -9,6 +9,7 @@ var DEFAULT_GAME = {
 	"roundlyIncome" : 0,
 	"towerTypes" : defaultTowerTypes,
 	"enemyTypes" : defaultEnemyTypes,
+	"projectileTypes" : defaultProjectileTypes,
 	"enemyWaves" : defaultWaves,
 	"font" : "Oeztype",
 	"backgroundMusic" : "sounds/poolMusic.mp3",
@@ -51,6 +52,7 @@ function init() {
 		setUpBackgroundImageInput();
 		setUpSpinners();
 		setUpTowerTable();
+		setUpProjectileTable();
 		setUpTowerInputs();
 		setUpEnemyTable();
 		setUpEnemyInputs();
