@@ -2,7 +2,7 @@ var currentState = null;
 var started = false;
 
 var DEFAULT_GAME = {
-	"title" : "ZombiesTD",
+	"title" : "Sample Game",
 	"map" : defaultMap, 
 	"health" : 10,
 	"money" : 300,
